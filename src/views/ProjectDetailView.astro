@@ -1,0 +1,50 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+
+import type { Locale } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+  alternates: Partial<Record<Locale, string>>;
+  locale: Locale;
+}
+
+const { entry, alternates, locale } = Astro.props;
+const t = useTranslations(locale);
+const { Content } = await render(entry);
+const unlisted = entry.data.visibility === 'restricted';
+---
+
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.summary}
+  locale={locale}
+  alternates={alternates}
+  noindex={unlisted}
+  ogType="article"
+>
+  <article class="prose">
+    <h1>{entry.data.title}</h1>
+    <p class="lead">{entry.data.summary}</p>
+    <dl class="facts">
+      {entry.data.role && (<><dt>{t('projects.role')}</dt><dd>{entry.data.role}</dd></>)}
+      {entry.data.period && (<><dt>{t('projects.period')}</dt><dd>{entry.data.period}</dd></>)}
+      {
+        entry.data.stack.length > 0 && (
+          <>
+            <dt>{t('projects.stack')}</dt>
+            <dd class="tags">
+              {entry.data.stack.map((item) => (
+                <span class="tag">{item}</span>
+              ))}
+            </dd>
+          </>
+        )
+      }
+      {entry.data.repo && (<><dt>{t('projects.repo')}</dt><dd><a href={entry.data.repo}>{entry.data.repo}</a></dd></>)}
+    </dl>
+    <Content />
+  </article>
+</BaseLayout>

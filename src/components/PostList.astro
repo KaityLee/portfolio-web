@@ -1,0 +1,42 @@
+---
+import type { Locale } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import { entryPath, type ContentCollection, type ContentEntry } from '../lib/content';
+import { formatDate, toDateTimeAttr } from '../utils/date';
+
+interface Props {
+  collection: ContentCollection;
+  entries: ContentEntry[];
+  locale: Locale;
+}
+
+const { collection, entries, locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+{
+  entries.length === 0 ? (
+    <p class="meta">{t('common.empty')}</p>
+  ) : (
+    <ul class="post-list">
+      {entries.map((entry) => (
+        <li>
+          <h3>
+            <a href={entryPath(collection, entry, locale)}>{entry.data.title}</a>
+          </h3>
+          <p>{entry.data.summary}</p>
+          <div class="meta">
+            <time datetime={toDateTimeAttr(entry.data.date)}>{formatDate(entry.data.date, locale)}</time>
+            {entry.data.tags.length > 0 && (
+              <span class="tags">
+                {entry.data.tags.map((tag) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </span>
+            )}
+          </div>
+        </li>
+      ))}
+    </ul>
+  )
+}

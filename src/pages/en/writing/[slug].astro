@@ -1,0 +1,12 @@
+---
+import type { GetStaticPaths } from 'astro';
+
+import { detailPaths } from '../../../lib/content';
+import WritingDetailView from '../../../views/WritingDetailView.astro';
+
+export const getStaticPaths = (() => detailPaths('writing', 'en')) satisfies GetStaticPaths;
+
+const { entry, alternates } = Astro.props;
+---
+
+<WritingDetailView entry={entry} alternates={alternates} locale="en" />

@@ -1,0 +1,12 @@
+---
+import type { GetStaticPaths } from 'astro';
+
+import { detailPaths } from '../../lib/content';
+import ProjectDetailView from '../../views/ProjectDetailView.astro';
+
+export const getStaticPaths = (() => detailPaths('projects', 'ko')) satisfies GetStaticPaths;
+
+const { entry, alternates } = Astro.props;
+---
+
+<ProjectDetailView entry={entry} alternates={alternates} locale="ko" />

@@ -1,0 +1,97 @@
+---
+import '../styles/global.css';
+
+import LocalePicker from '../components/LocalePicker.astro';
+import Nav from '../components/Nav.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import { defaultLocale, localeMeta, locales, type Locale } from '../i18n/ui';
+import { localizePath, stripLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  title: string;
+  description?: string;
+  locale: Locale;
+  /** Paths of this page in other locales; defaults to the same route with the locale prefix swapped. */
+  alternates?: Partial<Record<Locale, string>>;
+  /** Unlisted pages (visibility: restricted) are built but not indexed. */
+  noindex?: boolean;
+  ogType?: 'website' | 'article';
+}
+
+const { title, description, locale, alternates, noindex = false, ogType = 'website' } = Astro.props;
+const t = useTranslations(locale);
+const site = Astro.site ?? new URL('https://example.com');
+const routePath = stripLocale(Astro.url.pathname);
+
+// Only locales that actually have this page get an hreflang link.
+const alternateUrls: Array<[Locale, URL]> = alternates
+  ? (Object.entries(alternates) as Array<[Locale, string]>).map(([l, path]) => [l, new URL(path, site)])
+  : locales.map((l) => [l, new URL(localizePath(routePath, l), site)]);
+const xDefault = alternateUrls.find(([l]) => l === defaultLocale)?.[1] ?? alternateUrls[0]?.[1];
+const canonical = new URL(Astro.url.pathname, site);
+const metaDescription = description ?? t('site.description');
+const fullTitle = `${title} · ${t('site.title')}`;
+---
+
+<!doctype html>
+<html lang={locale} dir={localeMeta[locale].dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={metaDescription} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {alternateUrls.map(([l, url]) => <link rel="alternate" hreflang={l} href={url} />)}
+    {xDefault && <link rel="alternate" hreflang="x-default" href={xDefault} />}
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={t('site.title')} />
+    <meta property="og:locale" content={localeMeta[locale].ogLocale} />
+    {
+      alternateUrls
+        .filter(([l]) => l !== locale)
+        .map(([l]) => <meta property="og:locale:alternate" content={localeMeta[l].ogLocale} />)
+    }
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      // Apply the saved theme before first paint. Storage may be unavailable; fall back to the OS.
+      (() => {
+        let theme = null;
+        try {
+          theme = localStorage.getItem('theme');
+        } catch {
+          theme = null;
+        }
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t('nav.skipToContent')}</a>
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href={localizePath('/', locale)}>{t('site.title')}</a>
+        <Nav locale={locale} />
+        <div class="tools">
+          <LocalePicker locale={locale} alternates={Object.fromEntries(alternateUrls.map(([l, u]) => [l, u.pathname]))} />
+          <ThemeToggle locale={locale} />
+        </div>
+      </div>
+    </header>
+    <main id="main" class="container">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <span>© {new Date().getUTCFullYear()} · {t('footer.builtWith')}</span>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+---
+import { localeMeta, locales, type Locale } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+  /** Path of this page per locale; locales without a translation are not offered. */
+  alternates: Partial<Record<Locale, string>>;
+}
+
+const { locale, alternates } = Astro.props;
+const t = useTranslations(locale);
+const available = locales.filter((l) => alternates[l] !== undefined);
+---
+
+{
+  available.length > 1 && (
+    <ul class="locale-picker" aria-label={t('nav.language')}>
+      {available.map((l) => (
+        <li>
+          <a href={alternates[l]} hreflang={l} lang={l} aria-current={l === locale ? 'true' : undefined}>
+            {localeMeta[l].label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}

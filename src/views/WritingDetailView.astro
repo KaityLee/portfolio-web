@@ -1,0 +1,57 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+
+import type { Locale } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDate, toDateTimeAttr } from '../utils/date';
+
+interface Props {
+  entry: CollectionEntry<'writing'>;
+  alternates: Partial<Record<Locale, string>>;
+  locale: Locale;
+}
+
+const { entry, alternates, locale } = Astro.props;
+const t = useTranslations(locale);
+const { Content } = await render(entry);
+const unlisted = entry.data.visibility === 'restricted';
+---
+
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.summary}
+  locale={locale}
+  alternates={alternates}
+  noindex={unlisted}
+  ogType="article"
+>
+  <article class="prose">
+    <h1>{entry.data.title}</h1>
+    <div class="meta">
+      <span>
+        {t('writing.published')}{' '}
+        <time datetime={toDateTimeAttr(entry.data.date)}>{formatDate(entry.data.date, locale)}</time>
+      </span>
+      {
+        entry.data.updated && (
+          <span>
+            {t('writing.updated')}{' '}
+            <time datetime={toDateTimeAttr(entry.data.updated)}>{formatDate(entry.data.updated, locale)}</time>
+          </span>
+        )
+      }
+      {
+        entry.data.tags.length > 0 && (
+          <span class="tags">
+            {entry.data.tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </span>
+        )
+      }
+      {entry.data.license && <span>{entry.data.license}</span>}
+    </div>
+    <Content />
+  </article>
+</BaseLayout>

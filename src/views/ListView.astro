@@ -1,0 +1,26 @@
+---
+import PostList from '../components/PostList.astro';
+import type { Locale } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getListed, type ContentCollection } from '../lib/content';
+
+interface Props {
+  collection: ContentCollection;
+  locale: Locale;
+}
+
+const { collection, locale } = Astro.props;
+const t = useTranslations(locale);
+const entries = await getListed(collection, locale);
+const heading = collection === 'projects' ? t('projects.heading') : t('writing.heading');
+const lead = collection === 'projects' ? t('projects.lead') : t('writing.lead');
+---
+
+<BaseLayout title={heading} locale={locale}>
+  <section>
+    <h1>{heading}</h1>
+    <p class="lead">{lead}</p>
+    <PostList collection={collection} entries={entries} locale={locale} />
+  </section>
+</BaseLayout>

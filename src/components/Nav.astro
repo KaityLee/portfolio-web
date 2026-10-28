@@ -1,0 +1,38 @@
+---
+import type { Locale } from '../i18n/ui';
+import { localizePath, stripLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const current = stripLocale(Astro.url.pathname).replace(/\/$/, '') || '/';
+
+const items: Array<{ path: string; label: string }> = [
+  { path: '/', label: t('nav.home') },
+  { path: '/about', label: t('nav.about') },
+  { path: '/projects', label: t('nav.projects') },
+  { path: '/writing', label: t('nav.writing') },
+  { path: '/contact', label: t('nav.contact') },
+];
+
+function isCurrent(path: string): boolean {
+  return path === '/' ? current === '/' : current === path || current.startsWith(`${path}/`);
+}
+---
+
+<nav aria-label={t('nav.home')}>
+  <ul>
+    {
+      items.map(({ path, label }) => (
+        <li>
+          <a href={localizePath(path, locale)} aria-current={isCurrent(path) ? 'page' : undefined}>
+            {label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
