@@ -1,5 +1,9 @@
 import { defineConfig } from 'astro/config';
 
+import { satteri } from '@astrojs/markdown-satteri';
+
+import { tableWrap } from './src/plugins/satteri-table-wrap.mjs';
+
 // Static output, no adapter: the build is plain files and can be hosted anywhere
 // (Cloudflare Pages first). SITE_URL is the only deployment-specific value.
 export default defineConfig({
@@ -12,5 +16,15 @@ export default defineConfig({
     routing: {
       prefixDefaultLocale: false, // "/" is Korean, "/en/" is English; more locales add a prefix each
     },
+  },
+  markdown: {
+    shikiConfig: {
+      // One theme per color scheme; tokens get --shiki-light / --shiki-dark variables and
+      // src/styles/prose.css picks the active one, so code blocks follow the site theme.
+      themes: { light: 'github-light', dark: 'github-dark' },
+      defaultColor: false,
+    },
+    // Sätteri (Astro 7's default Markdown engine) takes HAST plugins here, not rehypePlugins.
+    processor: satteri({ hastPlugins: [tableWrap] }),
   },
 });
