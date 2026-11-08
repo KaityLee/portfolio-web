@@ -23,6 +23,14 @@ This site is the public face of **Personal OS**. Every post originates in a priv
 new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeZone }).format(date);
 ```
 
+## Plain Markdown in, designed pages out
+
+The source stays ordinary Markdown. It keeps the syntax I already use in [Obsidian](https://obsidian.md), and the [Astro](https://astro.build) build turns it into figures, callouts, code cards and heading links.
+
+![Only an approved copy travels through the public repository to the static site](../../../assets/writing/publish-flow.svg "From the private vault to the static site: only approved copies cross over")
+
+To preview locally, start `npm run dev` and stop it with <kbd>Ctrl</kbd> + <kbd>C</kbd>.
+
 Future posts cover only what I have done and measured myself.
 
 > [!NOTE]

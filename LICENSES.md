@@ -17,7 +17,7 @@ Rules (from `DESIGN.md` §11): fonts must be SIL OFL 1.1 and self-hosted; icons 
 
 | Asset | Files | Source | Licence | Added | Notice |
 | --- | --- | --- | --- | --- | --- |
-| Lucide icons (menu, x, sun, moon, arrow-right) | inline paths in `src/components/Icon.astro` | https://github.com/lucide-icons/lucide | ISC (Feather-derived glyphs MIT) | 2026-11-08 | © Lucide Contributors; ISC text at the source URL |
+| Lucide icons (menu, x, sun, moon, arrow-right; info, lightbulb, triangle-alert, copy, check, arrow-up-right, link) | inline paths in `src/components/Icon.astro`; CSS mask data URIs in `src/styles/prose.css` | https://github.com/lucide-icons/lucide | ISC (Feather-derived glyphs MIT) | 2026-11-08 | © Lucide Contributors; ISC text at the source URL |
 
 ## Images and illustrations
 
@@ -25,6 +25,7 @@ Rules (from `DESIGN.md` §11): fonts must be SIL OFL 1.1 and self-hosted; icons 
 | --- | --- | --- | --- | --- |
 | Favicon | `public/favicon.svg` | drawn for this site | MIT (repo) | 2026-10-28 |
 | Home hero band (notebook grid + nodes) | `src/components/HeroBand.astro` | drawn for this site | MIT (repo) | 2026-11-08 |
+| Publish flow diagram (sample post figure) | `src/assets/writing/publish-flow.svg` | drawn for this site | MIT (repo) | 2026-11-09 |
 
 ## Tooling (not shipped to visitors)
 

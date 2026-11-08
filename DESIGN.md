@@ -148,14 +148,17 @@ Each component lists its states; all interactive targets are ≥ `--target` squa
 | SectionLabel | `0.75rem`, letter-spacing `0.12em`, uppercase (Latin) / normal case (Hangul), `--color-secondary` |
 | PostCard (list) | title (h3, 1.25rem), summary (muted), Meta; no border, hover lifts title color to primary; `featured` cards get `--color-surface` + `--shadow-card` |
 | TagChip | filled `--color-surface-2` pill, `0.8125rem`; current filter in primary tint |
-| Meta | italic muted line: "작성일 … · 수정일 …" / "Filed under … on …" using `formatDate` only |
+| Meta | italic muted line: "작성일 … · 수정일 … · 읽는 시간 3분" / "Filed under … on …" using `formatDate` / `formatMinutes` only; reading time is computed at build from the Markdown text (CJK per character, other scripts per word; code excluded) |
 | TOC | desktop: sticky right rail from 1280 (15rem, rows 32px — WCAG 2.5.8's 24px minimum; the 44px rule is for phone widths), current heading in primary via IntersectionObserver; mobile: collapsed `<details>` above the article, 44px rows |
 | PrevNext | two cards at article end, previous left, next right |
 | Callout | `> [!NOTE] / [!TIP] / [!WARNING] / [!CAUTION]` blockquotes → info/success/warning/danger; left 3px accent, 10px radius, tinted bg at 12% |
 | CodeBlock | dark card (`--color-code-bg`), `--radius-m`, language label top-right, copy button (44px) appears on hover/focus; horizontal scroll inside |
 | InlineCode | `--color-surface-2` pill, `0.9em`, 3px radius |
 | Table | wrapped in `.table-wrap` (already), head in surface-2, 4+ columns widen to 40rem and scroll |
-| Figure | image with caption (muted, 0.875rem); every image has a `LICENSES.md` row |
+| Figure | a paragraph holding one image → `<figure>`; caption (muted, 0.875rem, centered) from the image title `![alt](src "caption")`, falling back to alt; every image has a `LICENSES.md` row |
+| ExternalLink | links to another host get `rel="noopener"` and a small arrow-up-right after the text (same tab; no `target`); links wrapping an image get no arrow |
+| HeadingAnchor | h2–h4 end with a link icon to themselves (`aria-label` names the heading); hidden until hover/focus on hover devices, always visible and muted on touch; glyph 0.75em with a `--target` hit area via `::after` so the heading line does not grow |
+| Kbd | raw `<kbd>` in Markdown: mono, 0.85em, bordered key cap with a 2px bottom edge |
 | Footer | see §7 |
 | ConsentBanner (future) | bottom sheet, never a modal; only when ads are enabled |
 

@@ -38,7 +38,7 @@ npm run design:qa  # design gates: check, build, tokens, Playwright matrix → s
 ```
 src/
 ├── content.config.ts      collections: writing, projects (zod schema incl. lang, translationKey, visibility, draft)
-├── plugins/               Sätteri HAST plugins (table wrapper, task-list checkboxes)
+├── plugins/               Sätteri Markdown plugins (tables, task lists, callouts, code bars, figures, external links, heading anchors, reading time)
 ├── styles/                tokens.css (design tokens), fonts.css (self-hosted @font-face), prose.css (Markdown body), global.css
 ├── content/
 │   ├── writing/{ko,en}/   blog posts, one file per locale, same translationKey
@@ -67,6 +67,21 @@ src/
 1. Create `src/content/writing/<locale>/<slug>.md` (ASCII kebab-case slug). Translations use the same slug and `translationKey`.
 2. Frontmatter: `title, summary, date, tags, lang, translationKey, visibility, draft, license`.
 3. Content only reaches this repository through the pipeline in `docs/publishing.md`.
+
+### What plain Markdown turns into
+
+Posts stay ordinary Markdown; the build (`src/plugins/`, `src/styles/prose.css`) does the dressing. No site-specific syntax is needed in the vault.
+
+| You write | The page shows |
+| --- | --- |
+| `> [!NOTE]` / `[!TIP]` / `[!IMPORTANT]` / `[!WARNING]` / `[!CAUTION]` on a blockquote's first line | callout with icon, tint and a localized title |
+| a fenced code block with a language | dark code card with language label and copy button |
+| `![alt](image.png "caption")` alone in a paragraph | `<figure>` with caption (falls back to the alt text); the image needs a `LICENSES.md` row |
+| a link to another site | arrow after the text, `rel="noopener"` |
+| `##` – `####` headings | table of contents entries and a link icon to the heading |
+| `<kbd>Ctrl</kbd>` | key cap |
+| a table | rounded, scrolls sideways on phones |
+| nothing | reading time in the meta line, computed from the text |
 
 ## Deploy (manual, not automated here)
 

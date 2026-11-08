@@ -50,6 +50,21 @@ npm run preview
 2. frontmatter: `title, summary, date, tags, lang, translationKey, visibility, draft, license`.
 3. 콘텐츠는 `docs/publishing.md`의 파이프라인을 통해서만 이 저장소에 들어온다.
 
+### 평범한 Markdown이 화면에서 바뀌는 것
+
+글은 평범한 Markdown 그대로 두고, 빌드(`src/plugins/`, `src/styles/prose.css`)가 꾸민다. Vault 원본에 사이트 전용 문법은 필요 없다.
+
+| 쓰는 것 | 화면에 보이는 것 |
+| --- | --- |
+| 인용 블록 첫 줄의 `> [!NOTE]` / `[!TIP]` / `[!IMPORTANT]` / `[!WARNING]` / `[!CAUTION]` | 아이콘·색·locale별 제목이 붙은 콜아웃 |
+| 언어를 적은 코드 블록 | 언어 라벨과 복사 버튼이 있는 다크 코드 카드 |
+| 문단에 단독으로 쓴 `![alt](image.png "캡션")` | 캡션 달린 `<figure>` (캡션이 없으면 alt 사용). 이미지는 `LICENSES.md` 행이 필요 |
+| 다른 사이트로 가는 링크 | 글자 뒤 화살표, `rel="noopener"` |
+| `##` ~ `####` 제목 | 목차 항목과 제목 옆 링크 아이콘 |
+| `<kbd>Ctrl</kbd>` | 키 캡 |
+| 표 | 둥근 테두리, 폰에서는 가로 스크롤 |
+| (자동) | 본문 글자 수로 계산한 읽는 시간이 메타 줄에 표시 |
+
 ## 배포 (수동)
 
 Cloudflare Pages → GitHub 저장소 연결 → 빌드 명령 `npm run build`, 출력 `dist`, 환경변수 `SITE_URL=https://<도메인>`. 다른 정적 호스팅도 같은 방식.

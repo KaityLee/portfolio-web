@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 
 import { satteri } from '@astrojs/markdown-satteri';
 
+import { externalLinks, figures, headingAnchors, readingTime } from './src/plugins/satteri-enrich.mjs';
 import { callouts, codeBlocks, tableWrap, taskListCheckbox } from './src/plugins/satteri-table-wrap.mjs';
 
 // Static output, no adapter: the build is plain files and can be hosted anywhere
@@ -25,6 +26,10 @@ export default defineConfig({
       defaultColor: false,
     },
     // Sätteri (Astro 7's default Markdown engine) takes HAST plugins here, not rehypePlugins.
-    processor: satteri({ hastPlugins: [tableWrap, taskListCheckbox, callouts, codeBlocks] }),
+    // Markdown stays plain; these turn it into figures, callouts, code cards, anchors (DESIGN.md §8).
+    processor: satteri({
+      mdastPlugins: [readingTime],
+      hastPlugins: [tableWrap, taskListCheckbox, callouts, codeBlocks, figures, externalLinks, headingAnchors],
+    }),
   },
 });

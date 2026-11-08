@@ -23,6 +23,14 @@ license: CC-BY-4.0
 new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeZone }).format(date);
 ```
 
+## Markdown은 그대로, 화면은 빌드가
+
+원본은 평범한 Markdown입니다. [Obsidian](https://obsidian.md)에서 쓰던 문법 그대로 두고, [Astro](https://astro.build) 빌드가 그림·콜아웃·코드 카드·제목 링크로 바꿉니다.
+
+![승인된 사본만 공개 저장소를 거쳐 정적 사이트가 되는 흐름](../../../assets/writing/publish-flow.svg "비공개 Vault에서 정적 사이트까지: 승인된 사본만 넘어갑니다")
+
+로컬에서 미리 볼 때는 `npm run dev`로 띄우고 <kbd>Ctrl</kbd> + <kbd>C</kbd>로 끕니다.
+
 앞으로 올라올 글은 직접 겪고 측정한 것만 다룹니다.
 
 > [!NOTE]

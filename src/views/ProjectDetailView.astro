@@ -15,7 +15,8 @@ interface Props {
 
 const { entry, alternates, locale } = Astro.props;
 const t = useTranslations(locale);
-const { Content, headings } = await render(entry);
+const { Content, headings, remarkPluginFrontmatter } = await render(entry);
+const readingMinutes: number | undefined = remarkPluginFrontmatter?.readingMinutes;
 const unlisted = entry.data.visibility === 'restricted';
 ---
 
@@ -48,7 +49,7 @@ const unlisted = entry.data.visibility === 'restricted';
         }
         {entry.data.repo && (<><dt>{t('projects.repo')}</dt><dd><a href={entry.data.repo}>{entry.data.repo}</a></dd></>)}
       </dl>
-      <ArticleMeta entry={entry} locale={locale} />
+      <ArticleMeta entry={entry} locale={locale} readingMinutes={readingMinutes} />
     </header>
     <Content />
   </ArticleShell>

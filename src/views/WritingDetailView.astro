@@ -15,7 +15,8 @@ interface Props {
 }
 
 const { entry, alternates, locale } = Astro.props;
-const { Content, headings } = await render(entry);
+const { Content, headings, remarkPluginFrontmatter } = await render(entry);
+const readingMinutes: number | undefined = remarkPluginFrontmatter?.readingMinutes;
 const unlisted = entry.data.visibility === 'restricted';
 
 // Neighbours among listed posts only (newest first), so unlisted posts never leak into navigation.
@@ -36,7 +37,7 @@ const older = index >= 0 && index < listed.length - 1 ? listed[index + 1] : unde
   <ArticleShell headings={headings} locale={locale}>
     <header slot="header" class="article-header">
       <h1>{entry.data.title}</h1>
-      <ArticleMeta entry={entry} locale={locale} />
+      <ArticleMeta entry={entry} locale={locale} readingMinutes={readingMinutes} />
     </header>
     <Content />
     <PrevNext slot="footer" collection="writing" prev={older} next={newer} locale={locale} />

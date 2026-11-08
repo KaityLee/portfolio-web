@@ -15,3 +15,8 @@ export function formatDate(
 export function toDateTimeAttr(date: Date): string {
   return date.toISOString();
 }
+
+/** Whole minutes as a localized duration ("3분", "3 min"); used for the reading-time meta item. */
+export function formatMinutes(minutes: number, locale: string): string {
+  return new Intl.NumberFormat(locale, { style: 'unit', unit: 'minute', unitDisplay: 'short' }).format(minutes);
+}
