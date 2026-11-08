@@ -20,10 +20,13 @@ const ko = {
   'nav.theme': '테마 전환',
   'nav.language': '언어',
   'nav.skipToContent': '본문으로 건너뛰기',
+  'nav.menu': '메뉴',
   'home.heading': '운영 경험 위에 AI 백엔드를 쌓는 개발자',
   'home.lead':
     'Java/Spring 기반 서비스 운영 경험에 Python/FastAPI, 검색, RAG, 관측 가능성을 더해 신뢰할 수 있는 AI 백엔드를 만듭니다.',
   'home.recentProjects': '최근 프로젝트',
+  'home.featured': '대표 프로젝트',
+  'home.contactLead': '함께 일하고 싶거나 글에 대해 이야기하고 싶다면 연락 주세요.',
   'home.recentWriting': '최근 글',
   'home.viewAll': '전체 보기',
   'about.heading': '소개',
@@ -50,6 +53,7 @@ const ko = {
   'common.readMore': '더 읽기',
   'footer.builtWith': 'Astro로 만들었습니다. 콘텐츠는 각 글에 표시된 라이선스를 따릅니다.',
   'footer.source': '이 사이트의 소스',
+  'footer.links': '사이트 링크',
 } as const;
 
 export type UIKey = keyof typeof ko;
@@ -65,10 +69,13 @@ const en: Record<UIKey, string> = {
   'nav.theme': 'Toggle theme',
   'nav.language': 'Language',
   'nav.skipToContent': 'Skip to content',
+  'nav.menu': 'Menu',
   'home.heading': 'Building AI backends on top of operations experience',
   'home.lead':
     'Java/Spring service operations experience, extended with Python/FastAPI, search, RAG and observability to ship AI backends you can trust.',
   'home.recentProjects': 'Recent projects',
+  'home.featured': 'Selected projects',
+  'home.contactLead': 'Want to work together or talk about a post? Get in touch.',
   'home.recentWriting': 'Recent writing',
   'home.viewAll': 'View all',
   'about.heading': 'About',
@@ -95,6 +102,7 @@ const en: Record<UIKey, string> = {
   'common.readMore': 'Read more',
   'footer.builtWith': 'Built with Astro. Content is licensed as stated on each post.',
   'footer.source': 'Source of this site',
+  'footer.links': 'Site links',
 };
 
 export const ui: Record<Locale, Record<UIKey, string>> = { ko, en };

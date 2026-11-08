@@ -36,7 +36,7 @@ const steps = [
 for (const [cmd, args] of steps) {
   const r = spawnSync(cmd, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
   if (r.status !== 0) {
-    console.error(`stop-gate: "${cmd} ${args.join(' ')}" failed. Fix it before finishing.\n` + (r.stdout || '').slice(-3000) + (r.stderr || '').slice(-3000));
+    console.error(`stop-gate: "${cmd} ${args.join(' ')}" failed. Fix it before finishing.\n` + String(r.stdout || '').slice(-3000) + String(r.stderr || '').slice(-3000));
     process.exit(2);
   }
 }

@@ -27,6 +27,7 @@
   --font-sans: 'Wanted Sans Variable', 'Wanted Sans', 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
   --font-serif: 'Gowun Batang', 'Noto Serif KR', 'Apple Myungjo', serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'D2Coding', ui-monospace, 'SF Mono', Menlo, monospace;
+  --step--2: 0.75rem;
   --step--1: 0.875rem;
   --step-0: clamp(1.0625rem, 1rem + 0.25vw, 1.125rem);
   --step-1: clamp(1.1875rem, 1.1rem + 0.4vw, 1.3125rem);
@@ -54,6 +55,7 @@
   --radius-pill: 999px;
   --shadow-card: 0 1px 2px oklch(20% 0.02 265 / 0.06), 0 8px 24px -12px oklch(20% 0.02 265 / 0.18);
   --target: 44px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 
   /* §7 Layout */
   --measure: 42rem;

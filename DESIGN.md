@@ -74,6 +74,7 @@ Not allowed: KoPub World (server embedding needs separate approval), any font lo
 Hangul needs a little more size and leading than Latin at the same nominal px, so the base is 17–18px with 1.7 leading (Comeau uses 18/27 for Latin).
 
 ```
+--step--2: 0.75rem                                   /* section labels */
 --step--1: 0.875rem                                  /* meta, captions, chips */
 --step-0:  clamp(1.0625rem, 1rem + 0.25vw, 1.125rem) /* body 17→18px */
 --step-1:  clamp(1.1875rem, 1.1rem + 0.4vw, 1.3125rem) /* h3, lead paragraph 19→21px */
@@ -121,7 +122,7 @@ Rules
 --section-gap: clamp(48px, 8vw, 96px)
 --radius-s: 6px  --radius-m: 10px  --radius-l: 16px  --radius-pill: 999px
 --shadow-card: 0 1px 2px oklch(20% 0.02 265 / .06), 0 8px 24px -12px oklch(20% 0.02 265 / .18)
---target: 44px
+--target: 44px   --ease: cubic-bezier(.2,.7,.2,1)
 ```
 
 No other spacing values. Vertical rhythm inside prose uses `--space-4` between paragraphs, `--space-7` above h2, `--space-6` above h3.

@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
+import Icon from './Icon.astro';
 
 interface Props {
   locale: Locale;
@@ -9,12 +10,17 @@ interface Props {
 const t = useTranslations(Astro.props.locale);
 ---
 
-<button id="theme-toggle" class="icon-button" type="button" aria-label={t('nav.theme')} title={t('nav.theme')}>
-  ◐
+<button id="theme-toggle" class="icon-button theme-toggle" type="button" aria-label={t('nav.theme')} title={t('nav.theme')}>
+  <span class="theme-toggle-icons">
+    <Icon name="sun" class="icon-sun" />
+    <Icon name="moon" class="icon-moon" />
+  </span>
 </button>
 
 <script>
   const button = document.getElementById('theme-toggle');
+  const icons = button?.querySelector<HTMLElement>('.theme-toggle-icons');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
   button?.addEventListener('click', () => {
     const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = next;
@@ -22,6 +28,12 @@ const t = useTranslations(Astro.props.locale);
       localStorage.setItem('theme', next);
     } catch {
       // Storage unavailable (private mode, blocked): the choice lasts for this page only.
+    }
+    if (icons && !reduceMotion.matches) {
+      icons.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(180deg)' }], {
+        duration: 200,
+        easing: 'cubic-bezier(.2,.7,.2,1)',
+      });
     }
   });
 </script>

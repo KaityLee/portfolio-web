@@ -8,6 +8,7 @@ translationKey: personal-os
 visibility: public
 draft: false
 license: CC-BY-4.0
+featured: true
 role: Design and implementation (personal project)
 period: 2026-10 –
 stack: [Python 3.13, FastAPI, PostgreSQL, pgvector, Astro, Docker Compose, Tailscale]

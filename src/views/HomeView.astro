@@ -1,5 +1,9 @@
 ---
+import HeroBand from '../components/HeroBand.astro';
+import Icon from '../components/Icon.astro';
 import PostList from '../components/PostList.astro';
+import PostRows from '../components/PostRows.astro';
+import SectionLabel from '../components/SectionLabel.astro';
 import type { Locale } from '../i18n/ui';
 import { localizePath, useTranslations } from '../i18n/utils';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -11,27 +15,38 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = useTranslations(locale);
-const projects = (await getListed('projects', locale)).slice(0, 3);
-const writing = (await getListed('writing', locale)).slice(0, 3);
+
+// Featured projects first, then the most recent ones, three in total (DESIGN.md §10 Home).
+const projects = await getListed('projects', locale);
+const featured = [...projects.filter((e) => e.data.featured), ...projects.filter((e) => !e.data.featured)].slice(0, 3);
+const writing = (await getListed('writing', locale)).slice(0, 5);
 ---
 
 <BaseLayout title={t('nav.home')} locale={locale}>
+  <HeroBand slot="band" />
   <section class="hero">
     <h1>{t('home.heading')}</h1>
     <p class="lead">{t('home.lead')}</p>
   </section>
-  <section>
+  <section aria-labelledby="featured-heading">
     <div class="section-head">
-      <h2>{t('home.recentProjects')}</h2>
-      <a href={localizePath('/projects', locale)}>{t('home.viewAll')}</a>
+      <SectionLabel id="featured-heading">{t('home.featured')}</SectionLabel>
+      <a class="more-link" href={localizePath('/projects', locale)}>{t('home.viewAll')}</a>
     </div>
-    <PostList collection="projects" entries={projects} locale={locale} />
+    <PostList collection="projects" entries={featured} locale={locale} />
   </section>
-  <section>
+  <section aria-labelledby="writing-heading">
     <div class="section-head">
-      <h2>{t('home.recentWriting')}</h2>
-      <a href={localizePath('/writing', locale)}>{t('home.viewAll')}</a>
+      <SectionLabel id="writing-heading">{t('home.recentWriting')}</SectionLabel>
+      <a class="more-link" href={localizePath('/writing', locale)}>{t('home.viewAll')}</a>
     </div>
-    <PostList collection="writing" entries={writing} locale={locale} />
+    <PostRows collection="writing" entries={writing} locale={locale} />
+  </section>
+  <section class="contact-row">
+    <p>{t('home.contactLead')}</p>
+    <a class="button" href={localizePath('/contact', locale)}>
+      {t('nav.contact')}
+      <Icon name="arrow-right" size={18} />
+    </a>
   </section>
 </BaseLayout>

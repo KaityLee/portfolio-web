@@ -66,53 +66,118 @@ pre {
   z-index: 10;
 }
 
+/* Header (DESIGN.md §7–§8): 48px; phones get brand + icon buttons and a popover menu sheet,
+   desktop gets inline nav, locale picker and a translucent sticky bar. */
 .site-header {
+  position: relative;
+  z-index: 10;
   border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
 }
 .site-header .container {
   display: flex;
   align-items: center;
-  gap: 0.5rem 1rem;
-  padding-block: 0.4rem;
+  gap: var(--space-2);
+  min-height: var(--header-height);
 }
-.site-header .brand {
+.brand {
   display: inline-flex;
   align-items: center;
   min-height: var(--target);
   font-weight: 700;
   text-decoration: none;
   color: var(--color-text);
+  white-space: nowrap;
+}
+.site-header .brand {
   margin-inline-end: auto;
-  white-space: nowrap;
-}
-.site-header nav ul {
-  display: flex;
-  gap: 0 0.25rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.site-header nav a {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--target);
-  padding-inline: 0.5rem;
-  border-radius: 999px;
-  color: var(--color-text);
-  text-decoration: none;
-  white-space: nowrap;
-}
-.site-header nav a:hover {
-  background: var(--color-surface-2);
-}
-.site-header nav a[aria-current='page'] {
-  color: var(--color-primary);
-  font-weight: 600;
 }
 .site-header .tools {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: var(--space-1);
+}
+.tools-desktop {
+  display: none;
+}
+
+.site-nav > ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.site-nav > ul a {
+  display: flex;
+  align-items: center;
+  min-height: var(--target);
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-s);
+  color: var(--color-text);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 150ms var(--ease), color 150ms var(--ease);
+}
+.site-nav > ul a:hover {
+  background: var(--color-surface-2);
+}
+.site-nav > ul a[aria-current='page'] {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+/* Phone: the nav is a sheet under the header, opened by the menu button (popover API). */
+.site-nav[popover] {
+  position: fixed;
+  inset: var(--header-height) 0 auto 0;
+  width: 100%;
+  max-height: calc(100dvh - var(--header-height));
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--space-2) var(--gutter) var(--space-4);
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0 0 var(--radius-l) var(--radius-l);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-card);
+}
+.site-nav[popover]::backdrop {
+  background: color-mix(in oklab, var(--color-text) 35%, transparent);
+}
+.sheet-tools {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+.menu-button .icon-close {
+  display: none;
+}
+.menu-button[aria-expanded='true'] .icon-menu,
+.site-header:has(.site-nav:popover-open) .menu-button .icon-menu {
+  display: none;
+}
+.menu-button[aria-expanded='true'] .icon-close,
+.site-header:has(.site-nav:popover-open) .menu-button .icon-close {
+  display: block;
+}
+/* Browsers without the popover API: show the nav inline under the header. */
+@supports not selector(:popover-open) {
+  .site-nav {
+    display: block;
+    width: 100%;
+  }
+  .site-nav > ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .menu-button {
+    display: none;
+  }
 }
 
 .icon-button {
@@ -125,17 +190,38 @@ pre {
   font: inherit;
   background: transparent;
   color: var(--color-text);
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
   cursor: pointer;
+  transition: background-color 150ms var(--ease);
 }
 .icon-button:hover {
   background: var(--color-surface-2);
 }
+.theme-toggle-icons {
+  display: inline-flex;
+}
+.theme-toggle .icon-moon {
+  display: none;
+}
+:root[data-theme='dark'] .theme-toggle .icon-sun {
+  display: none;
+}
+:root[data-theme='dark'] .theme-toggle .icon-moon {
+  display: block;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .theme-toggle .icon-sun {
+    display: none;
+  }
+  :root:not([data-theme='light']) .theme-toggle .icon-moon {
+    display: block;
+  }
+}
 
 .locale-picker {
   display: flex;
-  gap: 0.25rem;
+  gap: var(--space-1);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -144,89 +230,162 @@ pre {
   display: inline-flex;
   align-items: center;
   min-height: var(--target);
-  padding-inline: 0.6rem;
+  padding-inline: var(--space-3);
   text-decoration: none;
-  border-radius: 999px;
-  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
   color: var(--color-text-muted);
+  font-weight: 500;
 }
 .locale-picker a[aria-current='true'] {
   color: var(--color-text);
-  border-color: var(--color-border);
+  background: var(--color-surface-2);
 }
 
-/* Narrow screens: brand + tools on the first row, the nav on its own full-width row that
-   scrolls sideways instead of wrapping, so every item keeps its 44px target. */
-@media (max-width: 640px) {
+@media (min-width: 768px) {
+  .site-header {
+    position: sticky;
+    top: 0;
+    background: color-mix(in oklab, var(--color-bg) 85%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
   .site-header .container {
-    flex-wrap: wrap;
-    row-gap: 0;
+    gap: var(--space-4);
   }
-  .site-header nav {
-    order: 1;
-    flex-basis: 100%;
-    margin-inline: calc(-1 * var(--gutter));
-    padding-inline: var(--gutter);
-    overflow-x: auto;
-    scrollbar-width: none;
+  .site-header .brand {
+    margin-inline-end: var(--space-2);
   }
-  .site-header nav::-webkit-scrollbar {
+  .site-nav[popover] {
+    display: flex;
+    position: static;
+    inset: auto;
+    width: auto;
+    max-height: none;
+    overflow: visible;
+    margin: 0 auto 0 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .site-nav > ul {
+    flex-direction: row;
+  }
+  .site-nav .sheet-only {
     display: none;
   }
-  .site-header nav ul {
-    margin-inline-start: -0.5rem; /* first label aligns with the brand */
+  .tools-desktop {
+    display: block;
   }
+  .menu-button {
+    display: none;
+  }
+}
+
+/* Hero band (DESIGN.md §7): full-bleed decorative SVG under the header, home only. */
+.hero-band {
+  height: clamp(160px, 28vw, 320px);
+  background: color-mix(in oklab, var(--color-decorative) 22%, var(--color-bg));
+  border-bottom: 1px solid var(--color-border);
+  overflow: hidden;
+}
+.hero-band svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.hero-band .hero-dot {
+  fill: var(--color-decorative);
+}
+.hero-band .hero-links {
+  stroke: var(--color-decorative);
+}
+.hero-band .node-primary {
+  fill: var(--color-primary);
+  stroke: var(--color-bg);
+  stroke-width: 3;
+}
+.hero-band .node-secondary {
+  fill: var(--color-secondary);
+  stroke: var(--color-bg);
+  stroke-width: 3;
 }
 
 main {
   flex: 1;
-  padding-block: 2rem 3rem;
+  padding-block: var(--space-6) var(--space-8);
 }
 
+.hero {
+  padding-block: var(--space-4) 0;
+}
 .hero h1 {
   font-family: var(--font-serif);
   font-weight: 700;
   font-size: var(--step-4);
   line-height: var(--leading-tight);
   text-wrap: balance;
-  margin: 0 0 0.75rem;
+  margin: 0 0 var(--space-3);
 }
 .lead {
   color: var(--color-text-muted);
   font-size: var(--step-1);
-  margin: 0 0 2rem;
+  line-height: 1.6;
+  max-width: var(--measure);
+  margin: 0 0 var(--space-6);
 }
 
 section + section {
-  margin-top: 2.5rem;
+  margin-top: var(--section-gap);
 }
 .section-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 1rem;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 .section-head h2 {
-  margin: 0 0 0.75rem;
-  font-size: var(--step-1);
-  color: var(--color-tertiary);
+  margin: 0;
+}
+.section-label {
+  margin: 0;
+  font-size: var(--step--2);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--color-secondary);
+}
+:lang(en) .section-label {
+  text-transform: uppercase;
+}
+.more-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+  font-weight: 500;
+  text-decoration: none;
+}
+.more-link:hover {
+  text-decoration: underline;
 }
 
+/* PostCard (DESIGN.md §8): featured/project cards on a surface with a soft shadow. */
 .post-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 .post-list li {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-m);
-  padding: 1rem 1.1rem;
-  background: var(--color-surface-2);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-l);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
 }
 .post-list h3 {
-  margin: 0 0 0.25rem;
+  margin: 0 0 var(--space-1);
   font-size: var(--step-1);
   line-height: var(--leading-heading);
 }
@@ -234,11 +393,85 @@ section + section {
   display: inline-flex;
   align-items: center;
   min-height: var(--target); /* the title is the card's tap target */
+  color: var(--color-text);
+  text-decoration: none;
+  transition: color 150ms var(--ease);
+}
+.post-list h3 a:hover {
+  color: var(--color-primary);
 }
 .post-list p {
-  margin: 0.25rem 0 0.5rem;
+  margin: 0 0 var(--space-3);
   color: var(--color-text-muted);
 }
+
+/* PostRows: date · title, one row per entry. */
+.post-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.post-rows li {
+  display: grid;
+  grid-template-columns: minmax(7ch, max-content) 1fr;
+  gap: var(--space-2) var(--space-4);
+  align-items: baseline;
+  padding-block: var(--space-1);
+  border-bottom: 1px solid var(--color-border);
+}
+.post-rows li:last-child {
+  border-bottom: 0;
+}
+.post-rows time {
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.post-rows a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+  font-weight: 500;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: color 150ms var(--ease);
+}
+.post-rows a:hover {
+  color: var(--color-primary);
+}
+
+.contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  padding: var(--space-5);
+  border-radius: var(--radius-l);
+  background: var(--color-surface-2);
+}
+.contact-row p {
+  margin: 0;
+  max-width: 36rem;
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target);
+  padding-inline: var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  color: var(--color-bg);
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 150ms var(--ease), background-color 150ms var(--ease);
+}
+.button:hover {
+  transform: translateY(-1px);
+}
+
 .meta {
   color: var(--color-text-muted);
   font-size: var(--step--1);
@@ -252,9 +485,10 @@ section + section {
   gap: 0.35rem;
 }
 .tag {
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  padding: 0 0.5rem;
+  border-radius: var(--radius-pill);
+  padding: 0 var(--space-2);
+  background: var(--color-surface-2);
+  font-size: 0.8125rem;
 }
 
 dl.facts {
@@ -270,19 +504,60 @@ dl.facts dd {
   margin: 0;
 }
 
+/* Footer (DESIGN.md §7): site, links, licence note; three columns from 768px. */
 .site-footer {
   border-top: 1px solid var(--color-border);
   color: var(--color-text-muted);
   font-size: var(--step--1);
 }
-.site-footer .container {
-  padding-block: 1.25rem;
+.footer-grid {
+  display: grid;
+  gap: var(--space-4);
+  padding-block: var(--space-6);
+}
+.footer-site p {
+  margin: 0;
+}
+.footer-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1.5rem;
-  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+}
+.footer-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+  color: var(--color-text);
+  text-decoration: none;
+}
+.footer-links a:hover {
+  color: var(--color-primary);
+}
+.footer-note {
+  margin: 0;
+}
+@media (min-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1.4fr 0.8fr 1.4fr;
+    gap: var(--space-6);
+  }
+  .footer-links {
+    flex-direction: column;
+    gap: 0;
+  }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}
 
 ::selection {
   background: var(--color-selection);

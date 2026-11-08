@@ -1,4 +1,7 @@
 ---
+// Site navigation. On phones it is a popover sheet under the header opened by the menu button
+// (native popover API, no JS library); from 768px it renders inline. The Home item is only
+// shown in the sheet because the brand link is Home on desktop (DESIGN.md §7).
 import type { Locale } from '../i18n/ui';
 import { localizePath, stripLocale, useTranslations } from '../i18n/utils';
 
@@ -10,11 +13,11 @@ const { locale } = Astro.props;
 const t = useTranslations(locale);
 const current = stripLocale(Astro.url.pathname).replace(/\/$/, '') || '/';
 
-const items: Array<{ path: string; label: string }> = [
-  { path: '/', label: t('nav.home') },
-  { path: '/about', label: t('nav.about') },
-  { path: '/projects', label: t('nav.projects') },
+const items: Array<{ path: string; label: string; sheetOnly?: boolean }> = [
+  { path: '/', label: t('nav.home'), sheetOnly: true },
   { path: '/writing', label: t('nav.writing') },
+  { path: '/projects', label: t('nav.projects') },
+  { path: '/about', label: t('nav.about') },
   { path: '/contact', label: t('nav.contact') },
 ];
 
@@ -23,11 +26,11 @@ function isCurrent(path: string): boolean {
 }
 ---
 
-<nav aria-label={t('nav.home')}>
+<nav id="site-menu" class="site-nav" popover aria-label={t('nav.menu')}>
   <ul>
     {
-      items.map(({ path, label }) => (
-        <li>
+      items.map(({ path, label, sheetOnly }) => (
+        <li class:list={{ 'sheet-only': sheetOnly }}>
           <a href={localizePath(path, locale)} aria-current={isCurrent(path) ? 'page' : undefined}>
             {label}
           </a>
@@ -35,4 +38,7 @@ function isCurrent(path: string): boolean {
       ))
     }
   </ul>
+  <div class="sheet-only sheet-tools">
+    <slot />
+  </div>
 </nav>

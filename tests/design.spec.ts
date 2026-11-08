@@ -36,7 +36,7 @@ for (const page of pages) {
     test('touch targets in chrome are at least 44px', async ({ page: p }, testInfo) => {
       test.skip(!testInfo.project.name.startsWith('3'), 'checked on phone widths only');
       const small = await p.evaluate((min) => {
-        const els = document.querySelectorAll<HTMLElement>('header a, header button, footer a, .post-list a');
+        const els = document.querySelectorAll<HTMLElement>('header a, header button, footer a, .post-list a, .post-rows a, .more-link, .button');
         return [...els]
           .filter((el) => el.offsetParent !== null)
           .map((el) => {

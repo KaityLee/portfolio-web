@@ -22,19 +22,28 @@ const base = exposure.extend({
   translationKey: z.string(), // identical across translations of one piece
 });
 
+// Presentation hints layered on top of the exposure/locale fields; they never replace them.
+const presentation = ({ image }: { image: () => z.ZodType }) =>
+  z.object({
+    featured: z.boolean().default(false), // shown in the home "featured" slots; lists still sort by date
+    cover: image().optional(), // list card thumbnail / OG image; needs a LICENSES.md row
+    category: z.string().optional(), // one per entry, unlike tags
+  });
+
 const writing = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/writing' }),
-  schema: base,
+  schema: ({ image }) => base.extend(presentation({ image }).shape),
 });
 
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
-  schema: base.extend({
-    role: z.string().optional(),
-    period: z.string().optional(),
-    stack: z.array(z.string()).default([]),
-    repo: z.url().optional(),
-  }),
+  schema: ({ image }) =>
+    base.extend(presentation({ image }).shape).extend({
+      role: z.string().optional(),
+      period: z.string().optional(),
+      stack: z.array(z.string()).default([]),
+      repo: z.url().optional(),
+    }),
 });
 
 export const collections = { writing, projects };
