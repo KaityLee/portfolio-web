@@ -23,13 +23,23 @@ npm run dev        # http://localhost:4321
 npm run check      # astro check (TypeScript strict)
 npm run build      # static output in dist/
 npm run preview
+npm run design:qa  # design gates: check, build, tokens, Playwright matrix → shots/
 ```
+
+## Design system and QA
+
+- `DESIGN.md` — personality, typography (Wanted Sans, Gowun Batang, JetBrains Mono; all SIL OFL, self-hosted), color tokens for both themes, layout and component rules. `src/styles/tokens.css` mirrors it.
+- `npm run design:qa` — type check, build, token-literal check, then Playwright (installed Chrome) at 320/390/768/1280 px in light and dark: horizontal overflow, axe (WCAG 2.2 AA), 44 px touch targets, full-page screenshots in `shots/`. `VISUAL_BASELINE=1` adds screenshot comparison against `tests/__screenshots__/`.
+- `docs/design/quality-gates.md` — what "done" means; `LICENSES.md` — every third-party asset and its licence.
+- `.claude/skills/design-qa` and the Stop hook in `.claude/settings.json` make coding agents run the gates before finishing UI work.
 
 ## Structure
 
 ```
 src/
 ├── content.config.ts      collections: writing, projects (zod schema incl. lang, translationKey, visibility, draft)
+├── plugins/               Sätteri HAST plugins (table wrapper, task-list checkboxes)
+├── styles/                tokens.css (design tokens), fonts.css (self-hosted @font-face), prose.css (Markdown body), global.css
 ├── content/
 │   ├── writing/{ko,en}/   blog posts, one file per locale, same translationKey
 │   └── projects/{ko,en}/  project case studies
@@ -64,4 +74,4 @@ Cloudflare Pages → connect the GitHub repository → build command `npm run bu
 
 ## License
 
-Code: MIT (to be added as `LICENSE`). Content: each post declares its own `license` (default `CC-BY-4.0`).
+Code: MIT (`LICENSE`). Content: each post declares its own `license` (default `CC-BY-4.0`). Third-party fonts and assets: `LICENSES.md`.

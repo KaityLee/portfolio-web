@@ -21,3 +21,9 @@ Rules for coding agents (Codex, Claude Code) and humans working in this **public
 - Code, identifiers, comments and commit messages in English. Documentation: `README.md` (en) and `README.ko.md` (ko).
 - Keep it dependency-light: no UI framework, no CSS framework unless an ADR in `personal-os` says so.
 - Conventional Commits.
+
+## Design
+
+- `DESIGN.md` is the single source of visual decisions; `src/styles/tokens.css` mirrors it. No color, spacing, radius or font literal anywhere else (`node scripts/check-tokens.mjs` enforces it).
+- After changing `src/styles/`, `src/components/`, `src/layouts/` or `src/views/`, run `npm run design:qa` (check, build, token check, Playwright at 320/390/768/1280 × light/dark: overflow, axe, touch targets, screenshots in `shots/`) and read the screenshots before reporting. `docs/design/quality-gates.md` defines done.
+- Fonts, icons and images need a row in `LICENSES.md` first (OFL fonts self-hosted, MIT/ISC icons, no CC BY-NC). Visual baselines under `tests/__screenshots__/` are updated only by the owner.

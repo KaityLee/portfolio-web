@@ -109,7 +109,7 @@ Tokens are defined in OKLCH with a hex fallback. Both themes side by side; contr
 | `--color-success / info / warning / danger` | `#0f7a3d / #2f5bff / #8f5400 / #c0184a` | `#5ad28a / #86a4ff / #f0b45b / #ff7b9c` | Callout accents |
 
 Rules
-- Every color literal in `src/` must be a token from this table; Shiki token colors come from the configured themes (`github-light` / `github-dark`) and are the only exception.
+- Every color literal in `src/` must be a token from this table; Shiki token colors come from the configured themes (`github-light` / `github-dark-default`; the code card is dark in both site themes, so only the dark palette renders) and are the only exception.
 - Hue family is fixed (indigo primary, rose secondary, violet tertiary, sky decorative). A new tint is a new row here first.
 - The favicon already uses deep slate `#1f2937` + sky `#60a5fa`; keep it in the same family when redrawing.
 

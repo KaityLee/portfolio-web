@@ -1,0 +1,8 @@
+/* Self-hosted fonts (DESIGN.md §4.2, LICENSES.md). Each package ships unicode-range slices,
+   so a page downloads only the glyph ranges it uses. Vite bundles the referenced woff2 files;
+   nothing is fetched from a third-party host at runtime. */
+@import 'wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.css';
+@import '@fontsource/gowun-batang/400.css';
+@import '@fontsource/gowun-batang/700.css';
+@import '@fontsource-variable/jetbrains-mono/index.css';
+@import 'd2coding/d2coding-subset.css';

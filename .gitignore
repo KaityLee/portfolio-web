@@ -8,3 +8,7 @@ npm-debug.log*
 .DS_Store
 .idea/
 .vscode/
+shots/
+test-results/
+playwright-report/
+.lighthouseci/

@@ -1,45 +1,6 @@
+@import './tokens.css';
+@import './fonts.css';
 @import './prose.css';
-
-/* Design tokens. Light is the default; dark overrides via data-theme or the OS preference. */
-:root {
-  color-scheme: light;
-  --bg: #ffffff;
-  --bg-muted: #f5f6f8;
-  --fg: #1b1f24;
-  --fg-muted: #5b6470;
-  --accent: #1d4ed8;
-  --border: #e3e6ea;
-  --radius: 10px;
-  --max-width: 44rem;
-  --gutter: 16px;
-  --target: 44px; /* minimum touch target (Apple HIG 44pt; WCAG 2.5.8 asks for 24px) */
-  /* Fonts that cover Latin and Hangul without web font downloads. */
-  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Apple SD Gothic Neo', 'Noto Sans KR',
-    'Malgun Gothic', sans-serif;
-  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
-}
-
-:root[data-theme='dark'] {
-  color-scheme: dark;
-  --bg: #0f1216;
-  --bg-muted: #171b21;
-  --fg: #e6e8eb;
-  --fg-muted: #9aa4b1;
-  --accent: #7ab0ff;
-  --border: #2a313a;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    color-scheme: dark;
-    --bg: #0f1216;
-    --bg-muted: #171b21;
-    --fg: #e6e8eb;
-    --fg-muted: #9aa4b1;
-    --accent: #7ab0ff;
-    --border: #2a313a;
-  }
-}
 
 * {
   box-sizing: border-box;
@@ -47,7 +8,8 @@
 
 html {
   font-family: var(--font-sans);
-  line-height: 1.6;
+  font-size: 100%;
+  line-height: var(--leading-body);
   -webkit-text-size-adjust: 100%;
   word-break: keep-all;
   overflow-wrap: anywhere;
@@ -55,15 +17,16 @@ html {
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--fg);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: var(--step-0);
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
 
 a {
-  color: var(--accent);
+  color: var(--color-primary);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.15em;
 }
@@ -77,14 +40,14 @@ pre {
 pre {
   overflow-x: auto;
   padding: 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface-2);
 }
 
 .container {
   width: 100%;
-  max-width: var(--max-width);
+  max-width: var(--measure);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
@@ -97,14 +60,14 @@ pre {
 .skip-link:focus {
   left: var(--gutter);
   top: var(--gutter);
-  background: var(--bg);
+  background: var(--color-bg);
   padding: 0.5rem 0.75rem;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   z-index: 10;
 }
 
 .site-header {
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--color-border);
 }
 .site-header .container {
   display: flex;
@@ -118,7 +81,7 @@ pre {
   min-height: var(--target);
   font-weight: 700;
   text-decoration: none;
-  color: var(--fg);
+  color: var(--color-text);
   margin-inline-end: auto;
   white-space: nowrap;
 }
@@ -135,15 +98,15 @@ pre {
   min-height: var(--target);
   padding-inline: 0.5rem;
   border-radius: 999px;
-  color: var(--fg);
+  color: var(--color-text);
   text-decoration: none;
   white-space: nowrap;
 }
 .site-header nav a:hover {
-  background: var(--bg-muted);
+  background: var(--color-surface-2);
 }
 .site-header nav a[aria-current='page'] {
-  color: var(--accent);
+  color: var(--color-primary);
   font-weight: 600;
 }
 .site-header .tools {
@@ -161,13 +124,13 @@ pre {
   padding: 0;
   font: inherit;
   background: transparent;
-  color: var(--fg);
-  border: 1px solid var(--border);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
   border-radius: 999px;
   cursor: pointer;
 }
 .icon-button:hover {
-  background: var(--bg-muted);
+  background: var(--color-surface-2);
 }
 
 .locale-picker {
@@ -185,11 +148,11 @@ pre {
   text-decoration: none;
   border-radius: 999px;
   border: 1px solid transparent;
-  color: var(--fg-muted);
+  color: var(--color-text-muted);
 }
 .locale-picker a[aria-current='true'] {
-  color: var(--fg);
-  border-color: var(--border);
+  color: var(--color-text);
+  border-color: var(--color-border);
 }
 
 /* Narrow screens: brand + tools on the first row, the nav on its own full-width row that
@@ -221,13 +184,16 @@ main {
 }
 
 .hero h1 {
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
-  line-height: 1.25;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: var(--step-4);
+  line-height: var(--leading-tight);
+  text-wrap: balance;
   margin: 0 0 0.75rem;
 }
 .lead {
-  color: var(--fg-muted);
-  font-size: 1.05rem;
+  color: var(--color-text-muted);
+  font-size: var(--step-1);
   margin: 0 0 2rem;
 }
 
@@ -242,7 +208,8 @@ section + section {
 }
 .section-head h2 {
   margin: 0 0 0.75rem;
-  font-size: 1.25rem;
+  font-size: var(--step-1);
+  color: var(--color-tertiary);
 }
 
 .post-list {
@@ -253,22 +220,28 @@ section + section {
   gap: 1rem;
 }
 .post-list li {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-m);
   padding: 1rem 1.1rem;
-  background: var(--bg-muted);
+  background: var(--color-surface-2);
 }
 .post-list h3 {
   margin: 0 0 0.25rem;
-  font-size: 1.05rem;
+  font-size: var(--step-1);
+  line-height: var(--leading-heading);
+}
+.post-list h3 a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target); /* the title is the card's tap target */
 }
 .post-list p {
   margin: 0.25rem 0 0.5rem;
-  color: var(--fg-muted);
+  color: var(--color-text-muted);
 }
 .meta {
-  color: var(--fg-muted);
-  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem 0.75rem;
@@ -279,7 +252,7 @@ section + section {
   gap: 0.35rem;
 }
 .tag {
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   border-radius: 999px;
   padding: 0 0.5rem;
 }
@@ -291,16 +264,16 @@ dl.facts {
   margin: 1rem 0;
 }
 dl.facts dt {
-  color: var(--fg-muted);
+  color: var(--color-text-muted);
 }
 dl.facts dd {
   margin: 0;
 }
 
 .site-footer {
-  border-top: 1px solid var(--border);
-  color: var(--fg-muted);
-  font-size: 0.875rem;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
 }
 .site-footer .container {
   padding-block: 1.25rem;
@@ -310,3 +283,11 @@ dl.facts dd {
   justify-content: space-between;
 }
 
+
+::selection {
+  background: var(--color-selection);
+}
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

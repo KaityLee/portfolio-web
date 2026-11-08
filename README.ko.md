@@ -24,6 +24,13 @@ npm run build      # dist/
 npm run preview
 ```
 
+## 디자인 시스템과 QA
+
+- `DESIGN.md` — 성격, 타이포그래피(Wanted Sans·고운바탕·JetBrains Mono, 모두 SIL OFL self-host), 라이트/다크 색 토큰, 레이아웃·컴포넌트 규칙. `src/styles/tokens.css`가 이 문서를 그대로 반영합니다.
+- `npm run design:qa` — 타입 체크, 빌드, 색 리터럴 검사, Playwright(설치된 Chrome 사용) 320/390/768/1280px × 라이트/다크: 가로 오버플로, axe(WCAG 2.2 AA), 44px 터치 타깃, 전체 페이지 스크린샷(`shots/`). `VISUAL_BASELINE=1`이면 `tests/__screenshots__/`와 비교합니다.
+- `docs/design/quality-gates.md` — "완료"의 기준. `LICENSES.md` — 모든 서드파티 자산과 라이선스.
+- `.claude/skills/design-qa`와 `.claude/settings.json`의 Stop hook이 코딩 에이전트가 UI 작업을 끝내기 전에 검사를 돌리게 합니다.
+
 ## 구조
 
 `README.md`의 Structure 절과 동일. 요지: `src/content/<collection>/<locale>/`에 locale별 Markdown, `src/i18n/ui.ts`에 모든 UI 문자열, `src/views/`에 locale 무관 페이지 컴포넌트, `src/pages/`와 `src/pages/en/`은 그것을 감싸는 얇은 라우트.

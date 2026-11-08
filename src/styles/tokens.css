@@ -1,0 +1,114 @@
+/* Design tokens — the only place a color, size, radius or font family is written as a literal.
+   Values mirror DESIGN.md §4–§7 one to one; change the document first, then this file. */
+
+:root {
+  color-scheme: light;
+
+  /* §5 Color (light) */
+  --color-bg: #fbfbfd;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1f3f8;
+  --color-text: #0b0d12;
+  --color-text-muted: #5b6273;
+  --color-border: #e3e6ee;
+  --color-primary: #3b3fd8;
+  --color-secondary: #d1105a;
+  --color-tertiary: #2a1a7a;
+  --color-decorative: #8ecbf0;
+  --color-code-bg: #101428;
+  --color-code-text: #e6e8f2;
+  --color-selection: #ffe9a8;
+  --color-success: #0f7a3d;
+  --color-info: #2f5bff;
+  --color-warning: #8f5400;
+  --color-danger: #c0184a;
+
+  /* §4 Typography */
+  --font-sans: 'Wanted Sans Variable', 'Wanted Sans', 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
+  --font-serif: 'Gowun Batang', 'Noto Serif KR', 'Apple Myungjo', serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'D2Coding', ui-monospace, 'SF Mono', Menlo, monospace;
+  --step--1: 0.875rem;
+  --step-0: clamp(1.0625rem, 1rem + 0.25vw, 1.125rem);
+  --step-1: clamp(1.1875rem, 1.1rem + 0.4vw, 1.3125rem);
+  --step-2: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+  --step-3: clamp(1.875rem, 1.5rem + 1.5vw, 2.5rem);
+  --step-4: clamp(2.25rem, 1.8rem + 2.5vw, 3.25rem);
+  --leading-body: 1.7;
+  --leading-heading: 1.3;
+  --leading-tight: 1.15;
+
+  /* §6 Space, radius, elevation */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --section-gap: clamp(48px, 8vw, 96px);
+  --radius-s: 6px;
+  --radius-m: 10px;
+  --radius-l: 16px;
+  --radius-pill: 999px;
+  --shadow-card: 0 1px 2px oklch(20% 0.02 265 / 0.06), 0 8px 24px -12px oklch(20% 0.02 265 / 0.18);
+  --target: 44px;
+
+  /* §7 Layout */
+  --measure: 42rem;
+  --container: 64rem;
+  --gutter: 16px;
+  --header-height: 48px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+
+/* §5 Color (dark). Applied by the saved choice or, without one, by the OS preference. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: #0f1218;
+  --color-surface: #161a22;
+  --color-surface-2: #1d222c;
+  --color-text: #e8eaf0;
+  --color-text-muted: #9aa3b5;
+  --color-border: #2a3140;
+  --color-primary: #8d93ff;
+  --color-secondary: #ff6b9d;
+  --color-tertiary: #c4b5fd;
+  --color-decorative: #2b4a66;
+  --color-code-bg: #0b0e1a;
+  --color-code-text: #e6e8f2;
+  --color-selection: rgba(139, 133, 173, 0.35);
+  --color-success: #5ad28a;
+  --color-info: #86a4ff;
+  --color-warning: #f0b45b;
+  --color-danger: #ff7b9c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --color-bg: #0f1218;
+    --color-surface: #161a22;
+    --color-surface-2: #1d222c;
+    --color-text: #e8eaf0;
+    --color-text-muted: #9aa3b5;
+    --color-border: #2a3140;
+    --color-primary: #8d93ff;
+    --color-secondary: #ff6b9d;
+    --color-tertiary: #c4b5fd;
+    --color-decorative: #2b4a66;
+    --color-code-bg: #0b0e1a;
+    --color-code-text: #e6e8f2;
+    --color-selection: rgba(139, 133, 173, 0.35);
+    --color-success: #5ad28a;
+    --color-info: #86a4ff;
+    --color-warning: #f0b45b;
+    --color-danger: #ff7b9c;
+  }
+}
