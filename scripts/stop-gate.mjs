@@ -29,7 +29,7 @@ if (!changed) process.exit(0);
 
 const steps = [
   ['npm', ['run', 'check']],
-  ['npm', ['run', 'build']],
+  ['npx', ['astro', 'build', '--force']],
   ['node', ['scripts/check-tokens.mjs']],
   ['npx', ['playwright', 'test', '--grep', 'overflow', '--reporter=line']],
 ];

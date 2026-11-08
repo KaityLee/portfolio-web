@@ -1,10 +1,12 @@
 ---
 import { render, type CollectionEntry } from 'astro:content';
 
+import ArticleMeta from '../components/ArticleMeta.astro';
+import ArticleShell from '../components/ArticleShell.astro';
+import PrevNext from '../components/PrevNext.astro';
 import type { Locale } from '../i18n/ui';
-import { useTranslations } from '../i18n/utils';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { formatDate, toDateTimeAttr } from '../utils/date';
+import { getListed } from '../lib/content';
 
 interface Props {
   entry: CollectionEntry<'writing'>;
@@ -13,9 +15,14 @@ interface Props {
 }
 
 const { entry, alternates, locale } = Astro.props;
-const t = useTranslations(locale);
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 const unlisted = entry.data.visibility === 'restricted';
+
+// Neighbours among listed posts only (newest first), so unlisted posts never leak into navigation.
+const listed = await getListed('writing', locale);
+const index = listed.findIndex((e) => e.id === entry.id);
+const newer = index > 0 ? listed[index - 1] : undefined;
+const older = index >= 0 && index < listed.length - 1 ? listed[index + 1] : undefined;
 ---
 
 <BaseLayout
@@ -26,32 +33,12 @@ const unlisted = entry.data.visibility === 'restricted';
   noindex={unlisted}
   ogType="article"
 >
-  <article class="prose">
-    <h1>{entry.data.title}</h1>
-    <div class="meta">
-      <span>
-        {t('writing.published')}{' '}
-        <time datetime={toDateTimeAttr(entry.data.date)}>{formatDate(entry.data.date, locale)}</time>
-      </span>
-      {
-        entry.data.updated && (
-          <span>
-            {t('writing.updated')}{' '}
-            <time datetime={toDateTimeAttr(entry.data.updated)}>{formatDate(entry.data.updated, locale)}</time>
-          </span>
-        )
-      }
-      {
-        entry.data.tags.length > 0 && (
-          <span class="tags">
-            {entry.data.tags.map((tag) => (
-              <span class="tag">{tag}</span>
-            ))}
-          </span>
-        )
-      }
-      {entry.data.license && <span>{entry.data.license}</span>}
-    </div>
+  <ArticleShell headings={headings} locale={locale}>
+    <header slot="header" class="article-header">
+      <h1>{entry.data.title}</h1>
+      <ArticleMeta entry={entry} locale={locale} />
+    </header>
     <Content />
-  </article>
+    <PrevNext slot="footer" collection="writing" prev={older} next={newer} locale={locale} />
+  </ArticleShell>
 </BaseLayout>

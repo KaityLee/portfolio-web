@@ -45,11 +45,17 @@ pre {
   background: var(--color-surface-2);
 }
 
+/* Layout containers (DESIGN.md §7): the shell (header, home, lists, footer) is --container wide,
+   the reading column (articles, about, contact) is --measure wide. */
 .container {
   width: 100%;
-  max-width: var(--measure);
+  max-width: calc(var(--container) + 2 * var(--gutter));
   margin-inline: auto;
   padding-inline: var(--gutter);
+}
+.narrow {
+  max-width: var(--measure);
+  margin-inline: auto;
 }
 
 .skip-link {
@@ -326,6 +332,7 @@ main {
   font-size: var(--step-4);
   line-height: var(--leading-tight);
   text-wrap: balance;
+  max-width: 22ch;
   margin: 0 0 var(--space-3);
 }
 .lead {
@@ -377,6 +384,11 @@ section + section {
   padding: 0;
   display: grid;
   gap: var(--space-4);
+}
+@media (min-width: 768px) {
+  .post-list {
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  }
 }
 .post-list li {
   padding: var(--space-4) var(--space-5);
@@ -565,4 +577,195 @@ dl.facts dd {
 :focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* Article shell (DESIGN.md §7, §8): reading column, TOC inline on phones and as a rail ≥1280. */
+.article-shell {
+  display: grid;
+  grid-template-columns: minmax(0, var(--measure));
+  justify-content: center;
+}
+.article-header h1 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: var(--step-3);
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+  margin: 0 0 var(--space-3);
+}
+.article-header .lead {
+  margin-bottom: var(--space-4);
+}
+.article-header .facts {
+  margin: 0 0 var(--space-4);
+}
+.article-meta {
+  align-items: center;
+  margin-bottom: var(--space-5);
+}
+.article-meta a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target); /* the licence link is a tap target like the chips beside it */
+}
+:lang(en) .article-meta {
+  font-style: italic;
+}
+:lang(en) .article-meta .tag,
+:lang(en) .article-meta .badge {
+  font-style: normal;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+.article-rail {
+  display: none;
+}
+.toc summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--target);
+  cursor: pointer;
+  font-size: var(--step--2);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--color-secondary);
+  list-style: none;
+}
+.toc summary::-webkit-details-marker {
+  display: none;
+}
+.toc summary::before {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin-inline-end: var(--space-2);
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 150ms var(--ease);
+}
+.toc[open] summary::before {
+  transform: rotate(45deg);
+}
+:lang(en) .toc summary {
+  text-transform: uppercase;
+}
+.toc ol {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 var(--space-3);
+}
+.toc a {
+  display: flex;
+  align-items: center;
+  min-height: var(--target);
+  padding-inline: var(--space-2);
+  border-inline-start: 2px solid transparent;
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+  text-decoration: none;
+  transition: color 150ms var(--ease), border-color 150ms var(--ease);
+}
+.toc a:hover {
+  color: var(--color-text);
+}
+.toc a[aria-current='true'] {
+  color: var(--color-primary);
+  border-inline-start-color: var(--color-primary);
+}
+.toc .toc-depth-3 a {
+  padding-inline-start: var(--space-5);
+}
+.toc-inline {
+  margin-bottom: var(--space-5);
+  border-block: 1px solid var(--color-border);
+}
+
+.prev-next {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-8);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+.prev-next-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-height: var(--target);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-m);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: background-color 150ms var(--ease);
+}
+.prev-next-card:hover {
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+.prev-next-card--next {
+  text-align: end;
+}
+.prev-next-label {
+  font-size: var(--step--2);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--color-secondary);
+}
+.prev-next-title {
+  font-weight: 500;
+}
+@media (min-width: 768px) {
+  .prev-next {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ≥1280: the TOC leaves the column and becomes a sticky rail on the right; rows are 32px
+   (WCAG 2.5.8 minimum 24px; the 44px rule applies to phone widths). */
+@media (min-width: 1280px) {
+  /* Symmetric side columns keep the article centered; the rail uses the right one. */
+  .article-shell {
+    grid-template-columns: 1fr minmax(0, var(--measure)) 1fr;
+    column-gap: var(--space-6);
+  }
+  .article-shell > .article {
+    grid-column: 2;
+  }
+  .article-shell > .article-rail {
+    grid-column: 3;
+    max-width: 15rem;
+  }
+  .toc-inline {
+    display: none;
+  }
+  .article-rail {
+    display: block;
+  }
+  .article-rail .toc {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-5));
+    max-height: calc(100dvh - var(--header-height) - var(--space-8));
+    overflow-y: auto;
+  }
+  .article-rail .toc summary {
+    pointer-events: none;
+    min-height: 0;
+    margin-bottom: var(--space-2);
+  }
+  .article-rail .toc summary::before {
+    display: none;
+  }
+  .article-rail .toc a {
+    min-height: 32px;
+  }
 }

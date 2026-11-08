@@ -1,0 +1,51 @@
+---
+// Meta line under an article title (DESIGN.md §8 Meta): dates, tags, licence, unlisted badge.
+import type { Locale } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import type { ContentEntry } from '../lib/content';
+import { describeLicense } from '../lib/license';
+import { formatDate, toDateTimeAttr } from '../utils/date';
+
+interface Props {
+  entry: ContentEntry;
+  locale: Locale;
+}
+
+const { entry, locale } = Astro.props;
+const t = useTranslations(locale);
+const license = entry.data.license ? describeLicense(entry.data.license) : undefined;
+const unlisted = entry.data.visibility === 'restricted';
+---
+
+<div class="meta article-meta">
+  <span>
+    {t('writing.published')}{' '}
+    <time datetime={toDateTimeAttr(entry.data.date)}>{formatDate(entry.data.date, locale)}</time>
+  </span>
+  {
+    entry.data.updated && (
+      <span>
+        {t('writing.updated')}{' '}
+        <time datetime={toDateTimeAttr(entry.data.updated)}>{formatDate(entry.data.updated, locale)}</time>
+      </span>
+    )
+  }
+  {
+    entry.data.tags.length > 0 && (
+      <span class="tags">
+        {entry.data.tags.map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </span>
+    )
+  }
+  {
+    license && (
+      <span>
+        {t('article.license')}{' '}
+        {license.url ? <a href={license.url} rel="license noopener">{license.label}</a> : license.label}
+      </span>
+    )
+  }
+  {unlisted && <span class="badge">{t('article.unlisted')}</span>}
+</div>

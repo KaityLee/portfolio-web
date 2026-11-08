@@ -24,3 +24,6 @@ new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeZone }).format(date);
 ```
 
 앞으로 올라올 글은 직접 겪고 측정한 것만 다룹니다.
+
+> [!NOTE]
+> 공개 글의 기본 라이선스는 CC BY 4.0입니다. 글마다 frontmatter의 `license`로 바꿀 수 있습니다.

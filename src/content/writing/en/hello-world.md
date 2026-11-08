@@ -24,3 +24,6 @@ new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeZone }).format(date);
 ```
 
 Future posts cover only what I have done and measured myself.
+
+> [!NOTE]
+> Public posts default to CC BY 4.0; each post can override it with `license` in its frontmatter.

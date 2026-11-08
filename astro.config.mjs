@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 
 import { satteri } from '@astrojs/markdown-satteri';
 
-import { tableWrap, taskListCheckbox } from './src/plugins/satteri-table-wrap.mjs';
+import { callouts, codeBlocks, tableWrap, taskListCheckbox } from './src/plugins/satteri-table-wrap.mjs';
 
 // Static output, no adapter: the build is plain files and can be hosted anywhere
 // (Cloudflare Pages first). SITE_URL is the only deployment-specific value.
@@ -25,6 +25,6 @@ export default defineConfig({
       defaultColor: false,
     },
     // Sätteri (Astro 7's default Markdown engine) takes HAST plugins here, not rehypePlugins.
-    processor: satteri({ hastPlugins: [tableWrap, taskListCheckbox] }),
+    processor: satteri({ hastPlugins: [tableWrap, taskListCheckbox, callouts, codeBlocks] }),
   },
 });

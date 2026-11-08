@@ -13,8 +13,8 @@
     "check": "astro check",
     "astro": "astro",
     "test": "playwright test",
-    "design:qa": "npm run check && npm run build && node scripts/check-tokens.mjs && playwright test",
-    "design:qa:fast": "npm run check && npm run build && node scripts/check-tokens.mjs && playwright test --grep overflow",
+    "design:qa": "npm run check && astro build --force && node scripts/check-tokens.mjs && playwright test",
+    "design:qa:fast": "npm run check && astro build --force && node scripts/check-tokens.mjs && playwright test --grep overflow",
     "design:lh": "lhci autorun"
   },
   "dependencies": {

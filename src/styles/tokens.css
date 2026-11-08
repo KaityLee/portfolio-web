@@ -29,11 +29,11 @@
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'D2Coding', ui-monospace, 'SF Mono', Menlo, monospace;
   --step--2: 0.75rem;
   --step--1: 0.875rem;
-  --step-0: clamp(1.0625rem, 1rem + 0.25vw, 1.125rem);
-  --step-1: clamp(1.1875rem, 1.1rem + 0.4vw, 1.3125rem);
-  --step-2: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
-  --step-3: clamp(1.875rem, 1.5rem + 1.5vw, 2.5rem);
-  --step-4: clamp(2.25rem, 1.8rem + 2.5vw, 3.25rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
+  --step-1: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+  --step-2: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --step-3: clamp(1.625rem, 1.35rem + 1.2vw, 2.125rem);
+  --step-4: clamp(2rem, 1.6rem + 2vw, 2.75rem);
   --leading-body: 1.7;
   --leading-heading: 1.3;
   --leading-tight: 1.15;
@@ -59,7 +59,7 @@
 
   /* §7 Layout */
   --measure: 42rem;
-  --container: 64rem;
+  --container: 72rem;
   --gutter: 16px;
   --header-height: 48px;
 }

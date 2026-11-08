@@ -1,0 +1,60 @@
+---
+// Article table of contents (DESIGN.md §8 TOC). Desktop (≥1280): sticky right rail with the
+// current heading highlighted; phones: a collapsed <details> above the article. Both share markup.
+import type { MarkdownHeading } from 'astro';
+
+import type { Locale } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  headings: MarkdownHeading[];
+  locale: Locale;
+  /** Rail copy: always expanded. The inline copy on phones starts collapsed. */
+  open?: boolean;
+}
+
+const { headings, locale, open = false } = Astro.props;
+const t = useTranslations(locale);
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+  items.length >= 2 && (
+    <details class="toc" open={open}>
+      <summary>{t('article.toc')}</summary>
+      <nav aria-label={t('article.toc')}>
+        <ol>
+          {items.map((h) => (
+            <li class:list={[`toc-depth-${h.depth}`]}>
+              <a href={`#${h.slug}`}>{h.text}</a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </details>
+  )
+}
+
+<script>
+  // Highlight the heading currently in view (rail only; the <details> on phones is static).
+  const toc = document.querySelector<HTMLElement>('.toc');
+  if (toc && matchMedia('(min-width: 1280px)').matches) {
+    const links = new Map<string, HTMLAnchorElement>();
+    toc.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => links.set(decodeURIComponent(a.hash.slice(1)), a));
+    const headings = [...links.keys()].map((id) => document.getElementById(id)).filter((el): el is HTMLElement => el !== null);
+    let current: HTMLAnchorElement | undefined;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (!visible) return;
+        const next = links.get(visible.target.id);
+        if (!next || next === current) return;
+        current?.removeAttribute('aria-current');
+        next.setAttribute('aria-current', 'true');
+        current = next;
+      },
+      { rootMargin: '-64px 0px -70% 0px', threshold: 0 },
+    );
+    headings.forEach((h) => observer.observe(h));
+  }
+</script>

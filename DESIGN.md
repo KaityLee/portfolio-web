@@ -71,16 +71,16 @@ Not allowed: KoPub World (server embedding needs separate approval), any font lo
 
 ### 4.3 Scale and rhythm
 
-Hangul needs a little more size and leading than Latin at the same nominal px, so the base is 17–18px with 1.7 leading (Comeau uses 18/27 for Latin).
+Hangul needs more leading than Latin, so the body keeps 1.7 leading; the base size is 16–17px (owner review 2026-11-08: the first 17–18px pass and the 24–30px h2 read too large). Comeau uses 18/27 for Latin.
 
 ```
 --step--2: 0.75rem                                   /* section labels */
 --step--1: 0.875rem                                  /* meta, captions, chips */
---step-0:  clamp(1.0625rem, 1rem + 0.25vw, 1.125rem) /* body 17→18px */
---step-1:  clamp(1.1875rem, 1.1rem + 0.4vw, 1.3125rem) /* h3, lead paragraph 19→21px */
---step-2:  clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem)   /* h2 24→30px */
---step-3:  clamp(1.875rem, 1.5rem + 1.5vw, 2.5rem)   /* article h1 30→40px */
---step-4:  clamp(2.25rem, 1.8rem + 2.5vw, 3.25rem)   /* home display 36→52px */
+--step-0:  clamp(1rem, 0.95rem + 0.25vw, 1.0625rem)  /* body 16→17px */
+--step-1:  clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem) /* h3, lead paragraph 17→19px */
+--step-2:  clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem)   /* h2 20→24px */
+--step-3:  clamp(1.625rem, 1.35rem + 1.2vw, 2.125rem) /* article h1 26→34px */
+--step-4:  clamp(2rem, 1.6rem + 2vw, 2.75rem)        /* home display 32→44px */
 --leading-body: 1.7   --leading-heading: 1.3   --leading-tight: 1.15
 --measure: 42rem      /* ≈ 36–40 Hangul syllables / 65–75 Latin characters per line */
 ```
@@ -130,7 +130,7 @@ No other spacing values. Vertical rhythm inside prose uses `--space-4` between p
 ## 7. Layout
 
 - Breakpoints: `320` (minimum, long Hangul titles must not overflow), `390`, `768`, `1280`. Mobile first; media queries only at these four.
-- Containers: `--measure: 42rem` (reading column: articles, about, contact, project body), `--container: 64rem` (home, lists, header, footer). Gutter `16px` to 768, `24px` above.
+- Containers: `--measure: 42rem` (reading column: articles, about, contact, project body), `--container: 72rem` (home, lists, header, footer). The article column sits at the exact center of the viewport; the TOC rail lives in the right margin beside it, never pushing the column off-center. Gutter `16px` to 768, `24px` above. The shell is never narrower than the reading column: on desktop the header, footer and the article's TOC rail must visibly use the width beside the column (the 2026-11-08 deployment had everything squeezed into 42rem, which read as oversized margins).
 - Header: `48px` tall. Mobile (<768): brand left, icon buttons right (theme, menu); the 5 nav items live in a menu sheet opened by the menu button (native `popover` or `<details>`, no JS library). Desktop (≥768): brand, 4 text links (Writing, Projects, About, Contact; Home is the brand), then locale picker and theme toggle. Sticky with `backdrop-filter` only on desktop.
 - Hero band (home only): full-bleed SVG band `clamp(160px, 28vw, 320px)` tall. Motif: a notebook grid (dot or line grid in `--color-decorative` at low opacity) with a handful of nodes connected by curved lines, like a small knowledge graph; nodes use `--color-primary`/`--color-secondary` fills, lines `--color-decorative`. Static, drawn by us as one inline SVG with `aria-hidden`, scaled with `preserveAspectRatio="xMidYMid slice"`; the content column starts under it.
 - Ad slots (future): exactly two reserved boxes per article — after the intro paragraph and after the last section — `min-height: 280px` on mobile, `250px` on desktop, never between header and h1, never sticky. Not rendered until AdSense is enabled.
@@ -149,7 +149,7 @@ Each component lists its states; all interactive targets are ≥ `--target` squa
 | PostCard (list) | title (h3, 1.25rem), summary (muted), Meta; no border, hover lifts title color to primary; `featured` cards get `--color-surface` + `--shadow-card` |
 | TagChip | filled `--color-surface-2` pill, `0.8125rem`; current filter in primary tint |
 | Meta | italic muted line: "작성일 … · 수정일 …" / "Filed under … on …" using `formatDate` only |
-| TOC | desktop: sticky right rail from 1280, current heading in primary; mobile: collapsed `<details>` above the article |
+| TOC | desktop: sticky right rail from 1280 (15rem, rows 32px — WCAG 2.5.8's 24px minimum; the 44px rule is for phone widths), current heading in primary via IntersectionObserver; mobile: collapsed `<details>` above the article, 44px rows |
 | PrevNext | two cards at article end, previous left, next right |
 | Callout | `> [!NOTE] / [!TIP] / [!WARNING] / [!CAUTION]` blockquotes → info/success/warning/danger; left 3px accent, 10px radius, tinted bg at 12% |
 | CodeBlock | dark card (`--color-code-bg`), `--radius-m`, language label top-right, copy button (44px) appears on hover/focus; horizontal scroll inside |

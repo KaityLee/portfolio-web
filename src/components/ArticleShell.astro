@@ -1,0 +1,68 @@
+---
+// Reading layout for articles and project pages (DESIGN.md §7, §10): a --measure column, the
+// table of contents collapsed above it on phones and as a sticky rail on the right from 1280px.
+import type { MarkdownHeading } from 'astro';
+
+import type { Locale } from '../i18n/ui';
+import TableOfContents from './TableOfContents.astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+  locale: Locale;
+}
+
+const { headings, locale } = Astro.props;
+// TableOfContents renders nothing for fewer than two h2/h3 headings; skip the wrappers too.
+const hasToc = headings.filter((h) => h.depth === 2 || h.depth === 3).length >= 2;
+---
+
+<div class="article-shell">
+  <article class="article">
+    <slot name="header" />
+    {
+      hasToc && (
+        <div class="toc-inline">
+          <TableOfContents headings={headings} locale={locale} />
+        </div>
+      )
+    }
+    <div class="prose article-body">
+      <slot />
+    </div>
+    <slot name="footer" />
+  </article>
+  {
+    hasToc && (
+      <aside class="article-rail">
+        <TableOfContents headings={headings} locale={locale} open />
+      </aside>
+    )
+  }
+</div>
+
+<script>
+  // Copy button on code blocks (src/plugins: codeBlocks). Progressive: without clipboard access
+  // the button simply does nothing visible.
+  document.addEventListener('click', async (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>('.code-copy');
+    if (!button) return;
+    const pre = button.closest('.code-block')?.querySelector('pre');
+    if (!pre || !navigator.clipboard) return;
+    try {
+      await navigator.clipboard.writeText(pre.innerText);
+      const label = button.querySelector('.code-copy-text');
+      const copied = button.dataset.copiedLabel ?? '';
+      const original = button.dataset.copyLabel ?? '';
+      if (label) label.textContent = copied;
+      button.setAttribute('aria-label', copied);
+      button.classList.add('is-copied');
+      setTimeout(() => {
+        if (label) label.textContent = original;
+        button.setAttribute('aria-label', original);
+        button.classList.remove('is-copied');
+      }, 1600);
+    } catch {
+      /* clipboard denied: leave the button as it is */
+    }
+  });
+</script>
