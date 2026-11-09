@@ -17,3 +17,14 @@ Rules
 - The copy in step 5 is a derived artifact. Corrections go to the vault first, then are re-copied.
 - `restricted` content (for a specific audience, e.g. a recruiter link) is built but unlisted and `noindex`; it still passes steps 3–4.
 - Retraction: set `publish_status: retracted` in the vault, remove the file here, redeploy.
+
+## Content that must not be readable: `/lab/`
+
+This repository is public. `visibility: restricted` only hides a page from lists and search engines on the site; **its Markdown is still readable here on GitHub.** Never put anything in `src/content/` that outsiders must not read, whatever its `visibility`.
+
+For previews shared with a small group, use an encrypted slot instead:
+
+- `public/lab/<slot>/` contains a static loader (`index.html`) and an AES-256-GCM payload (`payload.enc`). Nothing else.
+- The plaintext and the key live in a private repository. The key travels only in the URL fragment (`#k=…`) of the link, which browsers do not send to the server.
+- Slot names and commit messages must not describe the content.
+- Anyone who has the link can read the page, so the link itself is the secret.
