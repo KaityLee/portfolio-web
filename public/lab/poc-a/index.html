@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Private preview</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #fff; color: #1f2328; font: 16px/1.6 system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; }
+  @media (prefers-color-scheme: dark) { html, body { background: #0d1117; color: #e6edf3; } }
+  #msg { max-width: 30rem; margin: 0 auto; padding: 20vh 16px 0; text-align: center; }
+  #msg small { opacity: .7; }
+  iframe { display: block; width: 100%; height: 100%; border: 0; }
+</style>
+</head>
+<body>
+<div id="msg"><p>불러오는 중… / Loading…</p></div>
+<script>
+// The page content is encrypted (AES-256-GCM). The key is the "#k=" part of the link:
+// it stays in the browser and is never sent to the server.
+(async () => {
+  const msg = document.getElementById('msg');
+  const fail = () => {
+    msg.innerHTML = '<p>링크가 올바르지 않습니다.<br><small>Invalid link. This page needs the full private link.</small></p>';
+  };
+  try {
+    const k = new URLSearchParams(location.hash.slice(1)).get('k');
+    if (!k) return fail();
+    const raw = Uint8Array.from(atob(k.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0));
+    const key = await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['decrypt']);
+    const res = await fetch('payload.enc', { cache: 'no-store' });
+    if (!res.ok) return fail();
+    const buf = new Uint8Array(await res.arrayBuffer());
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: buf.subarray(0, 12) }, key, buf.subarray(12));
+    const html = new TextDecoder().decode(plain).replaceAll('__LAB_KEY__', k);
+    const frame = document.createElement('iframe');
+    frame.setAttribute('sandbox', 'allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation');
+    frame.setAttribute('referrerpolicy', 'no-referrer');
+    frame.srcdoc = html;
+    document.body.replaceChildren(frame);
+  } catch {
+    fail();
+  }
+})();
+</script>
+</body>
+</html>
