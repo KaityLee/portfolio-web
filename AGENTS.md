@@ -12,7 +12,7 @@ Rules for coding agents (Codex, Claude Code) and humans working in this **public
 ## Globalization baseline
 
 - **Time**: content `date`/`updated` are ISO 8601 in frontmatter and are formatted only through `src/utils/date.ts` (`Intl.DateTimeFormat` with an explicit `timeZone`). Never hand-format dates.
-- **Language**: BCP 47 locales from `src/i18n/ui.ts` (`ko` default, `en`). Every user-facing string is a key in `ui`; no hard-coded UI text in components. Content lives in `src/content/<collection>/<locale>/` and translations share a `translationKey`.
+- **Language**: BCP 47 content locales from `src/i18n/ui.ts` (`ko` default, `en`). Shared English interface copy comes from `ui` for both routes. Content lives in `src/content/<collection>/<locale>/` and translations share a `translationKey`. Mark English controls and Korean content with their language.
 - **Exposure**: content schema carries `visibility` (`private` | `restricted` | `public`) and `draft`. Lists show only `public && !draft`; `restricted` pages are built but `noindex` and unlisted; `private` is never built. Do not add an `isPublic` boolean anywhere.
 
 ## Code
@@ -25,5 +25,6 @@ Rules for coding agents (Codex, Claude Code) and humans working in this **public
 ## Design
 
 - `DESIGN.md` is the single source of visual decisions; `src/styles/tokens.css` mirrors it. No color, spacing, radius or font literal anywhere else (`node scripts/check-tokens.mjs` enforces it).
+- Copyable design audit and implementation prompts live in `docs/design/prompts.md`.
 - After changing `src/styles/`, `src/components/`, `src/layouts/` or `src/views/`, run `npm run design:qa` (check, build, token check, Playwright at 320/390/768/1280 × light/dark: overflow, axe, touch targets, screenshots in `shots/`) and read the screenshots before reporting. `docs/design/quality-gates.md` defines done.
 - Fonts, icons and images need a row in `LICENSES.md` first (OFL fonts self-hosted, MIT/ISC icons, no CC BY-NC). Visual baselines under `tests/__screenshots__/` are updated only by the owner.

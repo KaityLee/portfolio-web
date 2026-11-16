@@ -43,7 +43,7 @@ for (const page of pages) {
             const r = el.getBoundingClientRect();
             return { text: (el.getAttribute('aria-label') || el.textContent || '').trim().slice(0, 30), w: Math.round(r.width), h: Math.round(r.height) };
           })
-          .filter((t) => t.h < min && t.text !== '');
+          .filter((t) => (t.w < min || t.h < min) && t.text !== '');
       }, TARGET);
       expect(small, `targets under ${TARGET}px: ${JSON.stringify(small)}`).toEqual([]);
     });

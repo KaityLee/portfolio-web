@@ -1,12 +1,6 @@
 // Sätteri HAST plugins for Markdown output (configured in astro.config.mjs).
-// Styled by src/styles/prose.css. UI strings come from src/i18n/ui.ts via the entry's `lang`.
-import { defaultLocale, ui } from '../i18n/ui.ts';
-
-function t(ctx, key) {
-  const lang = ctx.data?.astro?.frontmatter?.lang;
-  const table = ui[lang] ?? ui[defaultLocale];
-  return table[key] ?? ui[defaultLocale][key] ?? key;
-}
+// Styled by src/styles/prose.css. Generated labels use the site's interface language.
+import { ui, uiLanguage } from '../i18n/ui.ts';
 
 const el = (tagName, properties = {}, children = []) => ({ type: 'element', tagName, properties, children });
 const text = (value) => ({ type: 'text', value });
@@ -59,7 +53,7 @@ export const callouts = {
       const restChildren = [...firstP.children.slice(1)];
       if (rest.trim()) restChildren.unshift(text(rest));
       const newChildren = (node.children ?? []).filter((c) => c !== firstP && !(c.type === 'text' && !c.value.trim()));
-      const title = el('p', { className: ['callout-title'] }, [text(t(ctx, `callout.${kind}`))]);
+      const title = el('p', { className: ['callout-title'], lang: uiLanguage }, [text(ui[`callout.${kind}`])]);
       const body = restChildren.length ? [el('p', {}, restChildren)] : [];
       ctx.replaceNode(node, el('blockquote', { className: ['callout', `callout-${kind}`] }, [title, ...body, ...newChildren]));
     },
@@ -79,18 +73,18 @@ export const codeBlocks = {
       const classes = Array.isArray(raw) ? raw : String(raw).split(/\s+/);
       if (!classes.includes('astro-code')) return;
       const lang = props.dataLanguage ?? props['data-language'] ?? '';
-      const bar = el('div', { className: ['code-block-bar'] }, [
+      const bar = el('div', { className: ['code-block-bar'], lang: uiLanguage }, [
         el('span', { className: ['code-block-lang'] }, [text(String(lang))]),
         el(
           'button',
           {
             type: 'button',
             className: ['code-copy'],
-            ariaLabel: t(ctx, 'code.copy'),
-            dataCopyLabel: t(ctx, 'code.copy'),
-            dataCopiedLabel: t(ctx, 'code.copied'),
+            ariaLabel: ui['code.copy'],
+            dataCopyLabel: ui['code.copy'],
+            dataCopiedLabel: ui['code.copied'],
           },
-          [el('span', { className: ['code-copy-icon'], ariaHidden: 'true' }), el('span', { className: ['code-copy-text'] }, [text(t(ctx, 'code.copy'))])],
+          [el('span', { className: ['code-copy-icon'], ariaHidden: 'true' }), el('span', { className: ['code-copy-text'] }, [text(ui['code.copy'])])],
         ),
       ]);
       ctx.replaceNode(node, el('figure', { className: ['code-block'] }, [bar, { ...node }]));

@@ -1,48 +1,45 @@
 ---
 // Meta line under an article title (DESIGN.md §8 Meta): dates, reading time, tags, licence,
 // unlisted badge.
-import type { Locale } from '../i18n/ui';
-import { useTranslations } from '../i18n/utils';
+import { ui as t, uiLanguage } from '../i18n/ui';
 import type { ContentEntry } from '../lib/content';
 import { describeLicense } from '../lib/license';
 import { formatDate, formatMinutes, toDateTimeAttr } from '../utils/date';
 
 interface Props {
   entry: ContentEntry;
-  locale: Locale;
   /** From the reading-time Markdown plugin (`remarkPluginFrontmatter.readingMinutes`). */
   readingMinutes?: number;
 }
 
-const { entry, locale, readingMinutes } = Astro.props;
-const t = useTranslations(locale);
+const { entry, readingMinutes } = Astro.props;
 const license = entry.data.license ? describeLicense(entry.data.license) : undefined;
 const unlisted = entry.data.visibility === 'restricted';
 ---
 
-<div class="meta article-meta">
+<div class="meta article-meta" lang={uiLanguage}>
   <span>
-    {t('writing.published')}{' '}
-    <time datetime={toDateTimeAttr(entry.data.date)}>{formatDate(entry.data.date, locale)}</time>
+    {t['writing.published']}{' '}
+    <time datetime={toDateTimeAttr(entry.data.date)}>{formatDate(entry.data.date, uiLanguage)}</time>
   </span>
   {
     entry.data.updated && (
       <span>
-        {t('writing.updated')}{' '}
-        <time datetime={toDateTimeAttr(entry.data.updated)}>{formatDate(entry.data.updated, locale)}</time>
+        {t['writing.updated']}{' '}
+        <time datetime={toDateTimeAttr(entry.data.updated)}>{formatDate(entry.data.updated, uiLanguage)}</time>
       </span>
     )
   }
   {
     readingMinutes !== undefined && (
       <span>
-        {t('article.readingTime')} {formatMinutes(readingMinutes, locale)}
+        {t['article.readingTime']} {formatMinutes(readingMinutes, uiLanguage)}
       </span>
     )
   }
   {
     entry.data.tags.length > 0 && (
-      <span class="tags">
+      <span class="tags" lang={entry.data.lang}>
         {entry.data.tags.map((tag) => (
           <span class="tag">{tag}</span>
         ))}
@@ -52,10 +49,10 @@ const unlisted = entry.data.visibility === 'restricted';
   {
     license && (
       <span>
-        {t('article.license')}{' '}
+        {t['article.license']}{' '}
         {license.url ? <a href={license.url} rel="license noopener">{license.label}</a> : license.label}
       </span>
     )
   }
-  {unlisted && <span class="badge">{t('article.unlisted')}</span>}
+  {unlisted && <span class="badge">{t['article.unlisted']}</span>}
 </div>

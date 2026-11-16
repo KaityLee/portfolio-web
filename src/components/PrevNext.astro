@@ -1,7 +1,6 @@
 ---
 // Previous / next entry at the end of an article (DESIGN.md §8 PrevNext).
-import type { Locale } from '../i18n/ui';
-import { useTranslations } from '../i18n/utils';
+import { ui as t, uiLanguage, type Locale } from '../i18n/ui';
 import { entryPath, type ContentCollection, type ContentEntry } from '../lib/content';
 
 interface Props {
@@ -12,24 +11,23 @@ interface Props {
 }
 
 const { collection, prev, next, locale } = Astro.props;
-const t = useTranslations(locale);
 ---
 
 {
   (prev || next) && (
-    <nav class="prev-next" aria-label={`${t('article.prev')} / ${t('article.next')}`}>
+    <nav class="prev-next" lang={uiLanguage} aria-label={`${t['article.prev']} / ${t['article.next']}`}>
       {prev ? (
         <a class="prev-next-card" rel="prev" href={entryPath(collection, prev, locale)}>
-          <span class="prev-next-label">{t('article.prev')}</span>
-          <span class="prev-next-title">{prev.data.title}</span>
+          <span class="prev-next-label">{t['article.prev']}</span>
+          <span class="prev-next-title" lang={prev.data.lang}>{prev.data.title}</span>
         </a>
       ) : (
         <span />
       )}
       {next && (
         <a class="prev-next-card prev-next-card--next" rel="next" href={entryPath(collection, next, locale)}>
-          <span class="prev-next-label">{t('article.next')}</span>
-          <span class="prev-next-title">{next.data.title}</span>
+          <span class="prev-next-label">{t['article.next']}</span>
+          <span class="prev-next-title" lang={next.data.lang}>{next.data.title}</span>
         </a>
       )}
     </nav>

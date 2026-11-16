@@ -1,6 +1,5 @@
 ---
-import { localeMeta, locales, type Locale } from '../i18n/ui';
-import { useTranslations } from '../i18n/utils';
+import { localeMeta, locales, type Locale, ui as t } from '../i18n/ui';
 
 interface Props {
   locale: Locale;
@@ -9,17 +8,16 @@ interface Props {
 }
 
 const { locale, alternates } = Astro.props;
-const t = useTranslations(locale);
 const available = locales.filter((l) => alternates[l] !== undefined);
 ---
 
 {
   available.length > 1 && (
-    <ul class="locale-picker" aria-label={t('nav.language')}>
+    <ul class="locale-picker" aria-label={t['nav.language']}>
       {available.map((l) => (
         <li>
-          <a href={alternates[l]} hreflang={l} lang={l} aria-current={l === locale ? 'true' : undefined}>
-            {localeMeta[l].label}
+          <a href={alternates[l]} hreflang={l} aria-label={localeMeta[l].label} aria-current={l === locale ? 'true' : undefined}>
+            {localeMeta[l].shortLabel}
           </a>
         </li>
       ))}

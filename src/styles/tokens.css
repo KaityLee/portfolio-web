@@ -5,28 +5,37 @@
   color-scheme: light;
 
   /* §5 Color (light) */
-  --color-bg: #fbfbfd;
+  --color-bg: #f3f2ee;
   --color-surface: #ffffff;
-  --color-surface-2: #f1f3f8;
-  --color-text: #0b0d12;
-  --color-text-muted: #5b6273;
-  --color-border: #e3e6ee;
-  --color-primary: #3b3fd8;
-  --color-secondary: #d1105a;
-  --color-tertiary: #2a1a7a;
-  --color-decorative: #8ecbf0;
-  --color-code-bg: #101428;
-  --color-code-text: #e6e8f2;
-  --color-selection: #ffe9a8;
+  --color-surface-2: #e9e7e1;
+  --color-text: #17191c;
+  --color-text-muted: #50555b;
+  --color-border: #cdcfce;
+  --color-primary: #8a491d;
+  --color-code-bg: #101214;
+  --color-code-text: #f4f3ef;
+  --color-selection: #ead6c3;
   --color-success: #0f7a3d;
-  --color-info: #2f5bff;
+  --color-info: #24577a;
   --color-warning: #8f5400;
-  --color-danger: #c0184a;
+  --color-danger: #a32e36;
+
+  /* §5 Home hero. Fixed palette with independent contrast in both themes. */
+  --hero-bg: #101214;
+  --hero-text: #f4f3ef;
+  --hero-muted: #b6b9bc;
+  --hero-accent: #e3a66b;
+  --hero-grid: #d0d9de22;
+  --hero-grid-major: #e3a66b27;
+  --hero-wash: #805e3d50;
+  --hero-slate: #475e6550;
+  --hero-shade: #10121412;
+  --hero-frame: #d0d9de30;
+  --hero-point: #e3a66b95;
 
   /* §4 Typography */
-  --font-sans: 'Wanted Sans Variable', 'Wanted Sans', 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
-  --font-serif: 'Gowun Batang', 'Noto Serif KR', 'Apple Myungjo', serif;
-  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'D2Coding', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-sans: 'Wanted Sans Variable', 'Wanted Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'D2Coding', ui-monospace, monospace;
   --step--2: 0.75rem;
   --step--1: 0.875rem;
   --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
@@ -34,6 +43,8 @@
   --step-2: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
   --step-3: clamp(1.625rem, 1.35rem + 1.2vw, 2.125rem);
   --step-4: clamp(2rem, 1.6rem + 2vw, 2.75rem);
+  --step-hero: clamp(2.25rem, 1.3rem + 4vw, 4.75rem);
+  --leading-hero: 1.08;
   --leading-body: 1.7;
   --leading-heading: 1.3;
   --leading-tight: 1.15;
@@ -49,11 +60,9 @@
   --space-8: 64px;
   --space-9: 96px;
   --section-gap: clamp(48px, 8vw, 96px);
-  --radius-s: 6px;
-  --radius-m: 10px;
-  --radius-l: 16px;
-  --radius-pill: 999px;
-  --shadow-card: 0 1px 2px oklch(20% 0.02 265 / 0.06), 0 8px 24px -12px oklch(20% 0.02 265 / 0.18);
+  --radius-s: 2px;
+  --radius-m: 4px;
+  --shadow-menu: 0 12px 28px #00000024;
   --target: 44px;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 
@@ -61,7 +70,9 @@
   --measure: 42rem;
   --container: 72rem;
   --gutter: 16px;
-  --header-height: 48px;
+  --post-date-width: 8rem;
+  --header-height: 56px;
+  --hero-height: clamp(25rem, 46vw, 35rem);
 }
 
 @media (min-width: 768px) {
@@ -70,47 +81,19 @@
   }
 }
 
-/* §5 Color (dark). Applied by the saved choice or, without one, by the OS preference. */
+/* §5 Color (dark). The inline theme bootstrap sets data-theme before the first paint. */
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --color-bg: #0f1218;
-  --color-surface: #161a22;
-  --color-surface-2: #1d222c;
-  --color-text: #e8eaf0;
-  --color-text-muted: #9aa3b5;
-  --color-border: #2a3140;
-  --color-primary: #8d93ff;
-  --color-secondary: #ff6b9d;
-  --color-tertiary: #c4b5fd;
-  --color-decorative: #2b4a66;
-  --color-code-bg: #0b0e1a;
-  --color-code-text: #e6e8f2;
-  --color-selection: rgba(139, 133, 173, 0.35);
+  --color-bg: #101214;
+  --color-surface: #181b1e;
+  --color-surface-2: #23272a;
+  --color-text: #f4f3ef;
+  --color-text-muted: #a8adb1;
+  --color-border: #3c4044;
+  --color-primary: #e3a66b;
+  --color-selection: #67452f;
   --color-success: #5ad28a;
-  --color-info: #86a4ff;
+  --color-info: #91bedb;
   --color-warning: #f0b45b;
-  --color-danger: #ff7b9c;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    color-scheme: dark;
-    --color-bg: #0f1218;
-    --color-surface: #161a22;
-    --color-surface-2: #1d222c;
-    --color-text: #e8eaf0;
-    --color-text-muted: #9aa3b5;
-    --color-border: #2a3140;
-    --color-primary: #8d93ff;
-    --color-secondary: #ff6b9d;
-    --color-tertiary: #c4b5fd;
-    --color-decorative: #2b4a66;
-    --color-code-bg: #0b0e1a;
-    --color-code-text: #e6e8f2;
-    --color-selection: rgba(139, 133, 173, 0.35);
-    --color-success: #5ad28a;
-    --color-info: #86a4ff;
-    --color-warning: #f0b45b;
-    --color-danger: #ff7b9c;
-  }
+  --color-danger: #ff989e;
 }

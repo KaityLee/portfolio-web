@@ -13,7 +13,14 @@ What "done" means for any change that touches `src/styles/`, `src/components/`, 
 | Contrast | text ≥ 4.5:1, large text ≥ 3:1, UI ≥ 3:1 (WCAG 2.2 1.4.3 / 1.4.11) | axe `color-contrast` rule |
 | Tokens only | no hex/rgb/oklch literal outside `src/styles/tokens.css`; no `px` spacing outside the scale | `scripts/check-tokens.mjs` |
 | Performance (optional, before a release) | Lighthouse performance ≥ 90, accessibility ≥ 95, CLS < 0.1 on `/` and one article | `npm run design:lh` |
-| Fonts | only families listed in `LICENSES.md`; no request to a third-party font host | reviewer, network tab in the Playwright trace |
+| Asset licenses | self-hosted fonts listed in `LICENSES.md`; no request to a third-party font host; full notices served at `/licenses/third-party.txt` | browser requests and built files |
 | Content stress | long Hangul title, post with a 4+ column table, post with a code block, post without images all look right | pages listed in `tests/pages.mjs` |
 
-Pages in the matrix (`tests/pages.mjs`): home, writing list, a long table-heavy article, the hello-world article (code block), a project page, about, contact, and their `/en/` counterparts where they exist.
+Pages in the matrix (`tests/pages.mjs`) cover every shared view in Korean and English, plus the long Korean Markdown fixture.
+
+## Mobile browser review
+
+- Serve the built site and open it with Playwright's iPhone 13 profile in WebKit and Pixel 7 profile in Chrome. If Playwright WebKit cannot be installed, use Safari's responsive design mode and record the fallback.
+- At phone size, confirm the hero title and both links fit, the menu opens and dismisses, `KO` and `EN` lead to the right content, and theme choice persists. Open a project and a post using touch interaction.
+- In the Korean Markdown fixture, expand Contents, follow a heading link, and check that a wide table and a long code line scroll independently. Verify the English controls and Korean text visibly coexist and are marked with the corresponding HTML languages.
+- Capture and review representative phone screenshots, including one with the menu open and one with the contents expanded. Report which browser engines and device profiles were used.

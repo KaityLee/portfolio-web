@@ -1,184 +1,117 @@
 # DESIGN.md — portfolio-web
 
-- Status: **Direction approved by owner on 2026-11-08** (§12 records the decisions); token values remain adjustable until the first redesigned page passes `npm run design:qa`
-- Date: 2026-11-08
-- Scope: every visual decision for this site. `src/styles/tokens.css` must mirror §5–§7 exactly; components and views take their rules from §8–§10. Agents read this file (imported from `CLAUDE.md`) before touching any UI and never invent a color, size or pattern that is not here. Rationale and the audit that led here live in the private repo (`personal-os/docs/design/portfolio-web-design-harness.md`).
+- Direction adopted on 2026-11-16. §12 records this revision.
+- Applies to the Astro portfolio routes. Implement the values in §4–§7 as CSS tokens and use the component and page contracts in §8–§10.
+- Copy-ready workflow in [design prompts](docs/design/prompts.md). Verification in [quality gates](docs/design/quality-gates.md).
 
 ## 1. Personality
 
-Three words, each with the one sentence an agent needs to apply it.
-
-- **Warm** — the page feels like a person wrote it: soft near-white canvas, rounded corners, friendly illustrations in exactly one place, never corporate gray-on-gray.
-- **Precise** — this is an engineer's notebook: tables, code and dates are first-class, aligned to a strict type scale and spacing scale, with nothing decorative inside the reading column.
-- **Quietly playful** — small moments of delight (a theme toggle that rotates, a hero band with a hand-drawn motif, a ✨ in a title) are allowed; constant motion, sounds and gradients are not. Spend boldness in one place per page.
+- **Precise**. Lead with the system, the decisions behind it, and what was learned. Treat tables, code, and dates as primary content.
+- **Cinematic**. Use one full-width charcoal composition on the home page. Carry its alignment, contrast, and thin rules through the rest of the site.
+- **Dryly playful**. The name pairs plotting with writing. About can carry one line of math or engineering humor. Use plain English for actions and navigation.
 
 ## 2. Audiences and their jobs
 
-| Who | Device, time | Needs from the page |
-| --- | --- | --- |
-| Recruiter or hiring manager | Phone, ~90 seconds | Who is this, 2–3 representative projects, how to contact, is the English version there |
-| Engineer reading a long post | Laptop, 10–20 minutes | Comfortable measure, readable tables and code, a table of contents, dark mode at night |
-| Future me (Mac mini, evening) | Laptop, dark | Find a post fast, skim headings, copy code |
-
-Korean (`/`) is the default locale and English (`/en/`) is first-class; every pattern must survive Hangul line breaking (`keep-all`) and longer Latin words.
-
-## 3. Primary reference: joshwcomeau.com (patterns, not assets)
-
-Measured on 2026-11-08 at 1440px and 375px. We adopt **patterns**; we never copy code, illustrations, fonts or colors verbatim (his body font Wotfard and code font Cartograph CF are paid; the cloud/avatar art is his).
-
-| Adopt | How it shows up here |
+| Who | Needs |
 | --- | --- |
-| Content-first article column: 686px body, 18px/27px text, 40px/500 h1, 32px/700 h2 in a deep tertiary color, 48px above h2 | §4 type scale, §7 `--measure`, h2 in `--color-tertiary` |
-| Header 48px, static on mobile, translucent sticky on desktop, 4 nav items + icon buttons | §8 Header |
-| Hero is a soft illustrated band (sky + clouds) with the content starting below it, not a giant headline | §10 Home: an SVG band with our own motif |
-| Section labels in small caps letter-spaced secondary color ("ARTICLES AND TUTORIALS") | §8 SectionLabel |
-| Meta line in italic: "Filed under X on DATE · Last updated DATE" | §8 Meta |
-| Code block as a dark rounded card in both themes, with language label and copy/expand controls | §8 CodeBlock |
-| Callout boxes (info / warning / success) with left accent, icon and tinted background | §8 Callout (Markdown `> [!NOTE]`-style blockquote) |
-| Inline code with a light tinted pill (2px 6px, 3px radius) | §8 InlineCode |
-| Category chips as soft filled pills, not outlined | §8 TagChip |
-| A single accent family: primary blue, secondary pink, tertiary deep purple, decorative sky | §5 color tokens with our own values |
+| Recruiter or hiring manager, often on a phone | Identify the developer's focus, find a representative project, reach About or Contact |
+| Engineer reading a post | Read prose and code comfortably, skim the contents, follow links and citations |
+| Returning reader | Find a project or recent post and switch content language or theme |
 
-| Do not adopt (yet) | Reason |
-| --- | --- |
-| React interactive widgets inside posts | No UI framework (AGENTS.md); `.mdx` only when a post truly needs interaction, decided per post |
-| Sound effects, like counter, 3D avatar | Needs client JS and accounts; not our personality |
-| Paid fonts | License allowlist (§4) |
-| Cursive code italics | Only if the chosen mono font ships them under OFL |
+Korean content lives under `/` and English content under `/en/`. Both use English interface copy, including dates, reading time, generated Markdown labels, and accessible names. Content language follows Markdown frontmatter. Mark English controls and Korean content with the appropriate HTML language.
 
-Secondary references (structure only): `astro-bearblog` (framework-free Astro blog), Max Böck `mxb.dev` (token/theme system in plain CSS), Brian Sunter (content collections for profile + projects).
+## 3. Visual direction
+
+Give the home page a full-width charcoal hero with large sans-serif type, rectangular actions, and an original static scatter plot. Use a clear visual transition from the hero to the project and writing indexes. Article pages use an uninterrupted reading column and compact technical tools.
 
 ## 4. Typography
 
-### 4.1 Families (all SIL OFL 1.1, self-hosted, one `LICENSES.md` row each)
+### 4.1 Families
 
-| Role | Font | Why | Fallback stack |
-| --- | --- | --- | --- |
-| Body + UI + headings | **Wanted Sans Variable** (wanteddev, OFL, 7 weights, variable, dynamic-subset woff2 shipped) | Geometric with warmth ("Geometric with a heart, Humanist with a soul"): the closest OFL Hangul face to the friendly personality in §1; Latin drawn in-house to match, so no second Latin font | `'Wanted Sans Variable', 'Wanted Sans', 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', system-ui, sans-serif` |
-| Editorial accent | **Gowun Batang** (Yanghee Ryu, OFL, 400/700) | Pencil-handwriting-inspired Myeongjo; used for the home h1, article/project h1 and the article lead paragraph only. Never for h2 and below, UI or lists | `'Gowun Batang', 'Noto Serif KR', serif` |
-| Code | **JetBrains Mono** (OFL, variable 100–800) + **D2Coding** (Naver, OFL) for Hangul inside code | Tall x-height matches Wanted Sans/Pretendard; D2Coding keeps Korean comments mono-width | `'JetBrains Mono', 'D2Coding', ui-monospace, 'SF Mono', Menlo, monospace` |
-
-Alternative body if Wanted Sans feels too soft: **Pretendard Variable** (OFL, Inter Latin + Source Han Hangul, dynamic subset, 9 weights). It is the more neutral, "system" choice; everything else in this file stays the same.
-
-Not allowed: KoPub World (server embedding needs separate approval), any font loaded from Google Fonts CDN (self-host instead), paid faces (Wotfard, Cartograph CF).
+| Role | Family |
+| --- | --- |
+| Display, body, interface | Wanted Sans Variable for Latin and Hangul. System sans-serif fallback |
+| Code | JetBrains Mono Variable for supported glyphs, D2Coding for Hangul, system monospace fallback |
 
 ### 4.2 Loading
 
-- Install from npm (`wanted-sans`, `@fontsource-variable/jetbrains-mono` or the GitHub release, `d2coding` TTF converted to woff2 ourselves — OFL allows it) and import the **split / dynamic-subset** CSS so a page downloads only the Hangul slices it uses (Wanted Sans ships `variable/split/WantedSansVariable.min.css`; a slice is tens of KB, the full variable file is megabytes).
-- `font-display: swap` plus a size-adjusted local fallback (`@font-face { font-family: 'Wanted Sans Fallback'; src: local('Apple SD Gothic Neo'), local('Malgun Gothic'); size-adjust: …; }`) so the swap does not shift layout; CLS is checked by Lighthouse CI.
-- Preload only the Latin slice of the body font; never preload Hangul slices.
-- Astro 7's Fonts API (`fontProviders.local()`) is the alternative when subsetting is not needed (e.g. JetBrains Mono); either path must end with the files under `src/assets/fonts/` or `public/fonts/`, never a third-party CDN.
+Import the installed WOFF2 stylesheet subsets from `src/styles/fonts.css`. Serve fonts from the Astro build origin with `font-display: swap`. Asset sources and license files are listed in `LICENSES.md`.
 
 ### 4.3 Scale and rhythm
 
-Hangul needs more leading than Latin, so the body keeps 1.7 leading; the base size is 16–17px (owner review 2026-11-08: the first 17–18px pass and the 24–30px h2 read too large). Comeau uses 18/27 for Latin.
+| Token | Value or role |
+| --- | --- |
+| `--step--2`, `--step--1` | 0.75rem, 0.875rem for labels, dates, and captions |
+| `--step-0`, `--step-1`, `--step-2` | Fluid 16–17px body, 17–19px lead and h3, 20–24px h2 |
+| `--step-3`, `--step-4` | Fluid 26–34px detail h1 and 32–44px section or index h1 |
+| `--step-hero` | `clamp(2.25rem, 1.3rem + 4vw, 4.75rem)`, weight 500, 1.08 leading |
+| `--leading-body`, `--leading-heading`, `--leading-tight` | 1.7, 1.3, 1.15 |
 
-```
---step--2: 0.75rem                                   /* section labels */
---step--1: 0.875rem                                  /* meta, captions, chips */
---step-0:  clamp(1rem, 0.95rem + 0.25vw, 1.0625rem)  /* body 16→17px */
---step-1:  clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem) /* h3, lead paragraph 17→19px */
---step-2:  clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem)   /* h2 20→24px */
---step-3:  clamp(1.625rem, 1.35rem + 1.2vw, 2.125rem) /* article h1 26→34px */
---step-4:  clamp(2rem, 1.6rem + 2vw, 2.75rem)        /* home display 32→44px */
---leading-body: 1.7   --leading-heading: 1.3   --leading-tight: 1.15
---measure: 42rem      /* ≈ 36–40 Hangul syllables / 65–75 Latin characters per line */
-```
-
-Weights: body 400, UI labels and links 500, h2/h3 700 (Wanted Sans), h1 700 in Gowun Batang; the article lead paragraph is Gowun Batang 400 at `--step-1`. Letter-spacing: `-0.01em` on h1/h2 Latin, `0` on Hangul (never negative on Hangul). `word-break: keep-all; overflow-wrap: anywhere;` everywhere; `text-wrap: balance` on h1, `pretty` on h2–h4 and paragraphs.
-
+Use tabular numerals on list dates, 400 weight for body, 500–600 for navigation and controls, and 600 for detail titles. Allow Hangul to break between words first and emergency-wrap long tokens.
 
 ## 5. Color
 
-Tokens are defined in OKLCH with a hex fallback. Both themes side by side; contrast targets are checked by `npm run design:qa` (axe) and must hold.
-
-| Token | Light | Dark | Role, contrast target |
+| Token | Light | Dark | Role |
 | --- | --- | --- | --- |
-| `--color-bg` | `#fbfbfd` (oklch 99% 0.003 270) | `#0f1218` (oklch 17% 0.015 265) | Page canvas |
-| `--color-surface` | `#ffffff` | `#161a22` | Cards, header when scrolled |
-| `--color-surface-2` | `#f1f3f8` | `#1d222c` | Inline code pill, blockquote, table head |
-| `--color-text` | `#0b0d12` | `#e8eaf0` | Body text, ≥ 7:1 on bg |
-| `--color-text-muted` | `#5b6273` | `#9aa3b5` | Meta, captions, ≥ 4.5:1 on bg |
-| `--color-border` | `#e3e6ee` | `#2a3140` | Hairlines, ≥ 3:1 against surface not required (decorative) |
-| `--color-primary` | `#3b3fd8` (oklch 47% 0.22 275) | `#8d93ff` | Links, focus ring, active nav; ≥ 4.5:1 on bg |
-| `--color-secondary` | `#d1105a` (oklch 52% 0.22 10) | `#ff6b9d` | Section labels, highlights; ≥ 4.5:1 on bg |
-| `--color-tertiary` | `#2a1a7a` (oklch 30% 0.15 285) | `#c4b5fd` | h2 headings, ≥ 7:1 on bg |
-| `--color-decorative` | `#8ecbf0` | `#2b4a66` | Hero band, illustration fills only; never text |
-| `--color-code-bg` | `#101428` | `#0b0e1a` | Code block card (dark in both themes) |
-| `--color-code-text` | `#e6e8f2` | `#e6e8f2` | Default token color inside code |
-| `--color-selection` | `#ffe9a8` | `rgba(139,133,173,.35)` | `::selection` background |
-| `--color-success / info / warning / danger` | `#0f7a3d / #2f5bff / #8f5400 / #c0184a` | `#5ad28a / #86a4ff / #f0b45b / #ff7b9c` | Callout accents |
+| `--color-bg` | `#f3f2ee` | `#101214` | Canvas |
+| `--color-surface` | `#ffffff` | `#181b1e` | Panels, mobile menu |
+| `--color-surface-2` | `#e9e7e1` | `#23272a` | Inline code, table headings, hover |
+| `--color-text` | `#17191c` | `#f4f3ef` | Body and titles |
+| `--color-text-muted` | `#50555b` | `#a8adb1` | Meta and lead |
+| `--color-border` | `#cdcfce` | `#3c4044` | Decorative hairlines |
+| `--color-primary` | `#8a491d` | `#e3a66b` | Copper links, focus, active controls |
+| `--color-code-bg` | `#101214` | `#101214` | Code block surface |
+| `--color-code-text` | `#f4f3ef` | `#f4f3ef` | Code fallback foreground |
+| `--color-selection` | `#ead6c3` | `#67452f` | Text selection |
+| `--color-success` / `--color-info` / `--color-warning` / `--color-danger` | `#0f7a3d` / `#24577a` / `#8f5400` / `#a32e36` | `#5ad28a` / `#91bedb` / `#f0b45b` / `#ff989e` | Contextual Markdown callouts |
 
-Rules
-- Every color literal in `src/` must be a token from this table; Shiki token colors come from the configured themes (`github-light` / `github-dark-default`; the code card is dark in both site themes, so only the dark palette renders) and are the only exception.
-- Hue family is fixed (indigo primary, rose secondary, violet tertiary, sky decorative). A new tint is a new row here first.
-- The favicon already uses deep slate `#1f2937` + sky `#60a5fa`; keep it in the same family when redrawing.
+The home hero uses its own fixed palette in both themes. `--hero-bg: #101214`, `--hero-text: #f4f3ef`, `--hero-muted: #b6b9bc`, `--hero-accent: #e3a66b`. Grid and plotted marks use translucent graphite and copper tokens. Use copper sparingly on actionable text, focus indicators, and plot marks. Shiki's GitHub dark palette supplies code highlighting.
 
 ## 6. Space, radius, elevation
 
-```
---space-1: 4px   --space-2: 8px   --space-3: 12px  --space-4: 16px
---space-5: 24px  --space-6: 32px  --space-7: 48px  --space-8: 64px  --space-9: 96px
---section-gap: clamp(48px, 8vw, 96px)
---radius-s: 6px  --radius-m: 10px  --radius-l: 16px  --radius-pill: 999px
---shadow-card: 0 1px 2px oklch(20% 0.02 265 / .06), 0 8px 24px -12px oklch(20% 0.02 265 / .18)
---target: 44px   --ease: cubic-bezier(.2,.7,.2,1)
-```
-
-No other spacing values. Vertical rhythm inside prose uses `--space-4` between paragraphs, `--space-7` above h2, `--space-6` above h3.
+- Spacing scale `--space-1` to `--space-9` is 4, 8, 12, 16, 24, 32, 48, 64, 96px. Section spacing is `clamp(48px, 8vw, 96px)`.
+- Corners use `--radius-s: 2px` and `--radius-m: 4px`. Use a 1px rule to separate functional areas and panels. Keep elevation for the mobile menu sheet with `--shadow-menu: 0 12px 28px #00000024`.
+- Mobile controls use `--target: 44px`. Keyboard focus is a 2px copper outline.
 
 ## 7. Layout
 
-- Breakpoints: `320` (minimum, long Hangul titles must not overflow), `390`, `768`, `1280`. Mobile first; media queries only at these four.
-- Containers: `--measure: 42rem` (reading column: articles, about, contact, project body), `--container: 72rem` (home, lists, header, footer). The article column sits at the exact center of the viewport; the TOC rail lives in the right margin beside it, never pushing the column off-center. Gutter `16px` to 768, `24px` above. The shell is never narrower than the reading column: on desktop the header, footer and the article's TOC rail must visibly use the width beside the column (the 2026-11-08 deployment had everything squeezed into 42rem, which read as oversized margins).
-- Header: `48px` tall. Mobile (<768): brand left, icon buttons right (theme, menu); the 5 nav items live in a menu sheet opened by the menu button (native `popover` or `<details>`, no JS library). Desktop (≥768): brand, 4 text links (Writing, Projects, About, Contact; Home is the brand), then locale picker and theme toggle. Sticky with `backdrop-filter` only on desktop.
-- Hero band (home only): full-bleed SVG band `clamp(160px, 28vw, 320px)` tall. Motif: a notebook grid (dot or line grid in `--color-decorative` at low opacity) with a handful of nodes connected by curved lines, like a small knowledge graph; nodes use `--color-primary`/`--color-secondary` fills, lines `--color-decorative`. Static, drawn by us as one inline SVG with `aria-hidden`, scaled with `preserveAspectRatio="xMidYMid slice"`; the content column starts under it.
-- Ad slots (future): exactly two reserved boxes per article — after the intro paragraph and after the last section — `min-height: 280px` on mobile, `250px` on desktop, never between header and h1, never sticky. Not rendered until AdSense is enabled.
-- Footer: 3 columns on desktop (site, links incl. About/Contact/RSS/Source, licence note), stacked on mobile.
+- Verify at 320, 390, 768, and 1280px. Header switches to inline navigation at 768px and the article contents rail starts at 1280px.
+- The shared container is 72rem with 16px gutters below 768px and 24px above. The article stays centered in a 42rem reading column, with the contents rail in its right margin.
+- Header height is 56px. Phones show the brand and square theme and menu buttons. The native menu sheet carries navigation and the content-language selector. Desktop shows four inline links, language selector, and theme toggle in a sticky bar.
+- The home hero is the first section inside main, full width. Center the title, lead, and link group. Use `clamp(25rem, 46vw, 35rem)` minimum height, with content allowed to grow. Render the plotted points in a low-contrast CSS grid behind the copy; show fewer marks below 768px.
+- Footer has site identity, navigation, source and asset-license links, and a content-license note. Stack the groups on phones.
+- The two previously defined ad positions remain reserved in the specification for future use, after the article intro and after the last section.
 
 ## 8. Component inventory
 
-Each component lists its states; all interactive targets are ≥ `--target` square and show a 2px `--color-primary` focus ring (`:focus-visible`), never `outline: none` alone.
-
-| Component | Notes and states |
+| Component | Contract |
 | --- | --- |
-| Header, Nav | default / `aria-current="page"` (primary color, 600) / hover (surface-2 pill) / menu open (mobile sheet, focus trapped by `popover`) |
-| LocalePicker | pills; current locale filled surface-2; hidden when a page has one locale |
-| ThemeToggle | icon button; icon rotates 180° on toggle (200ms, disabled under reduced motion) |
-| SectionLabel | `0.75rem`, letter-spacing `0.12em`, uppercase (Latin) / normal case (Hangul), `--color-secondary` |
-| PostCard (list) | title (h3, 1.25rem), summary (muted), Meta; no border, hover lifts title color to primary; `featured` cards get `--color-surface` + `--shadow-card` |
-| TagChip | filled `--color-surface-2` pill, `0.8125rem`; current filter in primary tint |
-| Meta | italic muted line: "작성일 … · 수정일 … · 읽는 시간 3분" / "Filed under … on …" using `formatDate` / `formatMinutes` only; reading time is computed at build from the Markdown text (CJK per character, other scripts per word; code excluded) |
-| TOC | desktop: sticky right rail from 1280 (15rem, rows 32px — WCAG 2.5.8's 24px minimum; the 44px rule is for phone widths), current heading in primary via IntersectionObserver; mobile: collapsed `<details>` above the article, 44px rows |
-| PrevNext | two cards at article end, previous left, next right |
-| Callout | `> [!NOTE] / [!TIP] / [!WARNING] / [!CAUTION]` blockquotes → info/success/warning/danger; left 3px accent, 10px radius, tinted bg at 12% |
-| CodeBlock | dark card (`--color-code-bg`), `--radius-m`, language label top-right, copy button (44px) appears on hover/focus; horizontal scroll inside |
-| InlineCode | `--color-surface-2` pill, `0.9em`, 3px radius |
-| Table | wrapped in `.table-wrap` (already), head in surface-2, 4+ columns widen to 40rem and scroll |
-| Figure | a paragraph holding one image → `<figure>`; caption (muted, 0.875rem, centered) from the image title `![alt](src "caption")`, falling back to alt; every image has a `LICENSES.md` row |
-| ExternalLink | links to another host get `rel="noopener"` and a small arrow-up-right after the text (same tab; no `target`); links wrapping an image get no arrow |
-| HeadingAnchor | h2–h4 end with a link icon to themselves (`aria-label` names the heading); hidden until hover/focus on hover devices, always visible and muted on touch; glyph 0.75em with a `--target` hit area via `::after` so the heading line does not grow |
-| Kbd | raw `<kbd>` in Markdown: mono, 0.85em, bordered key cap with a 2px bottom edge |
-| Footer | see §7 |
-| ConsentBanner (future) | bottom sheet, never a modal; only when ads are enabled |
+| Navigation and locale picker | Direct English labels, active state with copper text or underline. Locale links show KO and EN with full English accessible labels. |
+| Hero links | Primary light button and outlined secondary button on the charcoal surface. Both expose the same copper focus ring. |
+| Section heading | Sans-serif title, aligned with a descriptive link to the full index where offered. A top rule separates sections. |
+| Project panel | A surface with a hairline border, title, summary, date and authored tags. Two columns from 768px; a sole panel can occupy the row. |
+| Writing row | Date and linked title. The full index also shows authored tags and featured summaries. On phones stack metadata and title. From 768px, use the 8rem `--post-date-width` column. |
+| Article meta | English metadata labels and English date and duration formatting through `src/utils/date.ts`. Authored tags retain their content language. |
+| Contents | Collapsed disclosures on phones and tablets. Desktop sticky rail highlights the current heading. Anchor text follows the article language. |
+| Previous / next | Hairline panels with a clear English action label and authored title. |
+| Code, callouts and tables | Dark code surface with native horizontal scroll and a labeled copy button. Semantic callout accents and English generated labels. Tables scroll inside a keyboard-focusable wrapper. |
+| Markdown figures and links | Keep authored alt text, captions, and anchors. Use the existing local Lucide paths for generated icons. |
 
 ## 9. Motion
 
-- Only `opacity`, `transform` and `color`; 150–250ms; `cubic-bezier(.2,.7,.2,1)`.
-- No scroll-triggered or looping animation. The hero band is static.
-- `@media (prefers-reduced-motion: reduce)` disables all transitions except color.
+Use short feedback transitions on controls and respect `prefers-reduced-motion`. The home artwork is static.
 
 ## 10. Page contracts
 
-| Page | Above the fold on 390px | Full contract |
-| --- | --- | --- |
-| Home | Hero band, one-line who-I-am (h1 ≤ 2 lines in Korean), 3 featured projects | then "최근 글" as a list (not cards), link to all; contact row; no walls of chips |
-| Writing (list) | SectionLabel, year groups | one row per post: date (muted, fixed width) · title · tags; `featured` posts may show summary; no thumbnails unless `cover` exists |
-| Article | Title, Meta, TOC (collapsed) | `--measure` column, Callouts, CodeBlocks, tables, Figure; PrevNext; licence line links to the licence text; restricted posts show a quiet "unlisted" badge |
-| Project | Title, one-line summary, facts grid | Problem → Constraints → Design → Trade-offs → Results, in the Markdown; stack as TagChips; repo link |
-| About | Portrait-free; who, what I operate, what I am learning | skills as grouped lists, not a chip cloud; CV download only if licence-clear |
-| Contact | 3 links max | GitHub, LinkedIn, email (after publishing review) |
-| Legal (privacy, licences) | plain `--measure` prose | generated per locale from one view |
+| Page | Contract |
+| --- | --- |
+| Home | Shared English H1 and lead, then links to projects and writing. Up to three projects with featured items first, up to five recent posts, then contact. |
+| Writing | Title and lead followed by writing rows. |
+| Projects | Title and lead followed by project panels. |
+| Article | Authored header, English metadata, contents, Markdown, previous/next and license. |
+| Project detail | Authored title, summary and facts, then Markdown. Use only the facts each project supplies. |
+| About | Backend and operations background, one line of dry math humor, and a short list of tools. |
+| Contact | Plain English contact status and links approved for public display. |
 
 ## 11. Do-not list
 
@@ -189,11 +122,6 @@ Each component lists its states; all interactive targets are ≥ `--target` squa
 - No new dependency without an ADR in `personal-os`.
 - No change to this file by an agent without the diff being reported in the PR description.
 
-## 12. Decisions (owner, 2026-11-08)
+## 12. Decisions
 
-1. **Body font** — Wanted Sans Variable. Pretendard stays the documented alternative only.
-2. **Accent hue** — indigo primary / rose secondary / violet tertiary / sky decorative, as tabulated in §5 (matches the existing favicon family).
-3. **Hero motif** — notebook grid with connected nodes (a small knowledge graph), §7.
-4. **Headings** — Gowun Batang for h1 and the article lead paragraph; Wanted Sans for everything else, §4.
-
-Changing any of these is an owner decision recorded here first, then mirrored in `tokens.css`.
+On 2026-11-16 the owner chose Plot & Tell, a cinematic home, English interface copy across both content locales, and mobile-browser interaction checks. The previous 2026-11-08 direction used Wanted Sans with Gowun Batang display type, indigo and rose, and an illustrated notebook band.

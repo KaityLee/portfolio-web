@@ -4,8 +4,8 @@ import Icon from '../components/Icon.astro';
 import PostList from '../components/PostList.astro';
 import PostRows from '../components/PostRows.astro';
 import SectionLabel from '../components/SectionLabel.astro';
-import type { Locale } from '../i18n/ui';
-import { localizePath, useTranslations } from '../i18n/utils';
+import { ui as t, type Locale } from '../i18n/ui';
+import { localizePath } from '../i18n/utils';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getListed } from '../lib/content';
 
@@ -14,7 +14,6 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const t = useTranslations(locale);
 
 // Featured projects first, then the most recent ones, three in total (DESIGN.md §10 Home).
 const projects = await getListed('projects', locale);
@@ -22,30 +21,39 @@ const featured = [...projects.filter((e) => e.data.featured), ...projects.filter
 const writing = (await getListed('writing', locale)).slice(0, 5);
 ---
 
-<BaseLayout title={t('nav.home')} locale={locale}>
-  <HeroBand slot="band" />
-  <section class="hero">
-    <h1>{t('home.heading')}</h1>
-    <p class="lead">{t('home.lead')}</p>
-  </section>
-  <section aria-labelledby="featured-heading">
-    <div class="section-head">
-      <SectionLabel id="featured-heading">{t('home.featured')}</SectionLabel>
-      <a class="more-link" href={localizePath('/projects', locale)}>{t('home.viewAll')}</a>
+<BaseLayout title={t['nav.home']} locale={locale}>
+  <section class="hero" slot="hero" aria-labelledby="home-heading">
+    <HeroBand />
+    <div class="container hero-content">
+      <h1 id="home-heading">{t['home.heading']}</h1>
+      <p class="lead">{t['home.lead']}</p>
+      <div class="hero-actions">
+        <a class="button" href={localizePath('/projects', locale)}>
+          {t['home.projectsAction']}
+          <Icon name="arrow-right" size={18} />
+        </a>
+        <a class="button button-outline" href={localizePath('/writing', locale)}>{t['home.writingAction']}</a>
+      </div>
     </div>
-    <PostList collection="projects" entries={featured} locale={locale} />
   </section>
-  <section aria-labelledby="writing-heading">
+  <section class="home-section" aria-labelledby="featured-heading">
     <div class="section-head">
-      <SectionLabel id="writing-heading">{t('home.recentWriting')}</SectionLabel>
-      <a class="more-link" href={localizePath('/writing', locale)}>{t('home.viewAll')}</a>
+      <SectionLabel id="featured-heading">{t['home.featured']}</SectionLabel>
+      <a class="more-link" href={localizePath('/projects', locale)}>{t['home.allProjects']}</a>
+    </div>
+    <PostList collection="projects" entries={featured} locale={locale} headingLevel={3} />
+  </section>
+  <section class="home-section" aria-labelledby="writing-heading">
+    <div class="section-head">
+      <SectionLabel id="writing-heading">{t['home.recentWriting']}</SectionLabel>
+      <a class="more-link" href={localizePath('/writing', locale)}>{t['home.allWriting']}</a>
     </div>
     <PostRows collection="writing" entries={writing} locale={locale} />
   </section>
   <section class="contact-row">
-    <p>{t('home.contactLead')}</p>
+    <p>{t['home.contactLead']}</p>
     <a class="button" href={localizePath('/contact', locale)}>
-      {t('nav.contact')}
+      {t['nav.contact']}
       <Icon name="arrow-right" size={18} />
     </a>
   </section>

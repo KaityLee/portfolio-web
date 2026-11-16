@@ -1,6 +1,6 @@
 import { getRelativeLocaleUrl } from 'astro:i18n';
 
-import { defaultLocale, locales, ui, type Locale, type UIKey } from './ui';
+import { defaultLocale, locales, type Locale } from './ui';
 
 export function isLocale(value: string | undefined): value is Locale {
   return value !== undefined && (locales as readonly string[]).includes(value);
@@ -10,11 +10,6 @@ export function isLocale(value: string | undefined): value is Locale {
 export function getLocaleFromUrl(url: URL): Locale {
   const first = url.pathname.split('/')[1];
   return isLocale(first) ? first : defaultLocale;
-}
-
-/** Returns a `t(key)` function; falls back to the default locale for a missing string. */
-export function useTranslations(locale: Locale) {
-  return (key: UIKey): string => ui[locale][key] ?? ui[defaultLocale][key];
 }
 
 /** "/en/writing/x" → "/writing/x"; "/writing/x" unchanged. */

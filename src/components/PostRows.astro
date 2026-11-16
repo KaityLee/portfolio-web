@@ -1,7 +1,6 @@
 ---
-// Compact list rows: date · title (DESIGN.md §10 Writing / Home "최근 글"). One row per entry.
-import type { Locale } from '../i18n/ui';
-import { useTranslations } from '../i18n/utils';
+// Compact date-and-title rows on home; featured summaries and tags on the writing index.
+import { ui as t, uiLanguage, type Locale } from '../i18n/ui';
 import { entryPath, type ContentCollection, type ContentEntry } from '../lib/content';
 import { formatDate, toDateTimeAttr } from '../utils/date';
 
@@ -9,21 +8,29 @@ interface Props {
   collection: ContentCollection;
   entries: ContentEntry[];
   locale: Locale;
+  detailed?: boolean;
 }
 
-const { collection, entries, locale } = Astro.props;
-const t = useTranslations(locale);
+const { collection, entries, locale, detailed = false } = Astro.props;
 ---
 
 {
   entries.length === 0 ? (
-    <p class="meta">{t('common.empty')}</p>
+    <p class="meta">{t['common.empty']}</p>
   ) : (
     <ol class="post-rows">
       {entries.map((entry) => (
         <li>
-          <time datetime={toDateTimeAttr(entry.data.date)}>{formatDate(entry.data.date, locale)}</time>
-          <a href={entryPath(collection, entry, locale)}>{entry.data.title}</a>
+          <time datetime={toDateTimeAttr(entry.data.date)}>{formatDate(entry.data.date, uiLanguage)}</time>
+          <div class="post-row-content" lang={entry.data.lang}>
+            <a href={entryPath(collection, entry, locale)}>{entry.data.title}</a>
+            {detailed && entry.data.featured && <p>{entry.data.summary}</p>}
+            {detailed && entry.data.tags.length > 0 && (
+              <div class="tags">
+                {entry.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+              </div>
+            )}
+          </div>
         </li>
       ))}
     </ol>

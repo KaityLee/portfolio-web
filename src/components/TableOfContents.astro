@@ -3,8 +3,7 @@
 // current heading highlighted; phones: a collapsed <details> above the article. Both share markup.
 import type { MarkdownHeading } from 'astro';
 
-import type { Locale } from '../i18n/ui';
-import { useTranslations } from '../i18n/utils';
+import { ui as t, uiLanguage, type Locale } from '../i18n/ui';
 
 interface Props {
   headings: MarkdownHeading[];
@@ -14,19 +13,18 @@ interface Props {
 }
 
 const { headings, locale, open = false } = Astro.props;
-const t = useTranslations(locale);
 const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
 {
   items.length >= 2 && (
     <details class="toc" open={open}>
-      <summary>{t('article.toc')}</summary>
-      <nav aria-label={t('article.toc')}>
+      <summary lang={uiLanguage}>{t['article.toc']}</summary>
+      <nav lang={uiLanguage} aria-label={t['article.toc']}>
         <ol>
           {items.map((h) => (
             <li class:list={[`toc-depth-${h.depth}`]}>
-              <a href={`#${h.slug}`}>{h.text}</a>
+              <a href={`#${h.slug}`} lang={locale}>{h.text}</a>
             </li>
           ))}
         </ol>
@@ -37,7 +35,7 @@ const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
 <script>
   // Highlight the heading currently in view (rail only; the <details> on phones is static).
-  const toc = document.querySelector<HTMLElement>('.toc');
+  const toc = document.querySelector<HTMLElement>('.article-rail .toc');
   if (toc && matchMedia('(min-width: 1280px)').matches) {
     const links = new Map<string, HTMLAnchorElement>();
     toc.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => links.set(decodeURIComponent(a.hash.slice(1)), a));

@@ -37,7 +37,7 @@ const older = index >= 0 && index < listed.length - 1 ? listed[index + 1] : unde
   <ArticleShell headings={headings} locale={locale}>
     <header slot="header" class="article-header">
       <h1>{entry.data.title}</h1>
-      <ArticleMeta entry={entry} locale={locale} readingMinutes={readingMinutes} />
+      <ArticleMeta entry={entry} readingMinutes={readingMinutes} />
     </header>
     <Content />
     <PrevNext slot="footer" collection="writing" prev={older} next={newer} locale={locale} />

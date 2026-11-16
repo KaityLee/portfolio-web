@@ -3,13 +3,7 @@
 // so the Obsidian original needs no site-specific syntax.
 import GithubSlugger from 'github-slugger';
 
-import { defaultLocale, ui } from '../i18n/ui.ts';
-
-function t(ctx, key) {
-  const lang = ctx.data?.astro?.frontmatter?.lang;
-  const table = ui[lang] ?? ui[defaultLocale];
-  return table[key] ?? ui[defaultLocale][key] ?? key;
-}
+import { ui, uiLanguage } from '../i18n/ui.ts';
 
 const el = (tagName, properties = {}, children = []) => ({ type: 'element', tagName, properties, children });
 const text = (value) => ({ type: 'text', value });
@@ -91,7 +85,7 @@ export const headingAnchors = () => {
         if (!['h2', 'h3', 'h4'].includes(node.tagName)) return;
         ctx.appendChild(
           node,
-          el('a', { className: ['heading-anchor'], href: `#${id}`, ariaLabel: `${t(ctx, 'article.headingLink')}: ${label}` }, [
+          el('a', { className: ['heading-anchor'], href: `#${id}`, lang: uiLanguage, ariaLabel: ui['article.headingLink'] }, [
             el('span', { className: ['heading-anchor-icon'], ariaHidden: 'true' }),
           ]),
         );

@@ -1,6 +1,5 @@
 ---
-import type { Locale } from '../i18n/ui';
-import { useTranslations } from '../i18n/utils';
+import { ui as t, type Locale } from '../i18n/ui';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 interface Props {
@@ -8,17 +7,17 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const t = useTranslations(locale);
 const skills = ['Java / Spring Boot', 'Python / FastAPI', 'PostgreSQL', 'Async & streaming', 'RAG & search', 'Observability', 'Docker'];
 ---
 
-<BaseLayout title={t('about.heading')} locale={locale}>
+<BaseLayout title={t['about.heading']} locale={locale}>
   <section class="prose narrow">
-    <h1>{t('about.heading')}</h1>
-    <p>{t('about.body')}</p>
-    <h2>{t('about.skills')}</h2>
-    <ul class="tags">
-      {skills.map((skill) => <li class="tag">{skill}</li>)}
+    <h1>{t['about.heading']}</h1>
+    <p>{t['about.body']}</p>
+    <p>{t['about.aside']}</p>
+    <h2>{t['about.skills']}</h2>
+    <ul>
+      {skills.map((skill) => <li>{skill}</li>)}
     </ul>
   </section>
 </BaseLayout>
