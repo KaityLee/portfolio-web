@@ -25,13 +25,13 @@
   --hero-text: #f4f3ef;
   --hero-muted: #b6b9bc;
   --hero-accent: #e3a66b;
-  --hero-grid: #d0d9de22;
-  --hero-grid-major: #e3a66b27;
-  --hero-wash: #805e3d50;
-  --hero-slate: #475e6550;
-  --hero-shade: #10121412;
-  --hero-frame: #d0d9de30;
-  --hero-point: #e3a66b95;
+  --hero-wash: #a0653f75;
+  --hero-slate: #4255658c;
+  --hero-ray-warm: #c78651b8;
+  --hero-ray-cool: #7692aab0;
+  --hero-ray-tip: #f0c299e6;
+  --hero-scrim: #101214d9;
+  --hero-trail-duration: 6.6s;
 
   /* §4 Typography */
   --font-sans: 'Wanted Sans Variable', 'Wanted Sans', system-ui, sans-serif;
@@ -44,6 +44,7 @@
   --step-3: clamp(1.625rem, 1.35rem + 1.2vw, 2.125rem);
   --step-4: clamp(2rem, 1.6rem + 2vw, 2.75rem);
   --step-hero: clamp(2.25rem, 1.3rem + 4vw, 4.75rem);
+  --step-hero-phrase: clamp(1.75rem, 1.25rem + 3vw, 3.75rem);
   --leading-hero: 1.08;
   --leading-body: 1.7;
   --leading-heading: 1.3;

@@ -1,0 +1,105 @@
+---
+import { ui as t, type Locale } from '../i18n/ui';
+import { localizePath } from '../i18n/utils';
+import HeroBand from './HeroBand.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const phrases = t['home.phrases'];
+---
+
+<section class="hero" data-home-hero aria-labelledby="home-heading">
+  <HeroBand />
+  <div class="container hero-content">
+    <h1 id="home-heading" aria-label={`${t['home.heading']} ${phrases[0]}`}>
+      <span aria-hidden="true">
+        <span class="hero-title-prefix">{t['home.heading']}</span>
+        <span class="hero-phrases">
+          <span class="hero-phrase" data-hero-phrase>{phrases[0]}</span>
+          {phrases.map((phrase) => <span class="hero-phrase-size" data-phrase={phrase}></span>)}
+        </span>
+      </span>
+    </h1>
+
+    <script is:inline>
+      (() => {
+        const hero = document.currentScript?.closest('[data-home-hero]');
+        const phrase = hero?.querySelector('[data-hero-phrase]');
+        if (!phrase || typeof IntersectionObserver !== 'function') return;
+
+        const phrases = Array.from(hero.querySelectorAll('[data-phrase]'), (item) => item.dataset.phrase);
+        const preference = matchMedia('(prefers-reduced-motion: reduce)');
+        const delays = { type: 64, hold: 2000, erase: 34 };
+        let index = 0;
+        let length = 0;
+        let phase = 'type';
+        let inView = false;
+        let timer;
+
+        function render() {
+          phrase.textContent = phrases[index].slice(0, length);
+          hero.toggleAttribute('data-cursor-idle', length === 0 || phase === 'hold');
+        }
+
+        function schedule() {
+          const delay = length === 0 ? 230 : delays[phase];
+          timer = window.setTimeout(advance, delay);
+        }
+
+        function advance() {
+          if (phase === 'type') {
+            length += 1;
+            if (length === phrases[index].length) phase = 'hold';
+          } else {
+            length -= 1;
+            phase = 'erase';
+            if (length === 0) {
+              index = (index + 1) % phrases.length;
+              phase = 'type';
+            }
+          }
+          render();
+          schedule();
+        }
+
+        function syncMotion() {
+          window.clearTimeout(timer);
+          if (preference.matches) {
+            delete hero.dataset.motion;
+            index = 0;
+            length = 0;
+            phase = 'type';
+            phrase.textContent = phrases[0];
+            return;
+          }
+
+          if (!hero.dataset.motion) render();
+          const running = inView && !document.hidden;
+          hero.dataset.motion = running ? 'running' : 'paused';
+          if (running) schedule();
+        }
+
+        const visibility = new IntersectionObserver(([entry]) => {
+          inView = entry.isIntersecting;
+          syncMotion();
+        });
+        visibility.observe(hero);
+        preference.addEventListener('change', syncMotion);
+        document.addEventListener('visibilitychange', syncMotion);
+        syncMotion();
+      })();
+    </script>
+    <p class="lead">{t['home.lead']}</p>
+    <div class="hero-actions">
+      <a class="button" href={localizePath('/projects', locale)}>
+        {t['home.projectsAction']}
+        <Icon name="arrow-right" size={18} />
+      </a>
+      <a class="button button-outline" href={localizePath('/writing', locale)}>{t['home.writingAction']}</a>
+    </div>
+  </div>
+</section>

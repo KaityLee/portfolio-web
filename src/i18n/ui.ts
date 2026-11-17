@@ -11,7 +11,7 @@ export const localeMeta: Record<Locale, { label: string; shortLabel: string; ogL
 };
 
 export const ui = {
-  'site.title': 'Plot & Tell',
+  'site.title': 'Kaity Builds',
   'site.description': 'Projects and writing on AI backends, systems, and software operations',
   'nav.home': 'Home',
   'nav.about': 'About',
@@ -22,9 +22,15 @@ export const ui = {
   'nav.language': 'Content language',
   'nav.skipToContent': 'Skip to content',
   'nav.menu': 'Menu',
-  'home.heading': 'Making sense of complex systems.',
-  'home.lead':
-    'I build AI backends with an operations mindset and write about the decisions behind them.',
+  'home.heading': 'Kaity builds',
+  'home.phrases': [
+    'AI agents.',
+    'data pipelines.',
+    'smart systems.',
+    'tiny robots.',
+    'cool stuff!',
+  ],
+  'home.lead': 'A curious engineer with too many side quests.',
   'home.projectsAction': 'View projects',
   'home.writingAction': 'Read the blog',
   'home.featured': 'Selected projects',

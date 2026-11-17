@@ -13,6 +13,7 @@ mkdirSync(SHOTS_DIR, { recursive: true });
 for (const page of pages) {
   test.describe(page.id, () => {
     test.beforeEach(async ({ page: p }, testInfo) => {
+      if (testInfo.title === 'screenshot') await p.emulateMedia({ reducedMotion: 'reduce' });
       // The site stores the theme choice; align it with the emulated color scheme so dark runs are dark.
       const scheme = testInfo.project.name.endsWith('dark') ? 'dark' : 'light';
       await p.addInitScript((value) => {

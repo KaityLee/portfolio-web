@@ -23,7 +23,7 @@ Rules (from `DESIGN.md` §11). Use self-hosted SIL OFL 1.1 fonts, MIT or ISC ico
 | Asset | Files | Source | Licence | Added |
 | --- | --- | --- | --- | --- |
 | Favicon (three plotted points) | `public/favicon.svg` | drawn for this site | MIT (repo) | 2026-11-16 |
-| Home plot (CSS grid and points) | `src/components/HeroBand.astro`, `src/styles/global.css` | drawn for this site | MIT (repo) | 2026-11-16 |
+| Home background (CSS light trails) | `src/components/HeroBand.astro`, `src/styles/global.css` | drawn for this site | MIT (repo) | 2026-11-16 |
 | Publish flow diagram (sample post figure) | `src/assets/writing/publish-flow.svg` | drawn for this site | MIT (repo) | 2026-11-09 |
 
 ## Tooling (not shipped to visitors)

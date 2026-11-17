@@ -8,7 +8,7 @@
 
 - **Precise**. Lead with the system, the decisions behind it, and what was learned. Treat tables, code, and dates as primary content.
 - **Cinematic**. Use one full-width charcoal composition on the home page. Carry its alignment, contrast, and thin rules through the rest of the site.
-- **Dryly playful**. The name pairs plotting with writing. About can carry one line of math or engineering humor. Use plain English for actions and navigation.
+- **Dryly playful**. The home title pairs real work with dry developer humor. About can carry one line of math or engineering humor. Use plain English for actions and navigation.
 
 ## 2. Audiences and their jobs
 
@@ -22,7 +22,7 @@ Korean content lives under `/` and English content under `/en/`. Both use Englis
 
 ## 3. Visual direction
 
-Give the home page a full-width charcoal hero with large sans-serif type, rectangular actions, and an original static scatter plot. Use a clear visual transition from the hero to the project and writing indexes. Article pages use an uninterrupted reading column and compact technical tools.
+Give the home page a full-width charcoal hero with large sans-serif type, rectangular actions, and fine diagonal light trails. Use a clear visual transition from the hero to the project and writing indexes. Article pages use an uninterrupted reading column and compact technical tools.
 
 ## 4. Typography
 
@@ -45,6 +45,7 @@ Import the installed WOFF2 stylesheet subsets from `src/styles/fonts.css`. Serve
 | `--step-0`, `--step-1`, `--step-2` | Fluid 16–17px body, 17–19px lead and h3, 20–24px h2 |
 | `--step-3`, `--step-4` | Fluid 26–34px detail h1 and 32–44px section or index h1 |
 | `--step-hero` | `clamp(2.25rem, 1.3rem + 4vw, 4.75rem)`, weight 500, 1.08 leading |
+| `--step-hero-phrase` | `clamp(1.75rem, 1.25rem + 3vw, 3.75rem)` for the rotating suffix and cursor |
 | `--leading-body`, `--leading-heading`, `--leading-tight` | 1.7, 1.3, 1.15 |
 
 Use tabular numerals on list dates, 400 weight for body, 500–600 for navigation and controls, and 600 for detail titles. Allow Hangul to break between words first and emergency-wrap long tokens.
@@ -65,7 +66,9 @@ Use tabular numerals on list dates, 400 weight for body, 500–600 for navigatio
 | `--color-selection` | `#ead6c3` | `#67452f` | Text selection |
 | `--color-success` / `--color-info` / `--color-warning` / `--color-danger` | `#0f7a3d` / `#24577a` / `#8f5400` / `#a32e36` | `#5ad28a` / `#91bedb` / `#f0b45b` / `#ff989e` | Contextual Markdown callouts |
 
-The home hero uses its own fixed palette in both themes. `--hero-bg: #101214`, `--hero-text: #f4f3ef`, `--hero-muted: #b6b9bc`, `--hero-accent: #e3a66b`. Grid and plotted marks use translucent graphite and copper tokens. Use copper sparingly on actionable text, focus indicators, and plot marks. Shiki's GitHub dark palette supplies code highlighting.
+The home hero uses its own fixed palette in both themes. `--hero-bg: #101214`, `--hero-text: #f4f3ef`, `--hero-muted: #b6b9bc`, `--hero-accent: #e3a66b`. Use copper sparingly on actionable text, focus indicators, and the light trails. Shiki's GitHub dark palette supplies code highlighting.
+
+The background wash uses `--hero-wash: #a0653f75` and `--hero-slate: #4255658c`. The trails use `--hero-ray-warm: #c78651b8`, `--hero-ray-cool: #7692aab0`, and `--hero-ray-tip: #f0c299e6`. A fixed radial overlay uses `--hero-scrim: #101214d9` behind the title.
 
 ## 6. Space, radius, elevation
 
@@ -78,7 +81,7 @@ The home hero uses its own fixed palette in both themes. `--hero-bg: #101214`, `
 - Verify at 320, 390, 768, and 1280px. Header switches to inline navigation at 768px and the article contents rail starts at 1280px.
 - The shared container is 72rem with 16px gutters below 768px and 24px above. The article stays centered in a 42rem reading column, with the contents rail in its right margin.
 - Header height is 56px. Phones show the brand and square theme and menu buttons. The native menu sheet carries navigation and the content-language selector. Desktop shows four inline links, language selector, and theme toggle in a sticky bar.
-- The home hero is the first section inside main, full width. Center the title, lead, and link group. Use `clamp(25rem, 46vw, 35rem)` minimum height, with content allowed to grow. Render the plotted points in a low-contrast CSS grid behind the copy; show fewer marks below 768px.
+- The home hero is the first section inside main, full width. Center the title, lead, and link group. Use `clamp(25rem, 46vw, 35rem)` minimum height, with content allowed to grow. Reserve the height of the longest suffix at the current width. Show five trails on phones and seven from 768px.
 - Footer has site identity, navigation, source and asset-license links, and a content-license note. Stack the groups on phones.
 - The two previously defined ad positions remain reserved in the specification for future use, after the article intro and after the last section.
 
@@ -99,13 +102,15 @@ The home hero uses its own fixed palette in both themes. `--hero-bg: #101214`, `
 
 ## 9. Motion
 
-Use short feedback transitions on controls and respect `prefers-reduced-motion`. The home artwork is static.
+Use short feedback transitions on controls. Keep `Kaity builds` fixed. Start with only the copper underscore on the second line and type `AI agents.` one character at a time. Hold complete phrases for about two seconds, then erase back to the bare cursor before typing the next phrase. Continue with `data pipelines.`, `smart systems.`, `tiny robots.`, and `cool stuff!` before returning to `AI agents.`. The cursor follows the text and blinks while waiting. The lead is `A curious engineer with too many side quests.`.
+
+Stagger the CSS light trails so they are visible on entry. They move from lower left to upper right at a constant speed with a `--hero-trail-duration` of 6.6 seconds. Express each trail's starting phase as a fraction of that duration so the spacing stays consistent when tuning the speed. Pause motion offscreen or while the tab is hidden and resume from that position. Use `Kaity builds AI agents.` as the stable accessible heading and the visible fallback for reduced motion or browsers without JavaScript. The fallback shows the trails in fixed positions.
 
 ## 10. Page contracts
 
 | Page | Contract |
 | --- | --- |
-| Home | Shared English H1 and lead, then links to projects and writing. Up to three projects with featured items first, up to five recent posts, then contact. |
+| Home | Shared English typewriter H1 and lead, then links to projects and writing. Up to three projects with featured items first, up to five recent posts, then contact. |
 | Writing | Title and lead followed by writing rows. |
 | Projects | Title and lead followed by project panels. |
 | Article | Authored header, English metadata, contents, Markdown, previous/next and license. |
@@ -124,4 +129,4 @@ Use short feedback transitions on controls and respect `prefers-reduced-motion`.
 
 ## 12. Decisions
 
-On 2026-11-16 the owner chose Plot & Tell, a cinematic home, English interface copy across both content locales, and mobile-browser interaction checks. The previous 2026-11-08 direction used Wanted Sans with Gowun Batang display type, indigo and rose, and an illustrated notebook band.
+On 2026-11-16 the owner chose a cinematic home, English interface copy across both content locales, and mobile-browser interaction checks. The current home pairs the Kaity Builds brand with a rotating title and moving diagonal trails. The previous 2026-11-08 direction used Wanted Sans with Gowun Batang display type, indigo and rose, and an illustrated notebook band.

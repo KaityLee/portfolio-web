@@ -21,6 +21,7 @@ Pages in the matrix (`tests/pages.mjs`) cover every shared view in Korean and En
 ## Mobile browser review
 
 - Serve the built site and open it with Playwright's iPhone 13 profile in WebKit and Pixel 7 profile in Chrome. If Playwright WebKit cannot be installed, use Safari's responsive design mode and record the fallback.
-- At phone size, confirm the hero title and both links fit, the menu opens and dismisses, `KO` and `EN` lead to the right content, and theme choice persists. Open a project and a post using touch interaction.
+- At phone size, confirm the hero types `AI agents.` from the bare cursor, erases it fully, and enters the next phrase. Confirm that the diagonal trails visibly change position within the first second while the lead and links stay in place. Verify automatic offscreen pause and the static fallback with reduced motion.
+- Confirm the menu opens and dismisses, `KO` and `EN` lead to the right content, and theme choice persists. Open a project and a post using touch interaction.
 - In the Korean Markdown fixture, expand Contents, follow a heading link, and check that a wide table and a long code line scroll independently. Verify the English controls and Korean text visibly coexist and are marked with the corresponding HTML languages.
 - Capture and review representative phone screenshots, including one with the menu open and one with the contents expanded. Report which browser engines and device profiles were used.

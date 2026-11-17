@@ -1,5 +1,5 @@
 ---
-import HeroBand from '../components/HeroBand.astro';
+import HomeHero from '../components/HomeHero.astro';
 import Icon from '../components/Icon.astro';
 import PostList from '../components/PostList.astro';
 import PostRows from '../components/PostRows.astro';
@@ -22,20 +22,7 @@ const writing = (await getListed('writing', locale)).slice(0, 5);
 ---
 
 <BaseLayout title={t['nav.home']} locale={locale}>
-  <section class="hero" slot="hero" aria-labelledby="home-heading">
-    <HeroBand />
-    <div class="container hero-content">
-      <h1 id="home-heading">{t['home.heading']}</h1>
-      <p class="lead">{t['home.lead']}</p>
-      <div class="hero-actions">
-        <a class="button" href={localizePath('/projects', locale)}>
-          {t['home.projectsAction']}
-          <Icon name="arrow-right" size={18} />
-        </a>
-        <a class="button button-outline" href={localizePath('/writing', locale)}>{t['home.writingAction']}</a>
-      </div>
-    </div>
-  </section>
+  <HomeHero slot="hero" locale={locale} />
   <section class="home-section" aria-labelledby="featured-heading">
     <div class="section-head">
       <SectionLabel id="featured-heading">{t['home.featured']}</SectionLabel>

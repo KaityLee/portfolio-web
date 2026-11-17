@@ -291,7 +291,7 @@ pre {
   }
 }
 
-/* Home hero: decorative grid and points sit below the native links and title. */
+/* Home hero: decorative light trails sit behind the native links and title. */
 .hero {
   position: relative;
   isolation: isolate;
@@ -310,67 +310,133 @@ pre {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background:
-    radial-gradient(ellipse at 100% 10%, var(--hero-wash), transparent 52%),
-    radial-gradient(ellipse at 0% 100%, var(--hero-slate), transparent 52%);
 }
 
-.hero-plot {
+.hero-band::before {
+  content: '';
   position: absolute;
-  inset: var(--gutter);
-  border: 1px solid var(--hero-frame);
-  background-image:
-    linear-gradient(to right, var(--hero-grid) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--hero-grid) 1px, transparent 1px);
-  background-size: var(--space-7) var(--space-7);
-  background-position: center;
-  mask-image: radial-gradient(ellipse at center, var(--hero-shade) 11%, var(--hero-bg) 88%);
+  inset: -20%;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse at 72% 21%, var(--hero-wash), transparent 50%),
+    radial-gradient(ellipse at 27% 82%, var(--hero-slate), transparent 53%);
 }
 
-.hero-plot::after {
+.hero-band::after {
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(to right, transparent calc(50% - 1px), var(--hero-grid-major) 50%, transparent calc(50% + 1px)),
-    linear-gradient(to bottom, transparent calc(50% - 1px), var(--hero-grid-major) 50%, transparent calc(50% + 1px));
+  background: radial-gradient(ellipse at center, var(--hero-scrim) 14%, transparent 71%);
 }
 
-.plot-point {
+.hero-trails {
   position: absolute;
-  inset-inline-start: var(--plot-x);
-  inset-block-start: var(--plot-y);
-  width: var(--space-1);
-  aspect-ratio: 1;
-  translate: -50% -50%;
-  border-radius: 50%;
-  background: var(--hero-point);
+  inset: -24% -12%;
+  z-index: -1;
+  transform: rotate(-16deg);
 }
 
-.plot-point:nth-child(-n + 8) {
-  width: var(--space-2);
-  border: 1px solid var(--hero-accent);
-  background: var(--hero-bg);
+.hero-trail {
+  --trail-color: var(--hero-ray-warm);
+  --trail-tip: var(--hero-ray-tip);
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: var(--trail-row);
+  inline-size: 100%;
+  block-size: 1px;
+  transform: translateX(var(--trail-offset));
+  background: linear-gradient(90deg, transparent, var(--trail-color) 68%, var(--trail-tip) 94%, transparent)
+    left center / var(--trail-length) 100% no-repeat;
+}
+
+.hero-trail:nth-child(even) {
+  --trail-color: var(--hero-ray-cool);
+  --trail-tip: var(--hero-ray-cool);
+}
+
+.hero-trail:nth-child(3n + 1) {
+  block-size: 2px;
 }
 
 @media (max-width: 767px) {
-  .hero-plot {
-    background-size: var(--space-6) var(--space-6);
-    opacity: 0.65;
-  }
-  .plot-point:nth-child(n + 9) {
+  .hero-trail:nth-child(n + 6) {
     display: none;
   }
 }
 
 .hero h1 {
-  max-inline-size: 18ch;
   margin: 0 auto var(--space-4);
   font-size: var(--step-hero);
   font-weight: 500;
   line-height: var(--leading-hero);
   letter-spacing: -0.035em;
+}
+
+.hero-title-prefix {
+  display: block;
   text-wrap: balance;
+}
+
+/* Stack each phrase in the same grid cell so the tallest wrap controls the layout. */
+.hero-phrases {
+  display: grid;
+  align-items: center;
+  margin-block-start: var(--space-2);
+  color: var(--hero-accent);
+  font-size: var(--step-hero-phrase);
+  text-wrap: balance;
+}
+
+.hero-phrases > span {
+  grid-area: 1 / 1;
+}
+
+.hero-phrase-size {
+  visibility: hidden;
+}
+
+.hero-phrase-size::before {
+  content: attr(data-phrase);
+}
+
+.hero-phrases > span::after {
+  content: '_';
+  visibility: hidden;
+  font-family: var(--font-mono);
+}
+
+.hero[data-motion] .hero-phrase::after {
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero[data-motion] .hero-trail {
+    animation: hero-trail-flow var(--hero-trail-duration) linear
+      calc(var(--hero-trail-duration) * var(--trail-phase)) infinite paused;
+  }
+
+  .hero[data-motion='running'] .hero-trail {
+    animation-play-state: running;
+  }
+
+  .hero[data-motion='running'][data-cursor-idle] .hero-phrase::after {
+    animation: hero-cursor-blink 1.1s step-end infinite;
+  }
+}
+
+@keyframes hero-trail-flow {
+  from {
+    transform: translateX(-76%);
+  }
+  to {
+    transform: translateX(116%);
+  }
+}
+
+@keyframes hero-cursor-blink {
+  50% {
+    opacity: 0;
+  }
 }
 
 .hero .lead {

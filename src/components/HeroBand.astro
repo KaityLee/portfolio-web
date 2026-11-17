@@ -1,14 +1,27 @@
 ---
-// An original decorative scatter plot with fixed coordinates. The plot is not empirical data.
-const points = [
-  [4, 75], [10, 67], [16, 73], [22, 61], [75, 31], [82, 26], [91, 19], [96, 24],
-  [6, 84], [9, 76], [14, 83], [15, 64], [18, 68], [24, 75], [27, 65], [31, 72], [34, 57],
-  [66, 46], [71, 41], [76, 48], [78, 39], [84, 40], [86, 28], [90, 34], [94, 12], [98, 16],
-] as const;
+const trails = [
+  { row: '20%', length: '32%', offset: '13%', phase: -0.4464 },
+  { row: '34%', length: '26%', offset: '51%', phase: -0.6464 },
+  { row: '46%', length: '29%', offset: '1%', phase: -0.2464 },
+  { row: '63%', length: '36%', offset: '39%', phase: -0.8464 },
+  { row: '77%', length: '27%', offset: '56%', phase: -0.0464 },
+  { row: '27%', length: '21%', offset: '65%', phase: -0.5464 },
+  { row: '84%', length: '31%', offset: '7%', phase: -0.3464 },
+];
 ---
 
 <div class="hero-band" aria-hidden="true">
-  <div class="hero-plot">
-    {points.map(([x, y]) => <span class="plot-point" style={`--plot-x: ${x}%; --plot-y: ${y}%;`}></span>)}
+  <div class="hero-trails">
+    {trails.map(({ row, length, offset, phase }) => (
+      <span
+        class="hero-trail"
+        style={{
+          '--trail-row': row,
+          '--trail-length': length,
+          '--trail-offset': offset,
+          '--trail-phase': phase,
+        }}
+      ></span>
+    ))}
   </div>
 </div>

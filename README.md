@@ -1,6 +1,6 @@
 # portfolio-web
 
-Plot & Tell is a developer portfolio and technical blog built with [Astro](https://astro.build) and TypeScript. Korean content lives under `/` and English content under `/en/`. Both use the English interface.
+Kaity Builds is a developer portfolio and technical blog built with [Astro](https://astro.build) and TypeScript. Korean content lives under `/` and English content under `/en/`. Both use the English interface.
 
 Part of the **Personal OS** project: an Obsidian vault is the private source of truth, a private FastAPI backend on a Mac mini provides search and AI assistance, and this site shows only content that went through an explicit review-and-approve pipeline (`docs/publishing.md`).
 
@@ -28,7 +28,7 @@ npm run design:qa  # design gates: check, build, tokens, Playwright matrix → s
 
 ## Design system and QA
 
-- `DESIGN.md` covers the Plot & Tell style, tokens, and page contracts. Wanted Sans, JetBrains Mono, and D2Coding are self-hosted under SIL OFL.
+- `DESIGN.md` covers the Kaity Builds style, tokens, and page contracts. Wanted Sans, JetBrains Mono, and D2Coding are self-hosted under SIL OFL.
 - `npm run design:qa` — type check, build, token-literal check, then Playwright (installed Chrome) at 320/390/768/1280 px in light and dark: horizontal overflow, axe (WCAG 2.2 AA), 44 px touch targets, full-page screenshots in `shots/`. `VISUAL_BASELINE=1` adds screenshot comparison against `tests/__screenshots__/`.
 - `docs/design/quality-gates.md` describes the checks, including mobile browser interactions. `docs/design/prompts.md` holds the design prompts and `LICENSES.md` records every third-party asset.
 - `.claude/skills/design-qa` and the Stop hook in `.claude/settings.json` make coding agents run the gates before finishing UI work.
