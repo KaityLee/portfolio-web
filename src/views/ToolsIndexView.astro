@@ -1,0 +1,41 @@
+---
+import { headLang, useTranslations, type Locale } from '../i18n/ui';
+import { localizePath } from '../i18n/utils';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { toolPath, tools } from '../tools/registry';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const head = headLang(locale);
+const list = tools(locale);
+---
+
+<BaseLayout title={t('tools.heading')} description={t('tools.lead')} locale={locale}>
+  <section class="index-page">
+    <h1 lang={head}>{t('tools.heading')}</h1>
+    <p class="lead">{t('tools.lead')}</p>
+    <ul class="post-list">
+      {
+        list.map((tool) => (
+          <li>
+            <h2 lang={head}>
+              <a href={localizePath(toolPath(tool.slug), locale)}>{tool.title}</a>
+            </h2>
+            <p>{tool.summary}</p>
+            <div class="meta">
+              <span class="tags">
+                {tool.tags.map((tag) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </span>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>

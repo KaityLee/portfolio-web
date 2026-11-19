@@ -2,7 +2,7 @@
 // Site navigation. On phones it is a popover sheet under the header opened by the menu button
 // (native popover API, no JS library); from 768px it renders inline. The Home item is only
 // shown in the sheet because the brand link is Home on desktop (DESIGN.md §7).
-import { ui as t, type Locale } from '../i18n/ui';
+import { headLang, useTranslations, type Locale } from '../i18n/ui';
 import { localizePath, stripLocale } from '../i18n/utils';
 
 interface Props {
@@ -10,14 +10,16 @@ interface Props {
 }
 
 const { locale } = Astro.props;
+const t = useTranslations(locale);
 const current = stripLocale(Astro.url.pathname).replace(/\/$/, '') || '/';
 
 const items: Array<{ path: string; label: string; sheetOnly?: boolean }> = [
-  { path: '/', label: t['nav.home'], sheetOnly: true },
-  { path: '/writing', label: t['nav.writing'] },
-  { path: '/projects', label: t['nav.projects'] },
-  { path: '/about', label: t['nav.about'] },
-  { path: '/contact', label: t['nav.contact'] },
+  { path: '/', label: t('nav.home'), sheetOnly: true },
+  { path: '/writing', label: t('nav.writing') },
+  { path: '/projects', label: t('nav.projects') },
+  { path: '/tools', label: t('nav.tools') },
+  { path: '/about', label: t('nav.about') },
+  { path: '/contact', label: t('nav.contact') },
 ];
 
 function isCurrent(path: string): boolean {
@@ -25,8 +27,8 @@ function isCurrent(path: string): boolean {
 }
 ---
 
-<nav id="site-menu" class="site-nav" popover aria-label={t['nav.menu']}>
-  <ul>
+<nav id="site-menu" class="site-nav" popover aria-label={t('nav.menu')}>
+  <ul lang={headLang(locale)}>
     {
       items.map(({ path, label, sheetOnly }) => (
         <li class:list={{ 'sheet-only': sheetOnly }}>

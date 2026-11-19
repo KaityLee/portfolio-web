@@ -1,5 +1,5 @@
 ---
-import { ui as t, type Locale } from '../i18n/ui';
+import { headLang, useTranslations, type Locale } from '../i18n/ui';
 import { localizePath } from '../i18n/utils';
 import HeroBand from './HeroBand.astro';
 import Icon from './Icon.astro';
@@ -9,15 +9,16 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const phrases = t['home.phrases'];
+const t = useTranslations(locale);
+const phrases = t('home.phrases');
 ---
 
 <section class="hero" data-home-hero aria-labelledby="home-heading">
   <HeroBand />
   <div class="container hero-content">
-    <h1 id="home-heading" aria-label={`${t['home.heading']} ${phrases[0]}`}>
+    <h1 id="home-heading" lang={headLang(locale)} aria-label={`${t('home.heading')} ${phrases[0]}`}>
       <span aria-hidden="true">
-        <span class="hero-title-prefix">{t['home.heading']}</span>
+        <span class="hero-title-prefix">{t('home.heading')}</span>
         <span class="hero-phrases">
           <span class="hero-phrase" data-hero-phrase>{phrases[0]}</span>
           {phrases.map((phrase) => <span class="hero-phrase-size" data-phrase={phrase}></span>)}
@@ -93,13 +94,13 @@ const phrases = t['home.phrases'];
         syncMotion();
       })();
     </script>
-    <p class="lead">{t['home.lead']}</p>
+    <p class="lead">{t('home.lead')}</p>
     <div class="hero-actions">
       <a class="button" href={localizePath('/projects', locale)}>
-        {t['home.projectsAction']}
+        {t('home.projectsAction')}
         <Icon name="arrow-right" size={18} />
       </a>
-      <a class="button button-outline" href={localizePath('/writing', locale)}>{t['home.writingAction']}</a>
+      <a class="button button-outline" href={localizePath('/writing', locale)}>{t('home.writingAction')}</a>
     </div>
   </div>
 </section>

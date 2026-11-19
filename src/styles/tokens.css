@@ -33,6 +33,17 @@
   --hero-scrim: #101214d9;
   --hero-trail-duration: 6.6s;
 
+  /* §5 JSON tool syntax on the code surface. Fixed in both themes like --color-code-bg. */
+  --json-key: #9ccbe6;
+  --json-string: #8fd4a8;
+  --json-number: #e3a66b;
+  --json-boolean: #d4aef2;
+  --json-null: #a8adb1;
+  --json-muted: #a8adb1;
+  --json-guide: #3c4044;
+  --json-selected: #23272a;
+  --json-match: #4a3524;
+
   /* §4 Typography */
   --font-sans: 'Wanted Sans Variable', 'Wanted Sans', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'D2Coding', ui-monospace, monospace;

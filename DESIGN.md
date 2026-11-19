@@ -8,7 +8,7 @@
 
 - **Precise**. Lead with the system, the decisions behind it, and what was learned. Treat tables, code, and dates as primary content.
 - **Cinematic**. Use one full-width charcoal composition on the home page. Carry its alignment, contrast, and thin rules through the rest of the site.
-- **Dryly playful**. The home title pairs real work with dry developer humor. About can carry one line of math or engineering humor. Use plain English for actions and navigation.
+- **Dryly playful**. The home title pairs real work with dry developer humor. About can carry one line of math or engineering humor. Use plain English for navigation and plain Korean or English for actions, following the route.
 
 ## 2. Audiences and their jobs
 
@@ -18,7 +18,7 @@
 | Engineer reading a post | Read prose and code comfortably, skim the contents, follow links and citations |
 | Returning reader | Find a project or recent post and switch content language or theme |
 
-Korean content lives under `/` and English content under `/en/`. Both use English interface copy, including dates, reading time, generated Markdown labels, and accessible names. Content language follows Markdown frontmatter. Mark English controls and Korean content with the appropriate HTML language.
+Korean content lives under `/` and English content under `/en/`. Heads stay English on both routes: the brand, menu and footer links, page titles, section titles and the table of contents title. Everything else follows the route: under `/` leads, descriptions, actions, labels, accessible names, dates and reading time are Korean, under `/en/` English. Generated Markdown labels (code copy, callouts, heading links) follow the post's frontmatter `lang`. The page `lang` is the route's language; English heads on Korean pages carry `lang="en"`. Copy lives in `src/i18n/ui.ts`: `ui` (English) and `uiKo`, which leaves heads out on purpose.
 
 ## 3. Visual direction
 
@@ -66,6 +66,8 @@ Use tabular numerals on list dates, 400 weight for body, 500–600 for navigatio
 | `--color-selection` | `#ead6c3` | `#67452f` | Text selection |
 | `--color-success` / `--color-info` / `--color-warning` / `--color-danger` | `#0f7a3d` / `#24577a` / `#8f5400` / `#a32e36` | `#5ad28a` / `#91bedb` / `#f0b45b` / `#ff989e` | Contextual Markdown callouts |
 
+The JSON tool colors its output on the code surface with a fixed palette in both themes, each at least 5:1 on `--color-code-bg`, `--json-selected` and `--json-match`: `--json-key: #9ccbe6`, `--json-string: #8fd4a8`, `--json-number: #e3a66b`, `--json-boolean: #d4aef2`, `--json-null` and `--json-muted: #a8adb1`, `--json-guide: #3c4044` for indent guides, `--json-selected: #23272a` for the selected row and `--json-match: #4a3524` for search matches.
+
 The home hero uses its own fixed palette in both themes. `--hero-bg: #101214`, `--hero-text: #f4f3ef`, `--hero-muted: #b6b9bc`, `--hero-accent: #e3a66b`. Use copper sparingly on actionable text, focus indicators, and the light trails. Shiki's GitHub dark palette supplies code highlighting.
 
 The background wash uses `--hero-wash: #a0653f75` and `--hero-slate: #4255658c`. The trails use `--hero-ray-warm: #c78651b8`, `--hero-ray-cool: #7692aab0`, and `--hero-ray-tip: #f0c299e6`. A fixed radial overlay uses `--hero-scrim: #101214d9` behind the title.
@@ -80,7 +82,7 @@ The background wash uses `--hero-wash: #a0653f75` and `--hero-slate: #4255658c`.
 
 - Verify at 320, 390, 768, and 1280px. Header switches to inline navigation at 768px and the article contents rail starts at 1280px.
 - The shared container is 72rem with 16px gutters below 768px and 24px above. The article stays centered in a 42rem reading column, with the contents rail in its right margin.
-- Header height is 56px. Phones show the brand and square theme and menu buttons. The native menu sheet carries navigation and the content-language selector. Desktop shows four inline links, language selector, and theme toggle in a sticky bar.
+- Header height is 56px. Phones show the brand and square theme and menu buttons. The native menu sheet carries navigation and the content-language selector. Desktop shows five inline links (Writing, Projects, Tools, About, Contact), language selector, and theme toggle in a sticky bar.
 - The home hero is the first section inside main, full width. Center the title, lead, and link group. Use `clamp(25rem, 46vw, 35rem)` minimum height, with content allowed to grow. Reserve the height of the longest suffix at the current width. Show five trails on phones and seven from 768px.
 - Footer has site identity, navigation, source and asset-license links, and a content-license note. Stack the groups on phones.
 - The two previously defined ad positions remain reserved in the specification for future use, after the article intro and after the last section.
@@ -89,20 +91,21 @@ The background wash uses `--hero-wash: #a0653f75` and `--hero-slate: #4255658c`.
 
 | Component | Contract |
 | --- | --- |
-| Navigation and locale picker | Direct English labels, active state with copper text or underline. Locale links show KO and EN with full English accessible labels. |
+| Navigation and locale picker | Direct English labels on both routes, active state with copper text or underline. Locale links show KO and EN, each with its own name as the accessible label (한국어, English). |
 | Hero links | Primary light button and outlined secondary button on the charcoal surface. Both expose the same copper focus ring. |
 | Section heading | Sans-serif title, aligned with a descriptive link to the full index where offered. A top rule separates sections. |
-| Project panel | A surface with a hairline border, title, summary, date and authored tags. Two columns from 768px; a sole panel can occupy the row. |
-| Writing row | Date and linked title. The full index also shows authored tags and featured summaries. On phones stack metadata and title. From 768px, use the 8rem `--post-date-width` column. |
-| Article meta | English metadata labels and English date and duration formatting through `src/utils/date.ts`. Authored tags retain their content language. |
+| Project panel | A surface with a hairline border, title, summary, date and authored tags. Two columns from 768px; a sole panel can occupy the row. The whole panel is the link: the title link stretches over it, the border and title turn copper on hover, and the focus ring wraps the panel. Tool cards use the same panel. |
+| Writing row | Date and linked title. The full index also shows authored tags and featured summaries. On phones stack metadata and title. From 768px, use the 8rem `--post-date-width` column. The whole row is the link, with a light hover wash and an inset focus ring. |
+| Article meta | Metadata labels, dates and durations in the route's language through `src/utils/date.ts` (long dates in Korean, medium in English). Authored tags retain their content language. |
 | Contents | Collapsed disclosures on phones and tablets. Desktop sticky rail highlights the current heading. Anchor text follows the article language. |
-| Previous / next | Hairline panels with a clear English action label and authored title. |
-| Code, callouts and tables | Dark code surface with native horizontal scroll and a labeled copy button. Semantic callout accents and English generated labels. Tables scroll inside a keyboard-focusable wrapper. |
+| Previous / next | Hairline panels with a clear action label in the route's language and the authored title. |
+| Code, callouts and tables | Dark code surface with native horizontal scroll and a labeled copy button. Semantic callout accents and generated labels in the post's language. Tables scroll inside a keyboard-focusable wrapper. |
+| Tool workspace | Input panel on the canvas surface with the action buttons, then output on the dark code surface. Controls are 44px targets; tree rows and their buttons are at least 24px. Tools process input only in the browser, never upload or store it, and say so under the lead. Output that would freeze the page (over 1,000,000 characters, or any line over 10,000) is shown as a cut preview with a note, and is offered in full through Copy all and Download. |
 | Markdown figures and links | Keep authored alt text, captions, and anchors. Use the existing local Lucide paths for generated icons. |
 
 ## 9. Motion
 
-Use short feedback transitions on controls. Keep `Kaity builds` fixed. Start with only the copper underscore on the second line and type `AI agents.` one character at a time. Hold complete phrases for about two seconds, then erase back to the bare cursor before typing the next phrase. Continue with `data pipelines.`, `smart systems.`, `tiny robots.`, and `cool stuff!` before returning to `AI agents.`. The cursor follows the text and blinks while waiting. The lead is `A curious engineer with too many side quests.`.
+Use short feedback transitions on controls. Keep `Kaity builds` fixed. Start with only the copper underscore on the second line and type `AI agents.` one character at a time. Hold complete phrases for about two seconds, then erase back to the bare cursor before typing the next phrase. Continue with `data pipelines.`, `smart systems.`, `tiny robots.`, and `cool stuff!` before returning to `AI agents.`. The cursor follows the text and blinks while waiting. The lead is `A curious engineer with too many side quests.` under `/en/` and `사이드 퀘스트가 너무 많은 호기심 많은 엔지니어.` under `/`.
 
 Stagger the CSS light trails so they are visible on entry. They move from lower left to upper right at a constant speed with a `--hero-trail-duration` of 6.6 seconds. Express each trail's starting phase as a fraction of that duration so the spacing stays consistent when tuning the speed. Pause motion offscreen or while the tab is hidden and resume from that position. Use `Kaity builds AI agents.` as the stable accessible heading and the visible fallback for reduced motion or browsers without JavaScript. The fallback shows the trails in fixed positions.
 
@@ -110,13 +113,15 @@ Stagger the CSS light trails so they are visible on entry. They move from lower 
 
 | Page | Contract |
 | --- | --- |
-| Home | Shared English typewriter H1 and lead, then links to projects and writing. Up to three projects with featured items first, up to five recent posts, then contact. |
+| Home | English typewriter H1; lead and actions in the route's language, then links to projects and writing. Up to three projects with featured items first, up to five recent posts, then contact. |
 | Writing | Title and lead followed by writing rows. |
 | Projects | Title and lead followed by project panels. |
-| Article | Authored header, English metadata, contents, Markdown, previous/next and license. |
+| Article | Authored header, metadata in the route's language, contents, Markdown, previous/next and license. |
 | Project detail | Authored title, summary and facts, then Markdown. Use only the facts each project supplies. |
 | About | Backend and operations background, one line of dry math humor, and a short list of tools. |
-| Contact | Plain English contact status and links approved for public display. |
+| Contact | Contact status in the route's language and links approved for public display. |
+| Tools | Title and lead followed by a project-panel card per tool. |
+| Tool | Title, lead and a one-line privacy note, then the tool workspace. The JSON Formatter opens JSON stored inside strings, starts large arrays collapsed and keeps number text unchanged. |
 
 ## 11. Do-not list
 
@@ -129,4 +134,4 @@ Stagger the CSS light trails so they are visible on entry. They move from lower 
 
 ## 12. Decisions
 
-On 2026-11-16 the owner chose a cinematic home, English interface copy across both content locales, and mobile-browser interaction checks. The current home pairs the Kaity Builds brand with a rotating title and moving diagonal trails. The previous 2026-11-08 direction used Wanted Sans with Gowun Batang display type, indigo and rose, and an illustrated notebook band.
+On 2026-11-19 the owner replaced the all-English interface: heads (menu, page and section titles) stay English, and sub-heads and body copy follow the route's language (§2). On 2026-11-16 the owner chose a cinematic home, English interface copy across both content locales, and mobile-browser interaction checks. The current home pairs the Kaity Builds brand with a rotating title and moving diagonal trails. The previous 2026-11-08 direction used Wanted Sans with Gowun Batang display type, indigo and rose, and an illustrated notebook band.

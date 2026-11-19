@@ -12,7 +12,7 @@ Rules for coding agents (Codex, Claude Code) and humans working in this **public
 ## Globalization baseline
 
 - **Time**: content `date`/`updated` are ISO 8601 in frontmatter and are formatted only through `src/utils/date.ts` (`Intl.DateTimeFormat` with an explicit `timeZone`). Never hand-format dates.
-- **Language**: BCP 47 content locales from `src/i18n/ui.ts` (`ko` default, `en`). Shared English interface copy comes from `ui` for both routes. Content lives in `src/content/<collection>/<locale>/` and translations share a `translationKey`. Mark English controls and Korean content with their language.
+- **Language**: BCP 47 content locales from `src/i18n/ui.ts` (`ko` default, `en`). Interface copy comes from `useTranslations(locale)`: heads (menu, page and section titles) stay English on both routes, everything else follows the route (`uiKo` for `ko`, DESIGN.md §2). Content lives in `src/content/<collection>/<locale>/` and translations share a `translationKey`. Mark English heads on Korean pages with `lang="en"` (`headLang()`).
 - **Exposure**: content schema carries `visibility` (`private` | `restricted` | `public`) and `draft`. Lists show only `public && !draft`; `restricted` pages are built but `noindex` and unlisted; `private` is never built. Do not add an `isPublic` boolean anywhere.
 
 ## Code

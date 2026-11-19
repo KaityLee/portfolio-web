@@ -6,7 +6,7 @@ import LocalePicker from '../components/LocalePicker.astro';
 import Nav from '../components/Nav.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import { site as siteConfig } from '../site';
-import { defaultLocale, localeMeta, locales, ui as t, uiLanguage, type Locale } from '../i18n/ui';
+import { defaultLocale, headLang, localeMeta, locales, useTranslations, type Locale } from '../i18n/ui';
 import { localizePath, stripLocale } from '../i18n/utils';
 
 interface Props {
@@ -21,6 +21,8 @@ interface Props {
 }
 
 const { title, description, locale, alternates, noindex = false, ogType = 'website' } = Astro.props;
+const t = useTranslations(locale);
+const head = headLang(locale);
 const site = Astro.site ?? new URL('https://example.com');
 const routePath = stripLocale(Astro.url.pathname);
 
@@ -30,9 +32,10 @@ const alternateUrls: Array<[Locale, URL]> = alternates
   : locales.map((l) => [l, new URL(localizePath(routePath, l), site)]);
 const xDefault = alternateUrls.find(([l]) => l === defaultLocale)?.[1] ?? alternateUrls[0]?.[1];
 const canonical = new URL(Astro.url.pathname, site);
-const pageLanguage = ogType === 'article' ? locale : uiLanguage;
-const metaDescription = description ?? t['site.description'];
-const fullTitle = `${title} · ${t['site.title']}`;
+// The page is in its route's language; English heads (brand, menu, titles) carry lang="en" (DESIGN.md §2).
+const pageLanguage = locale;
+const metaDescription = description ?? t('site.description');
+const fullTitle = `${title} · ${t('site.title')}`;
 const localeAlternates = Object.fromEntries(alternateUrls.map(([l, u]) => [l, u.pathname])) as Partial<Record<Locale, string>>;
 ---
 
@@ -51,7 +54,7 @@ const localeAlternates = Object.fromEntries(alternateUrls.map(([l, u]) => [l, u.
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={metaDescription} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:site_name" content={t['site.title']} />
+    <meta property="og:site_name" content={t('site.title')} />
     <meta property="og:locale" content={localeMeta[locale].ogLocale} />
     {
       alternateUrls
@@ -77,10 +80,10 @@ const localeAlternates = Object.fromEntries(alternateUrls.map(([l, u]) => [l, u.
     </script>
   </head>
   <body>
-    <a class="skip-link" href="#main" lang={uiLanguage}>{t['nav.skipToContent']}</a>
-    <header class="site-header" lang={uiLanguage}>
+    <a class="skip-link" href="#main">{t('nav.skipToContent')}</a>
+    <header class="site-header">
       <div class="container">
-        <a class="brand" href={localizePath('/', locale)}>{t['site.title']}</a>
+        <a class="brand" href={localizePath('/', locale)} lang={head}>{t('site.title')}</a>
         <Nav locale={locale}>
           <LocalePicker locale={locale} alternates={localeAlternates} />
         </Nav>
@@ -88,8 +91,8 @@ const localeAlternates = Object.fromEntries(alternateUrls.map(([l, u]) => [l, u.
           <div class="tools-desktop">
             <LocalePicker locale={locale} alternates={localeAlternates} />
           </div>
-          <ThemeToggle />
-          <button class="icon-button menu-button" type="button" popovertarget="site-menu" aria-label={t['nav.menu']}>
+          <ThemeToggle locale={locale} />
+          <button class="icon-button menu-button" type="button" popovertarget="site-menu" aria-label={t('nav.menu')}>
             <Icon name="menu" class="icon-menu" />
             <Icon name="x" class="icon-close" />
           </button>
@@ -102,19 +105,19 @@ const localeAlternates = Object.fromEntries(alternateUrls.map(([l, u]) => [l, u.
         <slot />
       </div>
     </main>
-    <footer class="site-footer" lang={uiLanguage}>
+    <footer class="site-footer">
       <div class="container footer-grid">
         <div class="footer-site">
-          <a class="brand" href={localizePath('/', locale)}>{t['site.title']}</a>
-          <p>{t['site.description']}</p>
+          <a class="brand" href={localizePath('/', locale)} lang={head}>{t('site.title')}</a>
+          <p>{t('site.description')}</p>
         </div>
-        <ul class="footer-links" aria-label={t['footer.links']}>
-          <li><a href={localizePath('/about', locale)}>{t['nav.about']}</a></li>
-          <li><a href={localizePath('/contact', locale)}>{t['nav.contact']}</a></li>
-          <li><a href={siteConfig.repoUrl} rel="noopener">{t['footer.source']}</a></li>
-          <li><a href="/licenses/third-party.txt">{t['footer.assetLicenses']}</a></li>
+        <ul class="footer-links" aria-label={t('footer.links')}>
+          <li lang={head}><a href={localizePath('/about', locale)}>{t('nav.about')}</a></li>
+          <li lang={head}><a href={localizePath('/contact', locale)}>{t('nav.contact')}</a></li>
+          <li lang={head}><a href={siteConfig.repoUrl} rel="noopener">{t('footer.source')}</a></li>
+          <li lang={head}><a href="/licenses/third-party.txt">{t('footer.assetLicenses')}</a></li>
         </ul>
-        <p class="footer-note">© {new Date().getUTCFullYear()} · {t['footer.builtWith']}</p>
+        <p class="footer-note">© {new Date().getUTCFullYear()} · {t('footer.builtWith')}</p>
       </div>
     </footer>
   </body>

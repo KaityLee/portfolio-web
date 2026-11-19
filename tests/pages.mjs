@@ -9,6 +9,8 @@ export const pages = [
   { id: 'project', path: '/projects/personal-os/' },
   { id: 'about', path: '/about/' },
   { id: 'contact', path: '/contact/' },
+  { id: 'tools', path: '/tools/' },
+  { id: 'tool-json', path: '/tools/json-formatter/' },
   { id: 'en-home', path: '/en/' },
   { id: 'en-writing', path: '/en/writing/' },
   { id: 'en-article', path: '/en/writing/hello-world/' },
@@ -16,4 +18,5 @@ export const pages = [
   { id: 'en-project', path: '/en/projects/personal-os/' },
   { id: 'en-about', path: '/en/about/' },
   { id: 'en-contact', path: '/en/contact/' },
+  { id: 'en-tools', path: '/en/tools/' },
 ];

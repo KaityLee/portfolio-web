@@ -15,7 +15,8 @@
     "test": "playwright test",
     "design:qa": "npm run check && astro build --force && node scripts/check-tokens.mjs && playwright test",
     "design:qa:fast": "npm run check && astro build --force && node scripts/check-tokens.mjs && playwright test --grep overflow",
-    "design:lh": "lhci autorun"
+    "design:lh": "lhci autorun",
+    "test:unit": "node --test tests/unit/*.unit.ts"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.4.5",

@@ -3,7 +3,7 @@
 // current heading highlighted; phones: a collapsed <details> above the article. Both share markup.
 import type { MarkdownHeading } from 'astro';
 
-import { ui as t, uiLanguage, type Locale } from '../i18n/ui';
+import { headLang, useTranslations, type Locale } from '../i18n/ui';
 
 interface Props {
   headings: MarkdownHeading[];
@@ -13,14 +13,17 @@ interface Props {
 }
 
 const { headings, locale, open = false } = Astro.props;
+const t = useTranslations(locale);
+// "Contents" is a menu title, so it stays an English head (DESIGN.md §2).
+const head = headLang(locale);
 const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
 {
   items.length >= 2 && (
     <details class="toc" open={open}>
-      <summary lang={uiLanguage}>{t['article.toc']}</summary>
-      <nav lang={uiLanguage} aria-label={t['article.toc']}>
+      <summary lang={head}>{t('article.toc')}</summary>
+      <nav aria-label={t('article.toc')}>
         <ol>
           {items.map((h) => (
             <li class:list={[`toc-depth-${h.depth}`]}>

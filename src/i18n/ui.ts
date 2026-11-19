@@ -3,10 +3,11 @@
 export const locales = ['ko', 'en'] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale = 'ko' satisfies Locale;
+/** Language of the English interface heads (brand, menu, page and section titles) on every route. */
 export const uiLanguage = 'en';
 
 export const localeMeta: Record<Locale, { label: string; shortLabel: string; ogLocale: string; dir: 'ltr' | 'rtl' }> = {
-  ko: { label: 'Korean', shortLabel: 'KO', ogLocale: 'ko_KR', dir: 'ltr' },
+  ko: { label: '한국어', shortLabel: 'KO', ogLocale: 'ko_KR', dir: 'ltr' },
   en: { label: 'English', shortLabel: 'EN', ogLocale: 'en_US', dir: 'ltr' },
 };
 
@@ -18,6 +19,7 @@ export const ui = {
   'nav.projects': 'Projects',
   'nav.writing': 'Writing',
   'nav.contact': 'Contact',
+  'nav.tools': 'Tools',
   'nav.theme': 'Toggle theme',
   'nav.language': 'Content language',
   'nav.skipToContent': 'Skip to content',
@@ -35,6 +37,7 @@ export const ui = {
   'home.writingAction': 'Read the blog',
   'home.featured': 'Selected projects',
   'home.contactLead': 'Want to work together or talk about a post? Get in touch.',
+  'home.contactAction': 'Contact',
   'home.recentWriting': 'Recent writing',
   'home.allProjects': 'All projects',
   'home.allWriting': 'All writing',
@@ -68,6 +71,70 @@ export const ui = {
   'callout.important': 'Important',
   'callout.warning': 'Warning',
   'callout.caution': 'Caution',
+  'tools.heading': 'Tools',
+  'tools.lead': 'Small developer tools that run entirely in your browser.',
+  'tools.privacy': 'Runs in your browser. Nothing you paste or open is uploaded or saved.',
+  'tools.json.title': 'JSON Formatter',
+  'tools.json.summary':
+    'Format, minify and search JSON. Opens JSON stored inside strings, the way LLM and pipeline responses often arrive.',
+  'tools.json.lead': 'Format and inspect JSON, including the JSON that LLM and pipeline responses tuck inside strings.',
+  'tools.json.input': 'JSON input',
+  'tools.json.placeholder': 'Paste JSON here or drop a .json file',
+  'tools.json.openFile': 'Open file',
+  'tools.json.example': 'Load example',
+  'tools.json.format': 'Format',
+  'tools.json.minify': 'Minify',
+  'tools.json.indent': 'Indent',
+  'tools.json.indent2': '2 spaces',
+  'tools.json.indent4': '4 spaces',
+  'tools.json.indentTab': 'Tab',
+  'tools.json.shortcut': 'Ctrl or ⌘ + Enter formats',
+  'tools.json.view': 'Output view',
+  'tools.json.viewTree': 'Tree',
+  'tools.json.viewText': 'Text',
+  'tools.json.treeOptions': 'Tree options',
+  'tools.json.decode': 'Show decoded strings',
+  'tools.json.embedded': 'Open JSON in strings',
+  'tools.json.hideEmpty': 'Hide null and empty',
+  'tools.json.hideKeys': 'Hide keys',
+  'tools.json.hideKeysPlaceholder': 'words, coordinates',
+  'tools.json.search': 'Search keys and values',
+  'tools.json.searchPrev': 'Previous match',
+  'tools.json.searchNext': 'Next match',
+  'tools.json.path': 'Selected path',
+  'tools.json.copyPath': 'Copy path',
+  'tools.json.copyJs': 'Copy JS',
+  'tools.json.copyValue': 'Copy value',
+  'tools.json.copyText': 'Copy all',
+  'tools.json.download': 'Download .json',
+  'tools.json.inline': 'Inline JSON in strings',
+  'tools.json.tree': 'JSON tree',
+  'tools.json.text': 'Formatted JSON',
+  'tools.json.messages': {
+    jsonBadge: 'JSON',
+    keys: '{n} keys',
+    keysOne: '{n} key',
+    items: '{n} items',
+    itemsOne: '{n} item',
+    hidden: '{n} hidden',
+    chars: '{n} chars',
+    showAll: 'Show all {n} chars',
+    showMore: 'Show {n} more ({left} left)',
+    toggle: 'Expand or collapse',
+    matches: '{i} of {n}',
+    matchesCapped: '{i} of {n}+',
+    noMatches: 'No matches',
+    errorAt: 'Line {line}, column {column}: {message}',
+    working: 'Parsing…',
+    status: '{size} · {values} values · JSON in strings: {embedded} · {ms} ms',
+    largeText: 'Showing the first {lines} of {total} lines, each cut at {chars} characters, to keep the page responsive. Copy all or download for the full output.',
+    largeTextCut: 'Lines longer than {chars} characters are cut to keep the page responsive. Copy all or download for the full output.',
+    endOfInput: 'end of input',
+    fileTooLarge: 'Files over 64 MB are not supported.',
+    copied: 'Copied',
+  },
+  /** Parser error templates by code; English falls back to ERROR_TEXT in src/tools/json/parse.ts. */
+  'tools.json.errors': {} as Readonly<Record<string, string>>,
   'contact.heading': 'Contact',
   'contact.body': 'Contact details will be added after review.',
   'common.empty': 'Nothing published yet.',
@@ -77,3 +144,156 @@ export const ui = {
   'footer.assetLicenses': 'Asset licenses',
   'footer.links': 'Site links',
 } as const;
+
+type UiKey = keyof typeof ui;
+type Widen<T> = T extends string ? string : T extends readonly string[] ? readonly string[] : { readonly [K in keyof T]: Widen<T[K]> };
+export type UiValue<K extends UiKey> = Widen<(typeof ui)[K]>;
+
+/**
+ * Korean copy for ko routes (DESIGN.md §2). Only body text is translated: leads, descriptions,
+ * actions, labels and accessible names. Heads stay English and are deliberately absent here:
+ * the brand, menu and footer links, page titles and section titles. A key missing here falls back
+ * to `ui`, and `headLang()` marks those English heads for assistive tech.
+ */
+export const uiKo: { [K in UiKey]?: UiValue<K> } = {
+  'site.description': 'AI 백엔드, 시스템, 소프트웨어 운영에 관한 프로젝트와 글',
+  'nav.theme': '테마 전환',
+  'nav.language': '콘텐츠 언어',
+  'nav.skipToContent': '본문으로 건너뛰기',
+  'nav.menu': '메뉴',
+  'home.lead': '사이드 퀘스트가 너무 많은 호기심 많은 엔지니어.',
+  'home.projectsAction': '프로젝트 보기',
+  'home.writingAction': '블로그 읽기',
+  'home.contactLead': '함께 일하고 싶거나 글에 대해 이야기하고 싶다면 연락 주세요.',
+  'home.allProjects': '전체 프로젝트',
+  'home.allWriting': '전체 글',
+  'about.body':
+    '백엔드 시스템을 다룹니다. 대규모 문서 처리 파이프라인을 운영했고 비동기 처리와 성능 개선을 맡아 왔습니다. 지금은 Python으로 검색과 AI를 탐구하려고 로컬 우선 지식 시스템 Personal OS를 만들고 있습니다.',
+  'about.aside': '수학을 전공했습니다. 그러다 변수에 마감일이 생겼죠.',
+  'projects.lead': '직접 만든 시스템과 그 뒤에 있는 설계 결정들.',
+  'projects.stack': '스택',
+  'projects.role': '역할',
+  'projects.period': '기간',
+  'projects.repo': '저장소',
+  'writing.lead': '백엔드 설계, 검색, 소프트웨어 운영에 관한 기록.',
+  'writing.published': '발행',
+  'writing.updated': '수정',
+  'writing.tags': '태그',
+  'article.prev': '이전 글',
+  'article.next': '다음 글',
+  'article.unlisted': '목록 미노출',
+  'article.license': '라이선스',
+  'article.readingTime': '읽는 시간',
+  'article.headingLink': '이 제목으로 바로 가는 링크',
+  'code.copy': '복사',
+  'code.copied': '복사됨',
+  'callout.note': '참고',
+  'callout.tip': '팁',
+  'callout.important': '중요',
+  'callout.warning': '경고',
+  'callout.caution': '주의',
+  'tools.lead': '브라우저 안에서만 동작하는 작은 개발 도구 모음입니다.',
+  'tools.privacy': '브라우저에서만 동작합니다. 붙여 넣거나 연 내용은 업로드되거나 저장되지 않습니다.',
+  'tools.json.summary': 'JSON을 정렬하고 압축하고 검색합니다. LLM과 파이프라인 응답처럼 문자열 안에 담겨 온 JSON도 펼쳐 봅니다.',
+  'tools.json.lead': 'JSON을 정렬하고, 문자열 안에 담긴 JSON까지 펼쳐 봅니다.',
+  'tools.json.input': 'JSON 입력',
+  'tools.json.placeholder': 'JSON을 붙여 넣거나 .json 파일을 끌어다 놓으세요',
+  'tools.json.openFile': '파일 열기',
+  'tools.json.example': '예제 불러오기',
+  'tools.json.format': '정렬',
+  'tools.json.minify': '압축',
+  'tools.json.indent': '들여쓰기',
+  'tools.json.indent2': '공백 2칸',
+  'tools.json.indent4': '공백 4칸',
+  'tools.json.indentTab': '탭',
+  'tools.json.shortcut': 'Ctrl 또는 ⌘ + Enter로 정렬',
+  'tools.json.view': '출력 보기',
+  'tools.json.viewTree': '트리',
+  'tools.json.viewText': '텍스트',
+  'tools.json.treeOptions': '트리 옵션',
+  'tools.json.decode': '문자열 풀어서 보기',
+  'tools.json.embedded': '문자열 속 JSON 펼치기',
+  'tools.json.hideEmpty': 'null과 빈 값 숨기기',
+  'tools.json.hideKeys': '숨길 키',
+  'tools.json.search': '키와 값 검색',
+  'tools.json.searchPrev': '이전 결과',
+  'tools.json.searchNext': '다음 결과',
+  'tools.json.path': '선택한 경로',
+  'tools.json.copyPath': '경로 복사',
+  'tools.json.copyJs': 'JS 복사',
+  'tools.json.copyValue': '값 복사',
+  'tools.json.copyText': '전체 복사',
+  'tools.json.download': '.json 다운로드',
+  'tools.json.inline': '문자열 속 JSON을 펼쳐서 출력',
+  'tools.json.tree': 'JSON 트리',
+  'tools.json.text': '정렬된 JSON',
+  'tools.json.messages': {
+    jsonBadge: 'JSON',
+    keys: '키 {n}개',
+    keysOne: '키 {n}개',
+    items: '항목 {n}개',
+    itemsOne: '항목 {n}개',
+    hidden: '{n}개 숨김',
+    chars: '{n}자',
+    showAll: '전체 보기 ({n}자)',
+    showMore: '{n}개 더 보기 ({left}개 남음)',
+    toggle: '펼치기 또는 접기',
+    matches: '{n}개 중 {i}번째',
+    matchesCapped: '{n}개 이상 중 {i}번째',
+    noMatches: '결과 없음',
+    errorAt: '{line}번째 줄, {column}번째 열: {message}',
+    working: '분석 중…',
+    status: '{size} · 값 {values}개 · 문자열 속 JSON {embedded}개 · {ms}ms',
+    largeText: '페이지가 멈추지 않도록 전체 {total}줄 중 앞 {lines}줄만, 줄마다 {chars}자까지 보여 줍니다. 전체 내용은 전체 복사나 다운로드로 받으세요.',
+    largeTextCut: '페이지가 멈추지 않도록 {chars}자가 넘는 줄은 잘라서 보여 줍니다. 전체 내용은 전체 복사나 다운로드로 받으세요.',
+    endOfInput: '입력의 끝',
+    fileTooLarge: '64MB가 넘는 파일은 열 수 없습니다.',
+    copied: '복사됨',
+  },
+  'tools.json.errors': {
+    empty: '입력이 비어 있습니다',
+    unexpectedEnd: '입력이 중간에 끝났습니다',
+    unexpected: '예상하지 못한 {found}',
+    afterValue: 'JSON 값 뒤에 예상하지 못한 {found}가 있습니다',
+    trailingComma: '{close} 앞에 쉼표가 남아 있습니다',
+    keyQuotes: '키는 큰따옴표로 감싸야 합니다',
+    stringQuotes: '문자열은 큰따옴표로 감싸야 합니다',
+    expectedKey: '"키"가 와야 하는데 {found}가 있습니다',
+    expectedColon: "키 뒤에 ':'가 와야 하는데 {found}가 있습니다",
+    expectedComma: "',' 또는 '{close}'가 와야 하는데 {found}가 있습니다",
+    unterminated: '문자열이 닫히지 않았습니다',
+    badEscape: "잘못된 이스케이프 '\\{found}'",
+    badUnicode: '잘못된 \\u 이스케이프: 16진수 네 자리가 필요합니다',
+    lineBreak: '문자열 안에 줄바꿈이 있습니다. \\n을 쓰세요',
+    controlChar: '문자열 안에 제어 문자가 있습니다',
+    leadingZero: '숫자 앞에 0을 붙일 수 없습니다',
+    digitAfterPoint: '소수점 뒤에 숫자가 필요합니다',
+    digitInExponent: '지수에 숫자가 필요합니다',
+    tooDeep: '중첩이 {max}단계를 넘습니다',
+    stackOverflow: '중첩이 너무 깊어 분석할 수 없습니다',
+  },
+  'contact.body': '연락처는 검토를 마친 뒤 추가할 예정입니다.',
+  'common.empty': '아직 게시된 내용이 없습니다.',
+  'common.readMore': '더 읽기',
+  'footer.builtWith': 'Astro로 만들었습니다. 콘텐츠 라이선스는 글마다 표시되어 있습니다.',
+  'footer.links': '사이트 링크',
+};
+
+const dictionaries: Record<Locale, { [K in UiKey]?: UiValue<K> }> = { ko: uiKo, en: {} };
+
+/** `t(key)` for a route's locale: the locale's copy, or the English original for heads. */
+export function useTranslations(locale: Locale) {
+  return <K extends UiKey>(key: K): UiValue<K> => (dictionaries[locale][key] ?? ui[key]) as UiValue<K>;
+}
+
+/** Translations for a Markdown file at build time, from its frontmatter `lang` (src/plugins). */
+export function contentTranslations(lang: unknown) {
+  const locale = (locales as readonly unknown[]).includes(lang) ? (lang as Locale) : defaultLocale;
+  return useTranslations(locale);
+}
+
+/** `lang` for an English head on this route; undefined where the page itself is English. */
+export function headLang(locale: Locale): string | undefined {
+  return locale === uiLanguage ? undefined : uiLanguage;
+}
+

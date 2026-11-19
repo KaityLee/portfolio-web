@@ -2,8 +2,9 @@
 // Small letter-spaced section heading in the secondary color (DESIGN.md §8 SectionLabel).
 interface Props {
   id?: string;
+  lang?: string;
 }
-const { id } = Astro.props;
+const { id, lang } = Astro.props;
 ---
 
-<h2 class="section-label" id={id}><slot /></h2>
+<h2 class="section-label" id={id} lang={lang}><slot /></h2>
