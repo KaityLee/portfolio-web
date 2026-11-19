@@ -16,7 +16,7 @@ Rules (from `DESIGN.md` §11). Use self-hosted SIL OFL 1.1 fonts, MIT or ISC ico
 
 | Asset | Files | Source | Licence | Added | Notice |
 | --- | --- | --- | --- | --- | --- |
-| Lucide icons (menu, x, sun, moon, arrow-right, chevron-up, chevron-down; info, lightbulb, triangle-alert, copy, check, arrow-up-right, link) | inline paths in `src/components/Icon.astro`; CSS mask data URIs in `src/styles/prose.css` | [Lucide](https://lucide.dev/license) | ISC (Feather-derived glyphs MIT) | 2026-11-08 | [Lucide and Feather notices](public/licenses/third-party.txt) |
+| Lucide icons (menu, x, sun, moon, arrow-right, chevron-up, chevron-down, search, settings-2, arrow-left-right; info, lightbulb, triangle-alert, copy, check, arrow-up-right, link) | inline paths in `src/components/Icon.astro`; CSS mask data URIs in `src/styles/prose.css` | [Lucide](https://lucide.dev/license) | ISC (Feather-derived glyphs MIT) | 2026-11-08 | [Lucide and Feather notices](public/licenses/third-party.txt) |
 
 ## Images and illustrations
 

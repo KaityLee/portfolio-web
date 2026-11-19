@@ -21,6 +21,7 @@ const PREVIEW_LINE_CHARS = 2000;
 const SEARCH_LIMIT = 1000;
 const MAX_FILE_BYTES = 64 * 1024 * 1024;
 const INDENT_KEY = 'jf-indent';
+const SIDE_KEY = 'jf-panel-side';
 
 type Messages = Record<string, string> & { errors?: Record<string, string> };
 type NoId<T> = T extends unknown ? Omit<T, 'id'> : never;
@@ -133,7 +134,15 @@ function init(root: HTMLElement): void {
   const indentSelect = $<HTMLSelectElement>('[data-jf-indent]');
   const errorBox = $<HTMLElement>('[data-jf-error]');
   const status = $<HTMLElement>('[data-jf-status]');
-  const output = $<HTMLElement>('[data-jf-output]');
+  const dialog = $<HTMLDialogElement>('[data-jf-output]');
+  const resultStatus = $<HTMLElement>('[data-jf-result-status]');
+  const reopenButton = $<HTMLButtonElement>('[data-jf-reopen]');
+  const searchToggle = $<HTMLButtonElement>('[data-jf-search-toggle]');
+  const panelToggle = $<HTMLButtonElement>('[data-jf-panel-toggle]');
+  const sideSwap = $<HTMLButtonElement>('[data-jf-side-swap]');
+  const nameEls = [...root.querySelectorAll<HTMLElement>('[data-jf-name]')];
+  const treeOnly = [...root.querySelectorAll<HTMLElement>('[data-jf-tree-only]')];
+  const textOnly = [...root.querySelectorAll<HTMLElement>('[data-jf-text-only]')];
   const treePanel = $<HTMLElement>('[data-jf-tree-panel]');
   const textPanel = $<HTMLElement>('[data-jf-text-panel]');
   const tree = $<HTMLElement>('[data-jf-tree]');
@@ -162,6 +171,8 @@ function init(root: HTMLElement): void {
   let capped = false;
   let lastQuery = '';
   let parseToken = 0;
+  /** Shown as the result's title: the opened file's name, or a label for typed and example input. */
+  let sourceName: string | null = null;
 
   try {
     const saved = localStorage.getItem(INDENT_KEY);
@@ -503,8 +514,104 @@ function init(root: HTMLElement): void {
     for (const button of viewButtons) button.setAttribute('aria-pressed', String(button.dataset.jfView === next));
     treePanel.hidden = next !== 'tree';
     textPanel.hidden = next !== 'text';
+    for (const el of treeOnly) el.hidden = next !== 'tree';
+    for (const el of textOnly) el.hidden = next !== 'text';
     if (next === 'text') void renderText();
   }
+
+  // ---- result dialog ----------------------------------------------------------------------
+  // A history entry is pushed on open so the browser's Back button (and the phone back gesture)
+  // closes the result like leaving a page; the data never leaves memory.
+
+  let historyPushed = false;
+
+  function openResult(): void {
+    if (dialog.open) return;
+    dialog.showModal();
+    tree.scrollTop = 0;
+    try {
+      history.pushState({ ...(history.state ?? {}), jfResult: true }, '');
+      historyPushed = true;
+    } catch {
+      historyPushed = false;
+    }
+  }
+
+  function closeResult(): void {
+    if (!dialog.open) return;
+    if (historyPushed) history.back(); // popstate closes the dialog
+    else dialog.close();
+  }
+
+  function setPanelOpen(open: boolean): void {
+    dialog.classList.toggle('is-panel-open', open);
+    panelToggle.setAttribute('aria-expanded', String(open));
+  }
+
+  function setSide(side: 'left' | 'right'): void {
+    dialog.dataset.side = side;
+    const label = side === 'right' ? msg.panelToLeft : msg.panelToRight;
+    sideSwap.setAttribute('aria-label', label);
+    sideSwap.title = label;
+  }
+
+  function setSearchOpen(open: boolean): void {
+    dialog.classList.toggle('is-search-open', open);
+    searchToggle.setAttribute('aria-expanded', String(open));
+    if (open) searchInput.focus();
+  }
+
+  window.addEventListener('popstate', () => {
+    historyPushed = false;
+    if (dialog.open) dialog.close();
+  });
+  dialog.addEventListener('cancel', (event) => {
+    event.preventDefault(); // Esc: go back through history like the Back button
+    if (dialog.classList.contains('is-panel-open')) setPanelOpen(false); // phones: close the drawer first
+    else closeResult();
+  });
+  dialog.addEventListener('close', () => {
+    setSearchOpen(false);
+    setPanelOpen(false);
+  });
+  panelToggle.addEventListener('click', () => setPanelOpen(!dialog.classList.contains('is-panel-open')));
+  // Phones: a tap on the result outside the drawer closes the drawer instead of acting on the tree.
+  $<HTMLElement>('.jf-result-body').addEventListener(
+    'click',
+    (event) => {
+      if (!dialog.classList.contains('is-panel-open')) return;
+      event.preventDefault();
+      event.stopPropagation();
+      setPanelOpen(false);
+    },
+    { capture: true },
+  );
+  let savedSide: string | null = null;
+  try {
+    savedSide = localStorage.getItem(SIDE_KEY);
+  } catch {
+    savedSide = null;
+  }
+  setSide(savedSide === 'left' ? 'left' : 'right');
+  sideSwap.addEventListener('click', () => {
+    const next = dialog.dataset.side === 'left' ? 'right' : 'left';
+    setSide(next);
+    try {
+      localStorage.setItem(SIDE_KEY, next);
+    } catch {
+      /* storage unavailable: the choice lasts for this page */
+    }
+  });
+  dialog.addEventListener('keydown', (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'f' && view === 'tree') {
+      event.preventDefault(); // search the JSON, not the hidden page behind the dialog
+      setSearchOpen(true);
+      searchInput.select();
+    }
+  });
+  for (const button of root.querySelectorAll<HTMLButtonElement>('[data-jf-close]')) button.addEventListener('click', closeResult);
+  searchToggle.addEventListener('click', () => setSearchOpen(!dialog.classList.contains('is-search-open')));
+  reopenButton.addEventListener('click', openResult);
 
   // ---- parse and report -------------------------------------------------------------------
 
@@ -513,7 +620,8 @@ function init(root: HTMLElement): void {
     const message = errorText(msg.errors?.[code] ?? ERROR_TEXT[code], params, msg.endOfInput);
     errorBox.textContent = fill(msg.errorAt, { line, column, message });
     errorBox.hidden = false;
-    output.hidden = true;
+    reopenButton.hidden = true;
+    closeResult();
     status.textContent = '';
     source.focus();
     source.setSelectionRange(offset, Math.min(offset + 1, source.value.length));
@@ -544,7 +652,10 @@ function init(root: HTMLElement): void {
       embedded: numberFormat.format(result.stats.embedded),
       ms: numberFormat.format(response.ms),
     });
-    output.hidden = false;
+    resultStatus.textContent = status.textContent;
+    for (const el of nameEls) el.textContent = sourceName ?? msg.sourceInput;
+    reopenButton.hidden = false;
+    openResult(); // open first so search can scroll the first match into view
     renderTree();
     runSearch();
     setView(mode === 'minified' ? 'text' : view);
@@ -557,6 +668,7 @@ function init(root: HTMLElement): void {
       return;
     }
     source.value = await file.text();
+    sourceName = file.name;
     await run('pretty');
   }
 
@@ -566,6 +678,7 @@ function init(root: HTMLElement): void {
   $<HTMLButtonElement>('[data-jf-minify]').addEventListener('click', () => void run('minified'));
   $<HTMLButtonElement>('[data-jf-example]').addEventListener('click', () => {
     source.value = EXAMPLE;
+    sourceName = msg.sourceExample;
     void run('pretty');
   });
   source.addEventListener('keydown', (event) => {
@@ -574,6 +687,7 @@ function init(root: HTMLElement): void {
       void run('pretty');
     }
   });
+  source.addEventListener('input', () => (sourceName = null)); // typed or pasted: no file name any more
   source.addEventListener('paste', () => setTimeout(() => void run('pretty'), 0));
   fileInput.addEventListener('change', () => {
     const file = fileInput.files?.[0];

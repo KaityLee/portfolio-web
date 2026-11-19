@@ -74,6 +74,7 @@
   --section-gap: clamp(48px, 8vw, 96px);
   --radius-s: 2px;
   --radius-m: 4px;
+  --radius-pill: 999px;
   --shadow-menu: 0 12px 28px #00000024;
   --target: 44px;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -84,6 +85,7 @@
   --gutter: 16px;
   --post-date-width: 8rem;
   --header-height: 56px;
+  --tool-panel-width: 20rem;
   --hero-height: clamp(25rem, 46vw, 35rem);
 }
 

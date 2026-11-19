@@ -1,6 +1,10 @@
 ---
 // JSON Formatter (DESIGN.md §8 "Tool workspace", §10 "Tool"). Markup only; behaviour lives in
 // src/tools/json/client.ts and parsing in a Web Worker. Nothing is uploaded or stored.
+// The input stays on the page; results open in a full-screen <dialog> that the browser's Back
+// button and Esc close, so it feels like a page of its own while the data stays in memory.
+// The result takes the full height; its controls live in a side panel (right by default, can
+// move left), which becomes a drawer on phones.
 import Icon from '../../components/Icon.astro';
 import { headLang, useTranslations, type Locale } from '../../i18n/ui';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -11,12 +15,18 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = useTranslations(locale);
-const messages = JSON.stringify({ ...t('tools.json.messages'), errors: t('tools.json.errors') });
+const head = headLang(locale);
+const messages = JSON.stringify({
+  ...t('tools.json.messages'),
+  errors: t('tools.json.errors'),
+  sourceInput: t('tools.json.sourceInput'),
+  sourceExample: t('tools.json.sourceExample'),
+});
 ---
 
 <BaseLayout title={t('tools.json.title')} description={t('tools.json.summary')} locale={locale}>
   <section class="tool-page">
-    <h1 lang={headLang(locale)}>{t('tools.json.title')}</h1>
+    <h1 lang={head}>{t('tools.json.title')}</h1>
     <p class="lead">{t('tools.json.lead')}</p>
     <p class="tool-privacy">{t('tools.privacy')}</p>
 
@@ -44,29 +54,107 @@ const messages = JSON.stringify({ ...t('tools.json.messages'), errors: t('tools.
         <div class="jf-actions">
           <button class="button" type="button" data-jf-format>{t('tools.json.format')}</button>
           <button class="button-quiet" type="button" data-jf-minify>{t('tools.json.minify')}</button>
-          <label class="jf-field">
-            <span>{t('tools.json.indent')}</span>
-            <select data-jf-indent>
-              <option value="2">{t('tools.json.indent2')}</option>
-              <option value="4">{t('tools.json.indent4')}</option>
-              <option value="tab">{t('tools.json.indentTab')}</option>
-            </select>
-          </label>
+          <button class="button-quiet" type="button" data-jf-reopen hidden>{t('tools.json.showResult')}</button>
           <span class="jf-hint">{t('tools.json.shortcut')}</span>
         </div>
         <p class="jf-error" role="alert" data-jf-error hidden></p>
         <p class="jf-status" aria-live="polite" data-jf-status></p>
       </div>
 
-      <div class="jf-output" data-jf-output hidden>
-        <div class="jf-views" role="group" aria-label={t('tools.json.view')}>
-          <button type="button" aria-pressed="true" data-jf-view="tree">{t('tools.json.viewTree')}</button>
-          <button type="button" aria-pressed="false" data-jf-view="text">{t('tools.json.viewText')}</button>
+      <dialog class="jf-result" data-jf-output data-side="right" aria-labelledby="jf-result-name">
+        <div class="jf-result-main">
+          <div class="jf-mobile-bar">
+            <p class="jf-mobile-name" aria-hidden="true" data-jf-name></p>
+            <button
+              class="icon-button jf-search-toggle"
+              type="button"
+              data-jf-search-toggle
+              aria-expanded="false"
+              aria-controls="jf-search-box"
+              aria-label={t('tools.json.openSearch')}
+            >
+              <Icon name="search" />
+            </button>
+            <button
+              class="icon-button"
+              type="button"
+              data-jf-panel-toggle
+              aria-expanded="false"
+              aria-controls="jf-panel"
+              aria-label={t('tools.json.panelToggle')}
+            >
+              <Icon name="settings-2" />
+            </button>
+            <button class="icon-button" type="button" data-jf-close aria-label={t('tools.json.close')}>
+              <Icon name="x" />
+            </button>
+          </div>
+
+          <div class="jf-result-body">
+            <div id="jf-search-box" class="jf-search" role="search" data-jf-tree-only>
+              <Icon name="search" size={18} class="jf-search-icon" />
+              <label class="visually-hidden" for="jf-search">{t('tools.json.search')}</label>
+              <input id="jf-search" type="search" data-jf-search placeholder={t('tools.json.search')} spellcheck="false" autocomplete="off" />
+              <span class="jf-search-count" aria-live="polite" data-jf-search-count></span>
+              <button class="icon-button" type="button" data-jf-search-prev aria-label={t('tools.json.searchPrev')}>
+                <Icon name="chevron-up" />
+              </button>
+              <button class="icon-button" type="button" data-jf-search-next aria-label={t('tools.json.searchNext')}>
+                <Icon name="chevron-down" />
+              </button>
+            </div>
+
+            <div class="jf-panel" data-jf-tree-panel>
+              <div class="jf-tree" data-jf-tree role="region" aria-label={t('tools.json.tree')}></div>
+            </div>
+
+            <div class="jf-panel" data-jf-text-panel hidden>
+              <p class="jf-text-note" data-jf-text-note hidden></p>
+              <pre class="jf-text" tabindex="0" aria-label={t('tools.json.text')}><code data-jf-text></code></pre>
+            </div>
+          </div>
         </div>
 
-        <div class="jf-panel" data-jf-tree-panel>
-          <fieldset class="jf-options">
-            <legend class="visually-hidden">{t('tools.json.treeOptions')}</legend>
+        <aside id="jf-panel" class="jf-side" aria-label={t('tools.json.panel')}>
+          <div class="jf-side-head">
+            <div class="jf-side-title">
+              <h2 id="jf-result-name" data-jf-name></h2>
+              <p class="jf-result-status" data-jf-result-status></p>
+            </div>
+            <button class="icon-button" type="button" data-jf-side-swap>
+              <Icon name="arrow-left-right" />
+            </button>
+            <button class="icon-button jf-side-close" type="button" data-jf-close aria-label={t('tools.json.close')}>
+              <Icon name="x" />
+            </button>
+          </div>
+
+          <div class="jf-side-section">
+            <div class="jf-views" role="group" aria-label={t('tools.json.view')}>
+              <button type="button" aria-pressed="true" data-jf-view="tree">{t('tools.json.viewTree')}</button>
+              <button type="button" aria-pressed="false" data-jf-view="text">{t('tools.json.viewText')}</button>
+            </div>
+          </div>
+
+          <section class="jf-side-section" data-jf-tree-only aria-labelledby="jf-path-heading">
+            <h3 id="jf-path-heading" class="jf-side-label">{t('tools.json.path')}</h3>
+            <code class="jf-path" data-jf-path>$</code>
+            <div class="jf-copy-actions">
+              <button class="button-quiet" type="button" data-jf-copy="path">{t('tools.json.copyPath')}</button>
+              <button class="button-quiet" type="button" data-jf-copy="js">{t('tools.json.copyJs')}</button>
+              <button class="button-quiet" type="button" data-jf-copy="value">{t('tools.json.copyValue')}</button>
+            </div>
+          </section>
+
+          <div class="jf-side-section" data-jf-text-only hidden>
+            <div class="jf-copy-actions">
+              <button class="button-quiet" type="button" data-jf-copy="text">{t('tools.json.copyText')}</button>
+              <button class="button-quiet" type="button" data-jf-download>{t('tools.json.download')}</button>
+            </div>
+          </div>
+
+          <fieldset class="jf-side-section jf-options" data-jf-tree-only>
+            <legend class="jf-side-label">{t('tools.json.treeOptions')}</legend>
             <label class="jf-check"><input type="checkbox" data-jf-opt="decode" checked />{t('tools.json.decode')}</label>
             <label class="jf-check"><input type="checkbox" data-jf-opt="embedded" checked />{t('tools.json.embedded')}</label>
             <label class="jf-check"><input type="checkbox" data-jf-opt="hideEmpty" />{t('tools.json.hideEmpty')}</label>
@@ -76,43 +164,20 @@ const messages = JSON.stringify({ ...t('tools.json.messages'), errors: t('tools.
             </label>
           </fieldset>
 
-          <div class="jf-search" role="search">
-            <label class="visually-hidden" for="jf-search">{t('tools.json.search')}</label>
-            <input id="jf-search" type="search" data-jf-search placeholder={t('tools.json.search')} spellcheck="false" autocomplete="off" />
-            <span class="jf-search-count" aria-live="polite" data-jf-search-count></span>
-            <button class="icon-button" type="button" data-jf-search-prev aria-label={t('tools.json.searchPrev')}>
-              <Icon name="chevron-up" />
-            </button>
-            <button class="icon-button" type="button" data-jf-search-next aria-label={t('tools.json.searchNext')}>
-              <Icon name="chevron-down" />
-            </button>
-          </div>
-
-          <div class="jf-path">
-            <span class="visually-hidden">{t('tools.json.path')}</span>
-            <code data-jf-path>$</code>
-            <div class="jf-path-actions">
-              <button class="button-quiet" type="button" data-jf-copy="path">{t('tools.json.copyPath')}</button>
-              <button class="button-quiet" type="button" data-jf-copy="js">{t('tools.json.copyJs')}</button>
-              <button class="button-quiet" type="button" data-jf-copy="value">{t('tools.json.copyValue')}</button>
-            </div>
-          </div>
-
-          <div class="jf-tree" data-jf-tree role="region" aria-label={t('tools.json.tree')}></div>
-        </div>
-
-        <div class="jf-panel" data-jf-text-panel hidden>
-          <div class="jf-text-bar">
+          <fieldset class="jf-side-section jf-options">
+            <legend class="jf-side-label">{t('tools.json.textOptions')}</legend>
+            <label class="jf-field">
+              <span>{t('tools.json.indent')}</span>
+              <select data-jf-indent>
+                <option value="2">{t('tools.json.indent2')}</option>
+                <option value="4">{t('tools.json.indent4')}</option>
+                <option value="tab">{t('tools.json.indentTab')}</option>
+              </select>
+            </label>
             <label class="jf-check"><input type="checkbox" data-jf-opt="inline" />{t('tools.json.inline')}</label>
-            <div class="jf-path-actions">
-              <button class="button-quiet" type="button" data-jf-copy="text">{t('tools.json.copyText')}</button>
-              <button class="button-quiet" type="button" data-jf-download>{t('tools.json.download')}</button>
-            </div>
-          </div>
-          <p class="jf-hint" data-jf-text-note hidden></p>
-          <pre class="jf-text" tabindex="0" aria-label={t('tools.json.text')}><code data-jf-text></code></pre>
-        </div>
-      </div>
+          </fieldset>
+        </aside>
+      </dialog>
     </div>
   </section>
 </BaseLayout>

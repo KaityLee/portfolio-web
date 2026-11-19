@@ -75,13 +75,13 @@ The background wash uses `--hero-wash: #a0653f75` and `--hero-slate: #4255658c`.
 ## 6. Space, radius, elevation
 
 - Spacing scale `--space-1` to `--space-9` is 4, 8, 12, 16, 24, 32, 48, 64, 96px. Section spacing is `clamp(48px, 8vw, 96px)`.
-- Corners use `--radius-s: 2px` and `--radius-m: 4px`. Use a 1px rule to separate functional areas and panels. Keep elevation for the mobile menu sheet with `--shadow-menu: 0 12px 28px #00000024`.
+- Corners use `--radius-s: 2px` and `--radius-m: 4px`; segmented switches use `--radius-pill: 999px`. Use a 1px rule to separate functional areas and panels. Keep elevation for the mobile menu sheet with `--shadow-menu: 0 12px 28px #00000024`.
 - Mobile controls use `--target: 44px`. Keyboard focus is a 2px copper outline.
 
 ## 7. Layout
 
 - Verify at 320, 390, 768, and 1280px. Header switches to inline navigation at 768px and the article contents rail starts at 1280px.
-- The shared container is 72rem with 16px gutters below 768px and 24px above. The article stays centered in a 42rem reading column, with the contents rail in its right margin.
+- The shared container is 72rem with 16px gutters below 768px and 24px above. Tool result panels are `--tool-panel-width: 20rem`. The article stays centered in a 42rem reading column, with the contents rail in its right margin.
 - Header height is 56px. Phones show the brand and square theme and menu buttons. The native menu sheet carries navigation and the content-language selector. Desktop shows five inline links (Writing, Projects, Tools, About, Contact), language selector, and theme toggle in a sticky bar.
 - The home hero is the first section inside main, full width. Center the title, lead, and link group. Use `clamp(25rem, 46vw, 35rem)` minimum height, with content allowed to grow. Reserve the height of the longest suffix at the current width. Show five trails on phones and seven from 768px.
 - Footer has site identity, navigation, source and asset-license links, and a content-license note. Stack the groups on phones.
@@ -100,7 +100,8 @@ The background wash uses `--hero-wash: #a0653f75` and `--hero-slate: #4255658c`.
 | Contents | Collapsed disclosures on phones and tablets. Desktop sticky rail highlights the current heading. Anchor text follows the article language. |
 | Previous / next | Hairline panels with a clear action label in the route's language and the authored title. |
 | Code, callouts and tables | Dark code surface with native horizontal scroll and a labeled copy button. Semantic callout accents and generated labels in the post's language. Tables scroll inside a keyboard-focusable wrapper. |
-| Tool workspace | Input panel on the canvas surface with the action buttons, then output on the dark code surface. Controls are 44px targets; tree rows and their buttons are at least 24px. Tools process input only in the browser, never upload or store it, and say so under the lead. Output that would freeze the page (over 1,000,000 characters, or any line over 10,000) is shown as a cut preview with a note, and is offered in full through Copy all and Download. |
+| Tool workspace | Input panel on the canvas surface with the action buttons. Results open at once in a full-screen dialog. The output fills the full height on the dark code surface, with search floating at its top right in the code surface's palette (labelled "단어 검색" / "Search") and a vertical scrollbar that is always visible so the length can be judged. All other controls live in a `--tool-panel-width` (20rem) side panel, right by default and movable to the left (remembered in the browser): the result title (the opened file's name, otherwise "입력한 JSON" / "예제 응답"), status, a ✕ that closes, the Tree / Text switch, the selected path with copy actions (or Copy all and Download in the text view), and the tree and text options. The ✕, browser Back and Esc close the dialog; the data stays in memory, never in storage or the URL. On phones a slim bar holds the title, search, panel and ✕ buttons, and the panel opens as a drawer below it; a tap on the result or Esc closes the drawer. Ctrl or ⌘ + F focuses the result search. Output that would freeze the page (over 1,000,000 characters, or any line over 10,000) is shown as a cut preview with a note, and is offered in full through Copy all and Download. |
+| Segmented switch | A pill outline around two or more uppercase choices; the chosen one is a filled pill inside it (`--radius-pill`). Each segment is a 44px target with `aria-pressed`. Used for the JSON tool's Tree / Text view. |
 | Markdown figures and links | Keep authored alt text, captions, and anchors. Use the existing local Lucide paths for generated icons. |
 
 ## 9. Motion
@@ -121,7 +122,7 @@ Stagger the CSS light trails so they are visible on entry. They move from lower 
 | About | Backend and operations background, one line of dry math humor, and a short list of tools. |
 | Contact | Contact status in the route's language and links approved for public display. |
 | Tools | Title and lead followed by a project-panel card per tool. |
-| Tool | Title, lead and a one-line privacy note, then the tool workspace. The JSON Formatter opens JSON stored inside strings, starts large arrays collapsed and keeps number text unchanged. |
+| Tool | Title, lead and a one-line privacy note, then the tool input; results open full screen. The JSON Formatter opens JSON stored inside strings, starts large arrays collapsed and keeps number text unchanged. |
 
 ## 11. Do-not list
 
