@@ -65,6 +65,11 @@ npm run preview
 | 표 | 둥근 테두리, 폰에서는 가로 스크롤 |
 | (자동) | 본문 글자 수로 계산한 읽는 시간이 메타 줄에 표시 |
 
-## 배포 (수동)
+## 배포
 
-Cloudflare Pages → GitHub 저장소 연결 → 빌드 명령 `npm run build`, 출력 `dist`, 환경변수 `SITE_URL=https://<도메인>`. 다른 정적 호스팅도 같은 방식.
+Cloudflare Workers Builds가 이 저장소에 연결되어 있고, `dist/`를 Worker 정적 자산으로 제공합니다(`wrangler.jsonc`, Worker 스크립트 없음).
+
+- 대시보드 설정: 빌드 명령 `npm run build`, 배포 명령 `npx wrangler deploy`, 빌드 변수 `SITE_URL=https://<도메인>`(canonical, hreflang, OG URL에 쓰임. 없으면 `https://example.com`이 들어갑니다).
+- **`main`에 머지하면 운영 환경에 자동 배포됩니다.** 다른 브랜치와 PR은 미리보기 버전을 올립니다. GitHub Actions(`ci`)는 검사와 빌드만 합니다.
+- 배포 없이 설정만 확인: `npm run build && npx wrangler deploy --dry-run`.
+- 다른 정적 호스팅은 빌드 명령 `npm run build`, 출력 폴더 `dist`로 똑같이 쓸 수 있습니다.

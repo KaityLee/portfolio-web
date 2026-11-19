@@ -1,0 +1,12 @@
+// Cloudflare Workers Builds deploys the static build in dist/ as Worker static assets (no Worker
+// script). The dashboard runs `npm run build` and then `npx wrangler deploy`; merges to main
+// deploy production, other branches upload preview versions. See README "Deploy".
+{
+  "name": "portfolio-web",
+  "compatibility_date": "2026-10-23",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}
