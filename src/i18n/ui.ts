@@ -154,6 +154,15 @@ export const ui = {
   'footer.source': 'Site source',
   'footer.assetLicenses': 'Asset licenses',
   'footer.links': 'Site links',
+  'footer.col.explore': 'Explore',
+  'footer.col.tools': 'Tools',
+  'footer.col.general': 'General',
+  'footer.social': 'Elsewhere',
+  'footer.social.github': 'GitHub profile',
+  'footer.social.rss': 'RSS feed',
+  'footer.social.mail': 'Email',
+  'footer.legal': 'Source and licenses',
+  'footer.privacy': 'Privacy policy',
 } as const;
 
 type UiKey = keyof typeof ui;
@@ -299,6 +308,11 @@ export const uiKo: { [K in UiKey]?: UiValue<K> } = {
   'common.readMore': '더 읽기',
   'footer.builtWith': 'Astro로 만들었습니다. 콘텐츠 라이선스는 글마다 표시되어 있습니다.',
   'footer.links': '사이트 링크',
+  'footer.social': '다른 곳에서',
+  'footer.social.github': 'GitHub 프로필',
+  'footer.social.rss': 'RSS 피드',
+  'footer.social.mail': '이메일',
+  'footer.legal': '소스와 라이선스',
 };
 
 const dictionaries: Record<Locale, { [K in UiKey]?: UiValue<K> }> = { ko: uiKo, en: {} };

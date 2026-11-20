@@ -1,0 +1,79 @@
+---
+// Site footer (DESIGN.md §7): identity, titled link columns, an icon row and a legal line.
+// Entries come from src/footer.ts; planned ones are not rendered.
+import Icon from './Icon.astro';
+import { footerColumns, footerLegal, footerSocial } from '../footer';
+import { headLang, useTranslations, type Locale } from '../i18n/ui';
+import { localizePath } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const head = headLang(locale);
+const columns = footerColumns(locale);
+const social = footerSocial(locale);
+const legal = footerLegal(locale);
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-identity">
+      <a class="brand" href={localizePath('/', locale)} lang={head}>{t('site.title')}</a>
+      <p>{t('site.description')}</p>
+    </div>
+    {
+      columns.length > 0 && (
+        <nav class="footer-columns" aria-label={t('footer.links')}>
+          {columns.map((column) => (
+            <div class="footer-column">
+              <h2 class="footer-column-title" lang={head}>
+                {column.title}
+              </h2>
+              <ul lang={head}>
+                {column.links.map((link) => (
+                  <li>
+                    <a href={link.href} rel={link.external ? 'noopener' : undefined}>
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+      )
+    }
+    {
+      social.length > 0 && (
+        <ul class="footer-social" aria-label={t('footer.social')}>
+          {social.map((link) => (
+            <li>
+              <a href={link.href} rel={link.external ? 'noopener' : undefined} aria-label={link.label}>
+                <Icon name={link.icon} />
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    <div class="footer-legal">
+      <p>© {new Date().getUTCFullYear()} · {t('footer.builtWith')}</p>
+      {
+        legal.length > 0 && (
+          <ul aria-label={t('footer.legal')} lang={head}>
+            {legal.map((link) => (
+              <li>
+                <a href={link.href} rel={link.external ? 'noopener' : undefined}>
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </div>
+</footer>

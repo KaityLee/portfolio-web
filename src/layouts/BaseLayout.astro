@@ -4,8 +4,8 @@ import '../styles/global.css';
 import Icon from '../components/Icon.astro';
 import LocalePicker from '../components/LocalePicker.astro';
 import Nav from '../components/Nav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
-import { site as siteConfig } from '../site';
 import { defaultLocale, headLang, localeMeta, locales, useTranslations, type Locale } from '../i18n/ui';
 import { localizePath, stripLocale } from '../i18n/utils';
 
@@ -105,21 +105,7 @@ const localeAlternates = Object.fromEntries(alternateUrls.map(([l, u]) => [l, u.
         <slot />
       </div>
     </main>
-    <footer class="site-footer">
-      <div class="container footer-grid">
-        <div class="footer-site">
-          <a class="brand" href={localizePath('/', locale)} lang={head}>{t('site.title')}</a>
-          <p>{t('site.description')}</p>
-        </div>
-        <ul class="footer-links" aria-label={t('footer.links')}>
-          <li lang={head}><a href={localizePath('/about', locale)}>{t('nav.about')}</a></li>
-          <li lang={head}><a href={localizePath('/contact', locale)}>{t('nav.contact')}</a></li>
-          <li lang={head}><a href={siteConfig.repoUrl} rel="noopener">{t('footer.source')}</a></li>
-          <li lang={head}><a href="/licenses/third-party.txt">{t('footer.assetLicenses')}</a></li>
-        </ul>
-        <p class="footer-note">© {new Date().getUTCFullYear()} · {t('footer.builtWith')}</p>
-      </div>
-    </footer>
+    <SiteFooter locale={locale} />
     <script>
       import '../scripts/segmented.ts';
     </script>
