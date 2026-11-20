@@ -227,6 +227,37 @@ pre {
   }
 }
 
+/* Segmented control (DESIGN.md §8, §9): every single-choice control (locale picker, view
+   switches, future tabs or filters) draws its chosen state with one indicator that slides between
+   choices. src/scripts/segmented.ts measures the chosen item; without JS the chosen item keeps
+   its own background. Containers set --seg-fill and --seg-radius. */
+[data-segmented] {
+  position: relative;
+  isolation: isolate;
+}
+.segmented-indicator {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: var(--seg-w, 0);
+  height: var(--seg-h, 0);
+  transform: translate(var(--seg-x, 0), var(--seg-y, 0));
+  border-radius: var(--seg-radius, var(--radius-s));
+  background: var(--seg-fill, var(--color-surface-2));
+  opacity: 0;
+  pointer-events: none;
+}
+[data-segmented].has-indicator > .segmented-indicator {
+  opacity: 1;
+}
+[data-segmented].is-ready > .segmented-indicator {
+  transition:
+    transform 220ms var(--ease),
+    width 220ms var(--ease),
+    height 220ms var(--ease);
+}
+
 .locale-picker {
   display: flex;
   gap: var(--space-1);
@@ -249,6 +280,9 @@ pre {
 .locale-picker a[aria-current='true'] {
   color: var(--color-text);
   background: var(--color-surface-2);
+}
+.has-indicator > .locale-picker a[aria-current='true'] {
+  background: transparent; /* the sliding indicator draws it */
 }
 
 @media (min-width: 768px) {

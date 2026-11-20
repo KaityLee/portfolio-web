@@ -2,7 +2,7 @@
 // the browser: input is never uploaded or stored. Only the indent choice is remembered.
 import { stringify, tokenize, type Indent } from './format.ts';
 import { ERROR_TEXT, errorText, type JsonNode, type ParseResult } from './parse.ts';
-import { jsAccessor, pathKey, pathLabel, type PathStep } from './path.ts';
+import { jqPath, jsAccessor, pathKey, pythonAccessor, type PathStep } from './path.ts';
 import { handle, type WorkerRequest, type WorkerResponse } from './worker.ts';
 
 const CHUNK = 200; // children rendered per "show more"
@@ -372,7 +372,7 @@ function init(root: HTMLElement): void {
     rows.get(pathKey(selected))?.el.classList.remove('jt-selected');
     selected = path;
     rows.get(pathKey(path))?.el.classList.add('jt-selected');
-    pathCode.textContent = pathLabel(path);
+    pathCode.textContent = jqPath(path);
   }
 
   function selectedValue(): string {
@@ -644,7 +644,7 @@ function init(root: HTMLElement): void {
     textCache = new Map();
     overrides.clear();
     selected = [];
-    pathCode.textContent = pathLabel([]);
+    pathCode.textContent = jqPath([]);
     textMode = mode;
     status.textContent = fill(msg.status, {
       size: formatBytes(new Blob([text]).size),
@@ -778,7 +778,16 @@ function init(root: HTMLElement): void {
     const original = button.textContent ?? '';
     button.addEventListener('click', async () => {
       const kind = button.dataset.jfCopy;
-      const text = kind === 'path' ? pathLabel(selected) : kind === 'js' ? jsAccessor(selected) : kind === 'value' ? selectedValue() : await outputText();
+      const text =
+        kind === 'jq'
+          ? jqPath(selected)
+          : kind === 'js'
+            ? jsAccessor(selected)
+            : kind === 'python'
+              ? pythonAccessor(selected)
+              : kind === 'value'
+                ? selectedValue()
+                : await outputText();
       try {
         await navigator.clipboard.writeText(text);
         button.textContent = msg.copied;
