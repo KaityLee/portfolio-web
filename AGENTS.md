@@ -6,7 +6,7 @@ Rules for coding agents (Codex, Claude Code) and humans working in this **public
 
 1. The build never reads the private vault or any private repository. Only content under `src/content/` is published, and every file there is a reviewed public copy.
 2. No personal contact details (phone, home address), no client or employer confidential information, no credentials. Sample content stays sample content.
-3. Deployments are never triggered from here without explicit approval. CI only checks and builds.
+3. Deployments are never triggered from here without explicit approval. CI only checks and builds. Note that Cloudflare Workers Builds (`wrangler.jsonc`) deploys production automatically when `main` changes, so merging or pushing to `main` is itself a deployment and needs the owner's approval.
 4. Do not delete or overwrite existing files; do not rename without approval; report every change at the end.
 
 ## Globalization baseline

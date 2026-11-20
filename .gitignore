@@ -12,3 +12,4 @@ shots/
 test-results/
 playwright-report/
 .lighthouseci/
+.wrangler/

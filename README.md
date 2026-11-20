@@ -83,9 +83,14 @@ Posts stay ordinary Markdown; the build (`src/plugins/`, `src/styles/prose.css`)
 | a table | rounded, scrolls sideways on phones |
 | nothing | reading time in the meta line, computed from the text |
 
-## Deploy (manual, not automated here)
+## Deploy
 
-Cloudflare Pages → connect the GitHub repository → build command `npm run build`, output directory `dist`, environment variable `SITE_URL=https://<your-domain>`. Any static host works the same way.
+Cloudflare Workers Builds is connected to this repository and serves `dist/` as Worker static assets (`wrangler.jsonc`, no Worker script).
+
+- Dashboard settings: build command `npm run build`, deploy command `npx wrangler deploy`, build variable `SITE_URL=https://<your-domain>` (canonical, hreflang and OG URLs; without it they point at `https://example.com`).
+- **Merging to `main` deploys production automatically**; other branches and pull requests upload preview versions. GitHub Actions (`ci`) only checks and builds.
+- Check the config locally without deploying: `npm run build && npx wrangler deploy --dry-run`.
+- Any other static host works with build command `npm run build` and output directory `dist`.
 
 ## License
 
