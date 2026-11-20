@@ -1,6 +1,7 @@
 @import './tokens.css';
 @import './fonts.css';
 @import './prose.css';
+@import './tools.css';
 
 * {
   box-sizing: border-box;
@@ -558,10 +559,33 @@ main {
   }
 }
 .post-list li {
+  position: relative;
   padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-m);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
+  transition: border-color 150ms var(--ease);
+}
+/* The whole panel is the link (DESIGN.md §8): the title link stretches over the card, so there is
+   still one link per card for keyboards and screen readers, and the focus ring wraps the card. */
+.post-list :is(h2, h3) a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.post-list li:hover {
+  border-color: var(--color-primary);
+}
+.post-list li:hover :is(h2, h3) a {
+  color: var(--color-primary);
+}
+.post-list :is(h2, h3) a:focus-visible {
+  outline: none;
+}
+.post-list li:has(:is(h2, h3) a:focus-visible) {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 .post-list :is(h2, h3) {
   margin: 0 0 var(--space-1);
@@ -592,6 +616,7 @@ main {
   padding: 0;
 }
 .post-rows li {
+  position: relative;
   display: grid;
   gap: var(--space-1) var(--space-5);
   align-items: baseline;
@@ -626,8 +651,25 @@ main {
   text-decoration: none;
   transition: color 150ms var(--ease);
 }
-.post-rows a:hover {
+.post-rows a:hover,
+.post-rows li:hover a {
   color: var(--color-primary);
+}
+/* The whole row is the link, like project panels. */
+.post-rows a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.post-rows li:hover {
+  background: color-mix(in oklab, var(--color-surface-2) 60%, transparent);
+}
+.post-rows a:focus-visible {
+  outline: none;
+}
+.post-rows li:has(a:focus-visible) {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
 }
 
 .contact-row {

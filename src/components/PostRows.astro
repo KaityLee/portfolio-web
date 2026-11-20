@@ -1,6 +1,6 @@
 ---
 // Compact date-and-title rows on home; featured summaries and tags on the writing index.
-import { ui as t, uiLanguage, type Locale } from '../i18n/ui';
+import { useTranslations, type Locale } from '../i18n/ui';
 import { entryPath, type ContentCollection, type ContentEntry } from '../lib/content';
 import { formatDate, toDateTimeAttr } from '../utils/date';
 
@@ -12,16 +12,17 @@ interface Props {
 }
 
 const { collection, entries, locale, detailed = false } = Astro.props;
+const t = useTranslations(locale);
 ---
 
 {
   entries.length === 0 ? (
-    <p class="meta">{t['common.empty']}</p>
+    <p class="meta">{t('common.empty')}</p>
   ) : (
     <ol class="post-rows">
       {entries.map((entry) => (
         <li>
-          <time datetime={toDateTimeAttr(entry.data.date)}>{formatDate(entry.data.date, uiLanguage)}</time>
+          <time datetime={toDateTimeAttr(entry.data.date)}>{formatDate(entry.data.date, locale)}</time>
           <div class="post-row-content" lang={entry.data.lang}>
             <a href={entryPath(collection, entry, locale)}>{entry.data.title}</a>
             {detailed && entry.data.featured && <p>{entry.data.summary}</p>}

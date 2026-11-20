@@ -1,0 +1,676 @@
+/* Tools (DESIGN.md §8 "Tool workspace", §10 "Tools", "Tool"). Controls sit on the page canvas;
+   output (tree and formatted text) sits on the dark code surface in both themes. */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.button-quiet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: var(--target);
+  min-height: var(--target);
+  padding-inline: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 150ms var(--ease), border-color 150ms var(--ease);
+}
+.button-quiet:hover {
+  background: var(--color-surface-2);
+}
+.button-quiet:has(:focus-visible) {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+button.button {
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tool-page > h1 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--step-4);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+}
+.tool-page > .lead {
+  margin-bottom: var(--space-2);
+}
+.tool-privacy {
+  margin: 0 0 var(--space-5);
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+}
+
+/* Workspace. Panels set display, so restate [hidden] for them. */
+.jf [hidden] {
+  display: none !important;
+}
+.jf {
+  display: grid;
+  gap: var(--space-5);
+}
+.jf-input {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+  transition: border-color 150ms var(--ease);
+}
+.jf-input.is-dragging {
+  border-color: var(--color-primary);
+  outline: 2px dashed var(--color-primary);
+  outline-offset: -6px;
+}
+.jf-bar,
+.jf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+}
+.jf-actions {
+  justify-content: flex-start;
+}
+.jf-bar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.jf-label {
+  font-weight: 600;
+}
+.jf-file {
+  position: relative;
+}
+.jf-source {
+  width: 100%;
+  min-height: 12rem;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-s);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  line-height: 1.5;
+  resize: vertical;
+  overflow-wrap: anywhere;
+}
+.jf-field {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+}
+.jf-field :is(select, input),
+.jf-search input {
+  min-height: var(--target);
+  padding-inline: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-s);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--step-0);
+}
+.jf-hint,
+.jf-status {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--step--1);
+}
+.jf-error {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border-inline-start: 3px solid var(--color-danger);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+}
+
+/* Result dialog (DESIGN.md §8 "Tool workspace"): the result takes the full height of the
+   screen; its controls live in a side panel, right by default and movable to the left. Phones get
+   a slim bar and open the panel as a drawer. The page behind does not scroll. */
+:root:has(.jf-result[open]) {
+  overflow: hidden;
+}
+.jf-result {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+.jf-result[open] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--tool-panel-width);
+  grid-template-areas: 'main side';
+}
+.jf-result[open][data-side='left'] {
+  grid-template-columns: var(--tool-panel-width) minmax(0, 1fr);
+  grid-template-areas: 'side main';
+}
+.jf-result::backdrop {
+  background: var(--color-bg);
+}
+.jf-result-main {
+  grid-area: main;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+}
+.jf-mobile-bar {
+  display: none;
+}
+
+/* Side panel */
+.jf-side {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-4) var(--space-6);
+  border-inline-start: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+.jf-result[data-side='left'] .jf-side {
+  border-inline-start: 0;
+  border-inline-end: 1px solid var(--color-border);
+}
+.jf-side-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+.jf-side-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-top: var(--space-2);
+}
+.jf-side-title h2 {
+  margin: 0;
+  font-size: var(--step-0);
+  font-weight: 600;
+  line-height: var(--leading-heading);
+  overflow-wrap: anywhere;
+}
+.jf-result-status {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--step--2);
+}
+.jf-side-section {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-4) 0 0;
+  border: 0;
+  border-top: 1px solid var(--color-border);
+}
+.jf-side-label {
+  margin: 0;
+  padding: 0;
+  color: var(--color-text-muted);
+  font-size: var(--step--2);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+/* A fieldset's legend sits on its border; float it so it lays out like the other headings. */
+legend.jf-side-label {
+  float: left;
+  width: 100%;
+}
+.jf-copy-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.jf-copy-actions .button-quiet {
+  font-size: var(--step--1);
+}
+.jf-path {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-s);
+  background: var(--color-surface-2);
+  font-size: var(--step--1);
+  overflow-wrap: anywhere;
+}
+
+/* Segmented switch (DESIGN.md §8): pill outline, the chosen segment is a filled pill inside it. */
+.jf-views {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border: 1px solid color-mix(in oklab, var(--color-text-muted) 55%, var(--color-bg));
+  border-radius: var(--radius-pill);
+}
+.jf-views button {
+  flex: 1 1 0;
+  min-width: var(--target);
+  min-height: var(--target);
+  padding-inline: var(--space-3);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 150ms var(--ease);
+}
+.jf-views button:hover {
+  background: color-mix(in oklab, var(--color-text) 6%, transparent);
+}
+.jf-views button[aria-pressed='true'] {
+  background: color-mix(in oklab, var(--color-text) 13%, var(--color-bg));
+}
+
+.jf-options {
+  gap: 0;
+}
+.jf-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target);
+  font-size: var(--step--1);
+  cursor: pointer;
+}
+.jf-check input {
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0;
+  accent-color: var(--color-primary);
+}
+.jf-side .jf-field {
+  justify-content: space-between;
+}
+.jf-hide-keys input {
+  flex: 1 1 10rem;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+}
+
+/* Result body: tree or text fills it; search floats at its top right. */
+.jf-result-body {
+  position: relative;
+  display: grid;
+  min-height: 0;
+  background: var(--color-code-bg);
+}
+.jf-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+}
+/* Search sits on the dark code surface in both themes, so it uses the surface's own palette. */
+.jf-search {
+  position: absolute;
+  z-index: 1;
+  top: var(--space-3);
+  right: calc(var(--space-3) + var(--space-4));
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  width: min(26rem, calc(100% - 2 * var(--space-5)));
+  padding: 0 var(--space-1) 0 var(--space-3);
+  border: 1px solid var(--json-guide);
+  border-radius: var(--radius-m);
+  background: var(--json-selected);
+  color: var(--color-code-text);
+  box-shadow: var(--shadow-menu);
+  color-scheme: dark; /* native clear button and caret drawn for a dark field */
+}
+.jf-search:focus-within {
+  border-color: var(--json-number);
+}
+.jf-search-icon {
+  flex: none;
+  color: var(--json-muted);
+}
+.jf-search input::placeholder {
+  color: var(--json-muted);
+  opacity: 1;
+}
+.jf-search .icon-button {
+  flex: none;
+  color: var(--color-code-text);
+}
+.jf-search .icon-button:hover {
+  background: color-mix(in oklab, var(--color-code-text) 12%, transparent);
+}
+.jf-search .icon-button:focus-visible {
+  outline-color: var(--json-number);
+}
+.jf-search input {
+  flex: 1 1 auto;
+  width: 0;
+  min-width: 0;
+  min-height: var(--target);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-code-text);
+  font: inherit;
+  font-size: var(--step-0);
+}
+.jf-search input:focus-visible {
+  outline: none; /* the box shows focus with its copper border */
+}
+.jf-search-count {
+  flex: none;
+  min-width: 3.5rem;
+  color: var(--json-muted);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+.jf-text-note {
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-size: var(--step--1);
+}
+
+/* Phones: slim bar (name, search, panel, close) and the panel as a drawer over the result. */
+@media (max-width: 767px) {
+  .jf-result[open],
+  .jf-result[open][data-side='left'] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'main';
+  }
+  .jf-mobile-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: var(--header-height);
+    padding: var(--space-1) var(--space-1) var(--space-1) var(--gutter);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+  .jf-mobile-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    font-size: var(--step--1);
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .jf-search-toggle[aria-expanded='true'],
+  [data-jf-panel-toggle][aria-expanded='true'] {
+    background: var(--color-surface-2);
+  }
+  .jf-side {
+    position: fixed;
+    z-index: 2;
+    inset: var(--header-height) 0 0 auto; /* below the bar, so its toggle and close stay usable */
+    width: min(var(--tool-panel-width), 88vw);
+    box-shadow: var(--shadow-menu);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 200ms var(--ease), visibility 200ms;
+  }
+  .jf-result[data-side='left'] .jf-side {
+    inset: var(--header-height) auto 0 0;
+    transform: translateX(-100%);
+  }
+  .jf-result.is-panel-open .jf-side {
+    transform: none;
+    visibility: visible;
+  }
+  .jf-result .jf-side-close {
+    display: none; /* the bar's close button stays visible beside the drawer */
+  }
+  .jf-search {
+    right: var(--gutter);
+    left: var(--gutter);
+    width: auto;
+  }
+  .jf-result:not(.is-search-open) .jf-search {
+    display: none;
+  }
+}
+
+/* Tree and text output on the dark code surface. Scrollbars stay visible (classic, not
+   overlay) so the length of the result can be judged at a glance. */
+.jf-tree,
+.jf-text {
+  grid-row: 1 / -1;
+  min-height: 0;
+  margin: 0;
+  overflow-x: auto;
+  overflow-y: scroll; /* always show the vertical bar, even before the result overflows */
+  padding: var(--space-3) var(--space-4) var(--space-7);
+  border: 0;
+  border-radius: 0;
+  background: var(--color-code-bg);
+  color: var(--color-code-text);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  line-height: 1.6;
+}
+.jf-tree::-webkit-scrollbar,
+.jf-text::-webkit-scrollbar {
+  width: var(--space-3);
+  height: var(--space-3);
+}
+.jf-tree::-webkit-scrollbar-track,
+.jf-text::-webkit-scrollbar-track {
+  background: var(--color-code-bg);
+}
+.jf-tree::-webkit-scrollbar-thumb,
+.jf-text::-webkit-scrollbar-thumb {
+  border: 2px solid var(--color-code-bg);
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--json-muted) 55%, var(--color-code-bg));
+}
+.jf-tree::-webkit-scrollbar-thumb:hover,
+.jf-text::-webkit-scrollbar-thumb:hover {
+  background: var(--json-muted);
+}
+.jf-tree::-webkit-scrollbar-corner,
+.jf-text::-webkit-scrollbar-corner {
+  background: var(--color-code-bg);
+}
+@supports not selector(::-webkit-scrollbar) {
+  .jf-tree,
+  .jf-text {
+    scrollbar-color: color-mix(in oklab, var(--json-muted) 55%, var(--color-code-bg)) var(--color-code-bg);
+  }
+}
+.jf-text-note:not([hidden]) + .jf-text {
+  grid-row: 2;
+}
+.jf-text code {
+  font-size: inherit;
+}
+.jt-node {
+  min-width: 0;
+}
+.jt-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-1);
+  min-height: var(--space-5);
+}
+.jt-children {
+  margin-inline-start: calc(var(--space-3) - 1px);
+  padding-inline-start: var(--space-3);
+  border-inline-start: 1px solid var(--json-guide);
+}
+.jt-toggle,
+.jt-spacer {
+  flex: none;
+  width: var(--space-5);
+  height: var(--space-5);
+}
+.jt-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--json-muted);
+  cursor: pointer;
+}
+.jt-toggle::before {
+  content: '';
+  width: 0.45em;
+  height: 0.45em;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 150ms var(--ease);
+}
+.jt-toggle[aria-expanded='true']::before {
+  transform: rotate(45deg);
+}
+.jt-toggle:hover,
+.jt-key:hover,
+.jt-index:hover {
+  background: var(--json-selected);
+}
+.jt-key,
+.jt-index {
+  min-height: var(--space-5);
+  padding: 0 var(--space-1);
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.jt-key {
+  color: var(--json-key);
+}
+.jt-index,
+.jt-colon,
+.jt-brace,
+.jt-meta {
+  color: var(--json-muted);
+}
+.jt-meta {
+  font-size: var(--step--2);
+}
+.jt-badge {
+  margin-inline-end: var(--space-1);
+  padding: 0 var(--space-1);
+  border: 1px solid var(--json-key);
+  border-radius: var(--radius-s);
+  color: var(--json-key);
+  font-size: var(--step--2);
+  letter-spacing: 0.06em;
+}
+.jt-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.jt-string {
+  color: var(--json-string);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.jt-key.jt-key,
+.jf-text .jt-key {
+  color: var(--json-key);
+}
+.jt-number {
+  color: var(--json-number);
+}
+.jt-boolean {
+  color: var(--json-boolean);
+}
+.jt-null {
+  color: var(--json-null);
+}
+.jt-text {
+  margin: var(--space-1) 0 var(--space-2) calc(var(--space-5) + var(--space-1));
+  padding-inline-start: var(--space-3);
+  border-inline-start: 2px solid var(--json-string);
+  color: var(--json-string);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.jt-more {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--space-5);
+  margin-inline-start: var(--space-2);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--json-guide);
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--color-code-text);
+  font: inherit;
+  font-size: var(--step--2);
+  cursor: pointer;
+}
+.jt-more:hover {
+  background: var(--json-selected);
+}
+.jt-show-more {
+  margin: var(--space-1) 0;
+}
+.jt-selected > .jt-line {
+  background: var(--json-selected);
+}
+.jt-match > .jt-line {
+  background: var(--json-match);
+}
+.jt-current > .jt-line {
+  outline: 1px solid var(--json-number);
+  outline-offset: -1px;
+}
+.jf-tree :focus-visible,
+.jf-text:focus-visible {
+  outline: 2px solid var(--json-number);
+  outline-offset: 1px;
+}

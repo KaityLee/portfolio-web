@@ -33,6 +33,17 @@
   --hero-scrim: #101214d9;
   --hero-trail-duration: 6.6s;
 
+  /* §5 JSON tool syntax on the code surface. Fixed in both themes like --color-code-bg. */
+  --json-key: #9ccbe6;
+  --json-string: #8fd4a8;
+  --json-number: #e3a66b;
+  --json-boolean: #d4aef2;
+  --json-null: #a8adb1;
+  --json-muted: #a8adb1;
+  --json-guide: #3c4044;
+  --json-selected: #23272a;
+  --json-match: #4a3524;
+
   /* §4 Typography */
   --font-sans: 'Wanted Sans Variable', 'Wanted Sans', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'D2Coding', ui-monospace, monospace;
@@ -63,6 +74,7 @@
   --section-gap: clamp(48px, 8vw, 96px);
   --radius-s: 2px;
   --radius-m: 4px;
+  --radius-pill: 999px;
   --shadow-menu: 0 12px 28px #00000024;
   --target: 44px;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -73,6 +85,7 @@
   --gutter: 16px;
   --post-date-width: 8rem;
   --header-height: 56px;
+  --tool-panel-width: 20rem;
   --hero-height: clamp(25rem, 46vw, 35rem);
 }
 

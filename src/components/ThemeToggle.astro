@@ -1,10 +1,15 @@
 ---
-import { ui as t } from '../i18n/ui';
+import { useTranslations, type Locale } from '../i18n/ui';
 import Icon from './Icon.astro';
 
+interface Props {
+  locale: Locale;
+}
+
+const t = useTranslations(Astro.props.locale);
 ---
 
-<button id="theme-toggle" class="icon-button theme-toggle" type="button" aria-label={t['nav.theme']} title={t['nav.theme']}>
+<button id="theme-toggle" class="icon-button theme-toggle" type="button" aria-label={t('nav.theme')} title={t('nav.theme')}>
   <span class="theme-toggle-icons">
     <Icon name="sun" class="icon-sun" />
     <Icon name="moon" class="icon-moon" />

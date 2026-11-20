@@ -1,6 +1,6 @@
 # portfolio-web
 
-Kaity Builds is a developer portfolio and technical blog built with [Astro](https://astro.build) and TypeScript. Korean content lives under `/` and English content under `/en/`. Both use the English interface.
+Kaity Builds is a developer portfolio and technical blog built with [Astro](https://astro.build) and TypeScript. Korean content lives under `/` and English content under `/en/`. Menus and titles are English on both; the rest of the interface follows the route's language.
 
 Part of the **Personal OS** project: an Obsidian vault is the private source of truth, a private FastAPI backend on a Mac mini provides search and AI assistance, and this site shows only content that went through an explicit review-and-approve pipeline (`docs/publishing.md`).
 
@@ -30,6 +30,7 @@ npm run design:qa  # design gates: check, build, tokens, Playwright matrix → s
 
 - `DESIGN.md` covers the Kaity Builds style, tokens, and page contracts. Wanted Sans, JetBrains Mono, and D2Coding are self-hosted under SIL OFL.
 - `npm run design:qa` — type check, build, token-literal check, then Playwright (installed Chrome) at 320/390/768/1280 px in light and dark: horizontal overflow, axe (WCAG 2.2 AA), 44 px touch targets, full-page screenshots in `shots/`. `VISUAL_BASELINE=1` adds screenshot comparison against `tests/__screenshots__/`.
+- `npm run test:unit` — Node's built-in test runner over `tests/unit/` (the JSON Formatter parser, formatter and paths). `tests/tools.spec.ts` covers the tool in the browser, including a synthetic multi-megabyte response from `tests/fixtures/llm-doc.mjs`.
 - `docs/design/quality-gates.md` describes the checks, including mobile browser interactions. `docs/design/prompts.md` holds the design prompts and `LICENSES.md` records every third-party asset.
 - `.claude/skills/design-qa` and the Stop hook in `.claude/settings.json` make coding agents run the gates before finishing UI work.
 
@@ -43,7 +44,7 @@ src/
 ├── content/
 │   ├── writing/{ko,en}/   blog posts, one file per locale, same translationKey
 │   └── projects/{ko,en}/  project case studies
-├── i18n/ui.ts             content locales and shared English UI strings
+├── i18n/ui.ts             content locales, English UI strings (`ui`) and Korean body copy (`uiKo`)
 ├── i18n/utils.ts          getLocaleFromUrl, useTranslations, localizePath, slugFromId
 ├── utils/date.ts          Intl.DateTimeFormat helper (explicit timeZone)
 ├── lib/content.ts         listing/filtering by exposure, translations → hreflang alternates
