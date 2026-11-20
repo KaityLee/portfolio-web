@@ -852,8 +852,10 @@ dl.facts dd {
   display: grid;
   gap: var(--space-1);
 }
+/* Small enough to stay on one line in the first column from 1024px. */
 .footer-legal p {
   margin: 0;
+  font-size: var(--step--2);
 }
 .footer-legal ul {
   display: flex;
@@ -877,6 +879,12 @@ dl.facts dd {
   .footer-social {
     justify-content: flex-end;
     margin-inline: 0 calc(-1 * var(--space-3));
+  }
+}
+@media (min-width: 1024px) {
+  /* Room for the copyright line on one line (DESIGN.md §7). */
+  .footer-grid {
+    grid-template-columns: minmax(24rem, 1fr) minmax(0, 1.6fr);
   }
 }
 
