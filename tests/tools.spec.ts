@@ -75,7 +75,7 @@ test('opens a multi-megabyte pipeline response, hides keys, searches and shows p
   await box.fill('trade_date');
   await expect(page.locator('[data-jf-search-count]')).toHaveText(/^1 of \d+$/);
   await expect(tree.locator('.jt-current')).toBeVisible();
-  await expect(page.locator('[data-jf-path]')).toContainText('⟨json⟩');
+  await expect(page.locator('[data-jf-path]')).toContainText(' | fromjson | ');
 
   // Large arrays start collapsed with a count.
   await box.fill('Sample header 13');
@@ -92,7 +92,7 @@ test('opens a multi-megabyte pipeline response, hides keys, searches and shows p
 
   // The selected node's path is offered as a JavaScript accessor.
   await (await search(page)).fill('counterparty');
-  await expect(page.locator('[data-jf-path]')).toHaveText(/^\$\.output\[2\]\.content\[0\]\.(text|additional_values) ⟨json⟩ \.counterparty$/);
+  await expect(page.locator('[data-jf-path]')).toHaveText(/^\.output\[2\]\.content\[0\]\.(text|additional_values) \| fromjson \| \.counterparty$/);
 
   // The text view cuts the 2 MB single-line string instead of laying it out, and still offers it in full.
   await panel(page, true);
@@ -122,6 +122,22 @@ test('Back, Esc and the close button close the result; Show result reopens it', 
   await page.getByRole('button', { name: 'Close' }).click();
   await expect(dialog).toBeHidden();
   await expect(page.getByRole('button', { name: 'Format', exact: true })).toBeVisible();
+});
+
+test('copy buttons give a jq filter, JS and Python accessors, and the value', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.getByRole('button', { name: 'Load example' }).click();
+  await (await search(page)).fill('celsius'); // selects output[1].arguments (JSON in a string) .unit
+  await expect(page.locator('[data-jf-path]')).toHaveText('.output[1].arguments | fromjson | .unit');
+  await panel(page, true);
+  const copied = async (name: string) => {
+    await page.getByRole('button', { name, exact: true }).click();
+    return page.evaluate(() => navigator.clipboard.readText());
+  };
+  expect(await copied('Copy jq')).toBe('.output[1].arguments | fromjson | .unit');
+  expect(await copied('Copy JS')).toBe('JSON.parse(data.output[1].arguments).unit');
+  expect(await copied('Copy Python')).toBe('json.loads(data["output"][1]["arguments"])["unit"]');
+  expect(await copied('Copy value')).toBe('"celsius"');
 });
 
 test('Ctrl or Cmd + F searches the result', async ({ page }) => {

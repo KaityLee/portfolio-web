@@ -255,8 +255,8 @@ legend.jf-side-label {
   width: 100%;
 }
 .jf-copy-actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-2);
 }
 .jf-copy-actions .button-quiet {
@@ -272,6 +272,8 @@ legend.jf-side-label {
 
 /* Segmented switch (DESIGN.md §8): pill outline, the chosen segment is a filled pill inside it. */
 .jf-views {
+  --seg-fill: color-mix(in oklab, var(--color-text) 13%, var(--color-bg));
+  --seg-radius: var(--radius-pill);
   display: flex;
   gap: var(--space-1);
   padding: var(--space-1);
@@ -279,6 +281,7 @@ legend.jf-side-label {
   border-radius: var(--radius-pill);
 }
 .jf-views button {
+  position: relative;
   flex: 1 1 0;
   min-width: var(--target);
   min-height: var(--target);
@@ -295,11 +298,15 @@ legend.jf-side-label {
   cursor: pointer;
   transition: background-color 150ms var(--ease);
 }
-.jf-views button:hover {
+.jf-views button:not([aria-pressed='true']):hover {
   background: color-mix(in oklab, var(--color-text) 6%, transparent);
 }
+/* Without JS the chosen segment fills itself; with JS the shared indicator slides under it. */
 .jf-views button[aria-pressed='true'] {
-  background: color-mix(in oklab, var(--color-text) 13%, var(--color-bg));
+  background: var(--seg-fill);
+}
+.jf-views.has-indicator button[aria-pressed='true'] {
+  background: transparent;
 }
 
 .jf-options {

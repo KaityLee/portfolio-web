@@ -14,14 +14,17 @@ const t = useTranslations(locale);
 
 {
   available.length > 1 && (
-    <ul class="locale-picker" aria-label={t('nav.language')}>
-      {available.map((l) => (
-        <li>
-          <a href={alternates[l]} hreflang={l} lang={l} aria-label={localeMeta[l].label} aria-current={l === locale ? 'true' : undefined}>
-            {localeMeta[l].shortLabel}
-          </a>
-        </li>
-      ))}
-    </ul>
+    <div class="locale-switch" data-segmented>
+      <span class="segmented-indicator" aria-hidden="true" />
+      <ul class="locale-picker" aria-label={t('nav.language')}>
+        {available.map((l) => (
+          <li>
+            <a href={alternates[l]} hreflang={l} lang={l} aria-label={localeMeta[l].label} aria-current={l === locale ? 'true' : undefined}>
+              {localeMeta[l].shortLabel}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }

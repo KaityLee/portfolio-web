@@ -130,7 +130,8 @@ const messages = JSON.stringify({
           </div>
 
           <div class="jf-side-section">
-            <div class="jf-views" role="group" aria-label={t('tools.json.view')}>
+            <div class="jf-views" role="group" aria-label={t('tools.json.view')} data-segmented>
+              <span class="segmented-indicator" aria-hidden="true"></span>
               <button type="button" aria-pressed="true" data-jf-view="tree">{t('tools.json.viewTree')}</button>
               <button type="button" aria-pressed="false" data-jf-view="text">{t('tools.json.viewText')}</button>
             </div>
@@ -138,10 +139,11 @@ const messages = JSON.stringify({
 
           <section class="jf-side-section" data-jf-tree-only aria-labelledby="jf-path-heading">
             <h3 id="jf-path-heading" class="jf-side-label">{t('tools.json.path')}</h3>
-            <code class="jf-path" data-jf-path>$</code>
+            <code class="jf-path" data-jf-path>.</code>
             <div class="jf-copy-actions">
-              <button class="button-quiet" type="button" data-jf-copy="path">{t('tools.json.copyPath')}</button>
+              <button class="button-quiet" type="button" data-jf-copy="jq">{t('tools.json.copyJq')}</button>
               <button class="button-quiet" type="button" data-jf-copy="js">{t('tools.json.copyJs')}</button>
+              <button class="button-quiet" type="button" data-jf-copy="python">{t('tools.json.copyPython')}</button>
               <button class="button-quiet" type="button" data-jf-copy="value">{t('tools.json.copyValue')}</button>
             </div>
           </section>
